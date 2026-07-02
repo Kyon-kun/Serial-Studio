@@ -51,6 +51,14 @@ env:
   DESCRIPTION: "Multi-purpose serial data visualization & processing program"
 
   #
+  # Microsoft Store (MSIX) package identity
+  # Values must match Partner Center: Product management -> Product identity
+  #
+  MSIX_IDENTITY_NAME: "AlexSpataru.SerialStudioPro"
+  MSIX_PUBLISHER: "CN=00000000-0000-0000-0000-000000000000"
+  MSIX_PUBLISHER_DISPLAY: "Alex Spataru"
+
+  #
   # QML location (for windeployqt/macdeployqt)
   #
   QML_DIR: "../../app/qml"
@@ -1532,6 +1540,75 @@ jobs:
         7z a ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows-Portable.zip "${{env.APPLICATION}}.bat" License.rtf $DIRNAME/*
         mv ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows-Portable.zip ..
 
+    - name: '📦 Create MSIX package (Microsoft Store)'
+      run: |
+        $dirname = (Get-Content build/dirname.txt -TotalCount 1).Trim()
+        $staging = "build/msix"
+        New-Item -ItemType Directory -Force "$staging/Assets" | Out-Null
+        Copy-Item -Recurse -Force "build/$dirname/*" $staging
+
+        Add-Type -AssemblyName System.Drawing
+        $icon = [System.Drawing.Image]::FromFile("$PWD/app/deploy/PackageIcon.png")
+        foreach ($asset in @(
+          @{ Name = 'Square44x44Logo.png';   Size = 44  },
+          @{ Name = 'Square150x150Logo.png'; Size = 150 },
+          @{ Name = 'StoreLogo.png';         Size = 50  })) {
+          $bmp = New-Object System.Drawing.Bitmap($asset.Size, $asset.Size)
+          $gfx = [System.Drawing.Graphics]::FromImage($bmp)
+          $gfx.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+          $gfx.DrawImage($icon, 0, 0, $asset.Size, $asset.Size)
+          $bmp.Save("$PWD/$staging/Assets/$($asset.Name)", [System.Drawing.Imaging.ImageFormat]::Png)
+          $gfx.Dispose()
+          $bmp.Dispose()
+        }
+        $icon.Dispose()
+
+        $description = $env:DESCRIPTION -replace '&', '&amp;'
+        $manifest = @"
+        <?xml version="1.0" encoding="utf-8"?>
+        <Package
+          xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+          <Identity Name="$($env:MSIX_IDENTITY_NAME)"
+                    Publisher="$($env:MSIX_PUBLISHER)"
+                    Version="$($env:VERSION).0"
+                    ProcessorArchitecture="x64" />
+          <Properties>
+            <DisplayName>$($env:APPLICATION)</DisplayName>
+            <PublisherDisplayName>$($env:MSIX_PUBLISHER_DISPLAY)</PublisherDisplayName>
+            <Logo>Assets\StoreLogo.png</Logo>
+          </Properties>
+          <Dependencies>
+            <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+          </Dependencies>
+          <Resources>
+            <Resource Language="en-US" />
+          </Resources>
+          <Applications>
+            <Application Id="SerialStudioPro"
+                         Executable="bin\$($env:EXECUTABLE).exe"
+                         EntryPoint="Windows.FullTrustApplication">
+              <uap:VisualElements DisplayName="$($env:APPLICATION)"
+                                  Description="$description"
+                                  BackgroundColor="transparent"
+                                  Square150x150Logo="Assets\Square150x150Logo.png"
+                                  Square44x44Logo="Assets\Square44x44Logo.png" />
+            </Application>
+          </Applications>
+          <Capabilities>
+            <rescap:Capability Name="runFullTrust" />
+          </Capabilities>
+        </Package>
+        "@
+        Set-Content -Path "$staging/AppxManifest.xml" -Value $manifest -Encoding utf8
+
+        $makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.*\x64\makeappx.exe" -ErrorAction SilentlyContinue |
+          Sort-Object FullName -Descending | Select-Object -First 1
+        if (-not $makeappx) { throw 'makeappx.exe not found in any installed Windows SDK' }
+        & $makeappx.FullName pack /d $staging /p "${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.msix" /o
+        if ($LASTEXITCODE -ne 0) { throw "makeappx failed with exit code $LASTEXITCODE" }
+
     - name: '📤 Upload artifact: MSI installer'
       uses: actions/upload-artifact@v5
       with:
@@ -1543,6 +1620,12 @@ jobs:
       with:
        name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows-Portable
        path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows-Portable.zip
+
+    - name: '📤 Upload artifact: MSIX package (Store upload)'
+      uses: actions/upload-artifact@v5
+      with:
+        name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.msix
+        path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.msix
 
 #-------------------------------------------------------------------------------
 # Create release
