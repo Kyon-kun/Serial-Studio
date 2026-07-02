@@ -17,7 +17,10 @@ SECS="${2:-25}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 PORT=8080
 
-python3 "$DIR/big_db_test.py" --host 127.0.0.1 --port "$PORT" --rate 50 >/dev/null 2>&1 &
+# One faulted channel per board type keeps the diagnostics decode path under
+# load: healthy boards suppress their diagnostics frame entirely.
+python3 "$DIR/big_db_test.py" --host 127.0.0.1 --port "$PORT" --rate 50 \
+  --faults 'TA:2:5,TB:1:3,TC:3:7' >/dev/null 2>&1 &
 SIM=$!
 
 "$APP" --headless --project "$DIR/big_db_test.ssproj" --udp "$PORT" >/dev/null 2>&1 &

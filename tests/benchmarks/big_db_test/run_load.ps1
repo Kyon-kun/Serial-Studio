@@ -17,8 +17,11 @@ param(
 $dir  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $port = 8080
 
+# One faulted channel per board type keeps the diagnostics decode path under
+# load: healthy boards suppress their diagnostics frame entirely.
 $sim = Start-Process -FilePath 'python' `
-    -ArgumentList @("$dir/big_db_test.py", '--host', '127.0.0.1', '--port', "$port", '--rate', '50') `
+    -ArgumentList @("$dir/big_db_test.py", '--host', '127.0.0.1', '--port', "$port", '--rate', '50', `
+        '--faults', 'TA:2:5,TB:1:3,TC:3:7') `
     -PassThru -NoNewWindow
 $appProc = Start-Process -FilePath $App `
     -ArgumentList @('--headless', '--project', "$dir/big_db_test.ssproj", '--udp', "$port") `

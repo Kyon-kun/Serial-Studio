@@ -26,6 +26,9 @@ no start/end delimiter. Each frame is packed exactly the way the project's
     bits [2:0] reading id    (0/1 = data, 2 = diagnostics, 5 = aux [TB],
                               6 = info, 7 = boot)
 
+IDs with bit 10 set are command frames (host to board); the parser ignores
+them and this simulator never sends them.
+
 Reading payloads (big-endian uint16 values)::
 
     0  channels 1-4   per-type encoding (see channel_value)
@@ -35,9 +38,12 @@ Reading payloads (big-endian uint16 values)::
     6  info           one ASCII descriptor byte per channel (TB/TC only)
     7  boot           [reset_cause, selftest]
 
-The diagnostics frame is sent every cycle on purpose: the parser gates each
-data value behind a known-healthy ``_diag`` entry, and continuously re-sending
-all readings keeps the parser hot path under steady load for CI.
+Suppression follows the device: the diagnostics frame is emitted only while a
+channel is faulted (its absence means healthy), a data frame whose four
+channels are all invalid is suppressed, the boot frame is one-shot at startup,
+and the info/aux descriptor frames repeat every ~5 s. A ``--faults`` channel
+carries the 0xFFFF invalid sentinel in its data frame paired with fault byte
+0xA8 in diagnostics, exactly as the device pairs them.
 
 Usage
 -----
@@ -75,13 +81,15 @@ READING_BOOT = 7
 NUM_CHANNELS = 8
 BOARDS_PER_TYPE = 6
 
-# Diagnostic status byte values the parser accepts as "healthy enough".
+# Diagnostic status byte values.
 DIAG_HEALTHY = 0x00
-# A representative fault code used for fault injection.
+# A representative fault code (open / dead loop) used for fault injection; the
+# device pairs it with the invalid sentinel in the data frame.
 DIAG_FAULT = 0xA8
+INVALID_VALUE = 0xFFFF
 
-# How often the low-rate descriptor frames (aux / info / boot) are re-sent, in
-# seconds.
+# How often the low-rate descriptor frames (aux / info) are re-sent, in
+# seconds, matching the device's ~5 s housekeeping cadence.
 DESCRIPTOR_PERIOD_S = 5.0
 
 
@@ -98,10 +106,14 @@ def make_frame(
     return bytes(((fid >> 8) & 0xFF, fid & 0xFF, len(payload) & 0xFF)) + payload
 
 
-def u16_be(value: float) -> bytes:
-    """Clamp to a healthy uint16 (< 0xFFFD) and return it big-endian."""
-    v = max(0, min(0xFFFC, int(round(value))))
-    return bytes(((v >> 8) & 0xFF, v & 0xFF))
+def pack_u16(value: int) -> bytes:
+    """Return a raw uint16 big-endian."""
+    return bytes(((value >> 8) & 0xFF, value & 0xFF))
+
+
+def healthy_u16(value: float) -> int:
+    """Clamp to a healthy in-band uint16 (< 0xFFFD)."""
+    return max(0, min(0xFFFC, int(round(value))))
 
 
 def channel_value(board_type: int, board_id: int, channel: int, t: float) -> float:
@@ -109,7 +121,7 @@ def channel_value(board_type: int, board_id: int, channel: int, t: float) -> flo
 
     Each board/channel gets a distinct phase so the dashboard shows motion and
     no two tiles are identical. The per-type scaling just keeps the three board
-    types in different numeric ranges; the exact factors are arbitrary.
+    types in the numeric ranges the project's transforms expect.
     """
     phase = (board_id * 0.7) + (channel * 0.9)
     osc = 0.5 + 0.5 * math.sin((t * 0.5) + phase)  # 0..1
@@ -126,39 +138,48 @@ def build_cycle_frames(
     t: float,
     faults: dict,
     send_descriptors: bool,
+    send_boot: bool,
     now_epoch: int,
 ) -> list:
     """Build every frame this board emits for one cycle, in send order.
 
-    Diagnostics is emitted first so the parser's value gate is open before the
-    data frames in the same cycle land.
+    Mirrors the device's suppression semantics: diagnostics only while a
+    channel is faulted, no all-invalid data frames, one-shot boot.
     """
     frames = []
 
-    diag = bytearray(DIAG_HEALTHY for _ in range(NUM_CHANNELS))
-    for channel in faults.get((board_type, board_id), ()):  # 1-based channels
-        diag[channel - 1] = DIAG_FAULT
-    frames.append(make_frame(board_type, board_id, READING_DIAG, bytes(diag)))
+    fault_channels = faults.get((board_type, board_id), ())  # 1-based channels
+    if fault_channels:
+        diag = bytearray(DIAG_HEALTHY for _ in range(NUM_CHANNELS))
+        for channel in fault_channels:
+            diag[channel - 1] = DIAG_FAULT
+        frames.append(make_frame(board_type, board_id, READING_DIAG, bytes(diag)))
 
-    lo = b"".join(
-        u16_be(channel_value(board_type, board_id, ch, t)) for ch in range(1, 5)
-    )
-    hi = b"".join(
-        u16_be(channel_value(board_type, board_id, ch, t)) for ch in range(5, 9)
-    )
-    frames.append(make_frame(board_type, board_id, READING_DATA_LO, lo))
-    frames.append(make_frame(board_type, board_id, READING_DATA_HI, hi))
+    for reading_id, first_ch in ((READING_DATA_LO, 1), (READING_DATA_HI, 5)):
+        values = [
+            (
+                INVALID_VALUE
+                if ch in fault_channels
+                else healthy_u16(channel_value(board_type, board_id, ch, t))
+            )
+            for ch in range(first_ch, first_ch + 4)
+        ]
+        if any(v != INVALID_VALUE for v in values):
+            payload = b"".join(pack_u16(v) for v in values)
+            frames.append(make_frame(board_type, board_id, reading_id, payload))
+
+    if send_boot:
+        boot = bytes((0x10, 0x01))  # reset cause = software reset, self-test = pass
+        frames.append(make_frame(board_type, board_id, READING_BOOT, boot))
 
     if send_descriptors:
         # Reading 6 (channel info): one ASCII descriptor byte per channel. Type
-        # TA carries no descriptors; TB and TC report a per-type descriptor code.
+        # TA carries no descriptors; TB reports the acquisition mode ('A' =
+        # current loop), TC the configured sensor type.
         if board_type != TA:
             code = ord("A") if board_type == TB else ord("K")
             info = bytes(code for _ in range(NUM_CHANNELS))
             frames.append(make_frame(board_type, board_id, READING_INFO, info))
-
-        boot = bytes((0x10, 0x00))  # reset cause = software reset, self-test = pass
-        frames.append(make_frame(board_type, board_id, READING_BOOT, boot))
 
         if board_type == TB:
             aux = bytes((0xFF, 0x01)) + now_epoch.to_bytes(4, "big")
@@ -175,12 +196,15 @@ def parse_fault_spec(spec: str) -> dict:
         try:
             type_name, board_s, channel_s = item.split(":")
             board_type = name_to_type[type_name.upper()]
-            key = (board_type, int(board_s))
+            board_id = int(board_s)
+            channel = int(channel_s)
+            if not (1 <= board_id <= BOARDS_PER_TYPE and 1 <= channel <= NUM_CHANNELS):
+                raise ValueError(item)
         except (ValueError, KeyError):
             raise argparse.ArgumentTypeError(
-                f"bad fault spec: '{item}' (want TYPE:board:channel)"
+                f"bad fault spec: '{item}' (want TYPE:board:channel, board 1-6, channel 1-8)"
             )
-        faults.setdefault(key, set()).add(int(channel_s))
+        faults.setdefault((board_type, board_id), set()).add(channel)
     return faults
 
 
@@ -259,7 +283,13 @@ def main(argv=None) -> int:
         for board_type in (TA, TB, TC):
             for board_id in range(1, args.boards + 1):
                 for frame in build_cycle_frames(
-                    board_type, board_id, t, args.faults, send_descriptors, now_epoch
+                    board_type,
+                    board_id,
+                    t,
+                    args.faults,
+                    send_descriptors,
+                    cycle == 0,
+                    now_epoch,
                 ):
                     if args.dump:
                         fid = (frame[0] << 8) | frame[1]
