@@ -67,6 +67,7 @@ Widgets.SmartDialog {
     root.workspaceId = -1
     root.checkedWidgets = ({})
     root.widgetFilter = ""
+    _searchField.text = ""
     _nameField.text = ""
     _nameField.forceActiveFocus()
     root.show()
@@ -81,6 +82,7 @@ Widgets.SmartDialog {
     root.editMode = true
     root.workspaceId = wsId
     root.widgetFilter = ""
+    _searchField.text = ""
     _nameField.text = currentName
 
     // Build checked map from existing workspace widget IDs
@@ -182,6 +184,8 @@ Widgets.SmartDialog {
       }
 
       Widgets.SearchField {
+        id: _searchField
+
         Layout.fillWidth: true
         text: root.widgetFilter
         placeholderText: qsTr("Filter widgets…")

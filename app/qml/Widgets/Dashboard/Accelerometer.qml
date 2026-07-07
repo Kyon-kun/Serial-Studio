@@ -414,7 +414,7 @@ Item {
 
           Connections {
             target: Cpp_ThemeManager
-            function onColorsChanged() {
+            function onThemeChanged() {
               parent.requestPaint();
             }
           }

@@ -84,7 +84,8 @@ void IO::Protocols::YMODEM::handleBlock0AckByte(quint8 ch)
 {
   if (ch == kACK) {
     m_timeoutTimer.stop();
-    m_yState = YState::WaitingForDataC;
+    m_retryCount = 0;
+    m_yState     = YState::WaitingForDataC;
     m_timeoutTimer.start(m_timeoutMs);
     return;
   }
@@ -105,7 +106,8 @@ void IO::Protocols::YMODEM::handleSecondEotAckByte(quint8 ch)
 {
   if (ch == kACK) {
     m_timeoutTimer.stop();
-    m_yState = YState::WaitingForEndBatchC;
+    m_retryCount = 0;
+    m_yState     = YState::WaitingForEndBatchC;
     m_timeoutTimer.start(m_timeoutMs);
     return;
   }
@@ -157,7 +159,8 @@ bool IO::Protocols::YMODEM::handleDataAckByte(quint8 ch)
 
     m_bytesSent = qMax<qint64>(0, m_bytesSent - m_lastBlockBytes);
     if (!m_file.seek(m_lastBlockStart)) [[unlikely]] {
-      m_file.close();
+      resetState();
+      m_yState = YState::Idle;
       Q_EMIT finished(false, tr("Failed to seek in file"));
       return false;
     }
@@ -200,6 +203,7 @@ void IO::Protocols::YMODEM::processInput(const QByteArray& data)
       case YState::WaitingForDataC:
         if (ch == kCRC) {
           m_timeoutTimer.stop();
+          m_retryCount  = 0;
           m_blockNumber = 1;
           m_yState      = YState::SendingData;
           sendDataBlock();
@@ -237,8 +241,8 @@ void IO::Protocols::YMODEM::processInput(const QByteArray& data)
         if (ch == kACK) {
           m_timeoutTimer.stop();
           m_yState = YState::Done;
-          resetState();
           Q_EMIT progressChanged(m_fileSize, m_fileSize);
+          resetState();
           Q_EMIT statusMessage(tr("Transfer complete"));
           Q_EMIT finished(true, QString());
         }
@@ -311,6 +315,12 @@ void IO::Protocols::YMODEM::sendDataBlock()
 
   QByteArray data = m_file.read(1024);
   if (data.isEmpty()) {
+    if (m_file.error() != QFile::NoError) [[unlikely]] {
+      resetState();
+      m_yState = YState::Idle;
+      Q_EMIT finished(false, tr("File read error"));
+      return;
+    }
     m_yState = YState::WaitingForFirstEOTResponse;
     Q_EMIT writeRequested(QByteArray(1, static_cast<char>(kEOT)));
     Q_EMIT statusMessage(tr("Sending first EOT…"));
@@ -334,4 +344,66 @@ void IO::Protocols::YMODEM::sendDataBlock()
 
   m_yState = YState::WaitingForDataAck;
   m_timeoutTimer.start(m_timeoutMs);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Timeout handling
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Handles a timeout while waiting for a receiver response (YMODEM state machine).
+ */
+void IO::Protocols::YMODEM::handleTimeout()
+{
+  Q_ASSERT(m_maxRetries > 0);
+  Q_ASSERT(m_timeoutMs >= 1000);
+
+  if (!isActive())
+    return;
+
+  ++m_retryCount;
+  if (m_retryCount >= m_maxRetries) {
+    QByteArray cancel(5, static_cast<char>(kCAN));
+    Q_EMIT writeRequested(cancel);
+    resetState();
+    m_yState = YState::Idle;
+    Q_EMIT statusMessage(tr("Transfer timed out"));
+    Q_EMIT finished(false, tr("Timeout: no response from receiver"));
+    return;
+  }
+
+  Q_EMIT statusMessage(tr("Timeout, retrying (%1/%2)…")
+                         .arg(QString::number(m_retryCount), QString::number(m_maxRetries)));
+
+  switch (m_yState) {
+    case YState::WaitingForBlock0Ack:
+      sendBlock0();
+      break;
+
+    case YState::WaitingForDataAck:
+      m_bytesSent = qMax<qint64>(0, m_bytesSent - m_lastBlockBytes);
+      if (!m_file.seek(m_lastBlockStart)) [[unlikely]] {
+        resetState();
+        m_yState = YState::Idle;
+        Q_EMIT finished(false, tr("Failed to seek in file"));
+        return;
+      }
+      m_yState = YState::SendingData;
+      sendDataBlock();
+      break;
+
+    case YState::WaitingForFirstEOTResponse:
+    case YState::WaitingForSecondEOTAck:
+      Q_EMIT writeRequested(QByteArray(1, static_cast<char>(kEOT)));
+      m_timeoutTimer.start(m_timeoutMs);
+      break;
+
+    case YState::WaitingForEndBatchAck:
+      sendEndOfBatch();
+      break;
+
+    default:
+      m_timeoutTimer.start(m_timeoutMs);
+      break;
+  }
 }

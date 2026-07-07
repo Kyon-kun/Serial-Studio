@@ -111,6 +111,7 @@
 #  include "DataModel/Importers/DBCImporter.h"
 #  include "DataModel/Importers/ModbusMapImporter.h"
 #  include "Licensing/LemonSqueezy.h"
+#  include "Licensing/MachineID.h"
 #  include "Licensing/OfflineLicense.h"
 #  include "Licensing/Trial.h"
 #  include "Misc/ShortcutGenerator.h"
@@ -188,7 +189,10 @@ static void MessageHandler(QtMsgType type, const QMessageLogContext& context, co
             << std::endl;
   // code-verify on
 
-  Console::Handler::instance().displayDebugData(output + "\n");
+  QMetaObject::invokeMethod(
+    &Console::Handler::instance(),
+    [output]() { Console::Handler::instance().displayDebugData(output + "\n"); },
+    Qt::QueuedConnection);
 
   const bool isCritical = (type == QtCriticalMsg || type == QtFatalMsg);
   const bool isWarning  = (type == QtWarningMsg);
@@ -599,10 +603,53 @@ void Misc::ModuleManager::initializeQmlInterface()
 }
 
 /**
+ * @brief Constructs every core singleton in a pinned, dependency-verified order, replacing
+ *        the settings-dependent lazy first-use order (ProjectModel before AppState kills the
+ *        conditional re-entrancy edge in AppState's constructor); see
+ *        doc/claude/specs/0001-composition-root/ for the ctor-edge proof.
+ */
+void Misc::ModuleManager::instantiateCoreModules()
+{
+  (void)Misc::Translator::instance();
+  (void)Misc::TimerEvents::instance();
+  (void)Misc::CommonFonts::instance();
+  (void)Misc::WorkspaceManager::instance();
+  (void)DataModel::NotificationCenter::instance();
+  (void)Misc::ThemeManager::instance();
+  (void)Misc::ExtensionManager::instance();
+  (void)DataModel::ControlScript::instance();
+  (void)DataModel::ProjectModel::instance();
+  (void)AppState::instance();
+#ifdef BUILD_COMMERCIAL
+  (void)Licensing::MachineID::instance();
+  (void)Licensing::LemonSqueezy::instance();
+#endif
+  (void)DataModel::FrameBuilder::instance();
+  (void)IO::ConnectionManager::instance();
+  (void)Console::Handler::instance();
+  (void)API::Server::instance();
+  (void)CSV::Player::instance();
+  (void)MDF4::Player::instance();
+#ifdef BUILD_COMMERCIAL
+  (void)Sessions::Player::instance();
+  (void)Sessions::Export::instance();
+  (void)Sessions::DatabaseManager::instance();
+  (void)MQTT::Publisher::instance();
+#endif
+  (void)CSV::Export::instance();
+  (void)MDF4::Export::instance();
+  (void)Console::Export::instance();
+  (void)DataModel::FrameParser::instance();
+  (void)UI::Dashboard::instance();
+}
+
+/**
  * @brief Wires inter-module signals and runs each module's setupExternalConnections.
  */
 void Misc::ModuleManager::setupCrossModuleConnections()
 {
+  instantiateCoreModules();
+
   auto* appState             = &AppState::instance();
   auto* ioManager            = &IO::ConnectionManager::instance();
   auto* pluginsBridge        = &API::Server::instance();

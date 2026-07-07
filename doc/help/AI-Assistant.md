@@ -31,7 +31,7 @@ Eight providers are wired in. They all do roughly the same job; the trade-offs a
 
 | Provider | Default model | What it costs | What it does well |
 |---|---|---|---|
-| **Anthropic** (Claude) | Haiku 4.5 | ~$1 / $5 per million tokens (in/out) | Default. Streaming, tool use, prompt caching, extended thinking on Sonnet/Opus. Sonnet 4.6, Opus 4.7, and Opus 4.8 are also selectable for harder tasks. |
+| **Anthropic** (Claude) | Haiku 4.5 | ~$1 / $5 per million tokens (in/out) | Default. Streaming, tool use, prompt caching, extended thinking on Sonnet/Opus. Sonnet 4.6, Sonnet 5, Opus 4.7, Opus 4.8, and Fable 5 are also selectable for harder tasks. |
 | **OpenAI** | GPT-5 mini | Pay-per-token; mini tier is cheap | Default. Streaming, parallel tool calls, native function-calling. GPT-5.2 and GPT-5.2 Chat are the strongest options for hard tasks. GPT-4.1, GPT-4.1 mini, GPT-4o, and GPT-4o mini remain available. Reasoning-capable models run at `reasoning_effort: none` -- right for fast, interactive tool-calling. |
 | **Google Gemini** | 2.5 Flash | Generous free tier (rate-limited via AI Studio) | 2.5 Flash and 2.0 Flash run on the free tier. 2.5 Pro is paid. |
 | **DeepSeek** | deepseek-chat (V3) | Often the cheapest cloud option for tool use | OpenAI-compatible API. `deepseek-reasoner` (R1) is also selectable. |
@@ -147,7 +147,7 @@ Direct MCP write commands are device-gated: `console.send` (text/serial writes) 
 So the assistant can answer "what sources are configured?", "which datasets feed this group?", or "is the frame parser doing what I think it is?" without first running ten read-only tool calls. The state snapshot lives outside the cached prefix so it can change between turns without invalidating the cache.
 
 **The assistant suggested an API call that doesn't exist.**
-Tell it; it will usually call `meta.listCommands` or `meta.describeCommand` to recover. If you keep hitting hallucinated commands on a given provider, switch to a stronger model (Sonnet 4.6, Opus 4.7, or Opus 4.8 on Anthropic, GPT-5.2 on OpenAI, 2.5 Pro on Gemini).
+Tell it; it will usually call `meta.listCommands` or `meta.describeCommand` to recover. If you keep hitting hallucinated commands on a given provider, switch to a stronger model (Sonnet 4.6, Sonnet 5, Opus 4.7, Opus 4.8, or Fable 5 on Anthropic, GPT-5.2 on OpenAI, 2.5 Pro on Gemini).
 
 **Where do I report a bug or a wrong answer?**
 File an issue on the Serial Studio GitHub repo. Include the prompt, the reply, and ideally the project file (or a stripped-down repro). Provider name and model help too.

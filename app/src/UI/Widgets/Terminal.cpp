@@ -1327,7 +1327,7 @@ void Widgets::Terminal::removeStringFromCursor(const Direction direction, int le
   const QChar clearChar('\x7F');
   for (int i = 0; i < removeSize; ++i) {
     if (direction == LeftDirection)
-      offset = -1;
+      offset = -1 - i;
     else if (direction == RightDirection)
       offset = i;
 
@@ -1621,10 +1621,16 @@ void Widgets::Terminal::handleCsiCursorAbsolute(char final)
     return;
 
   if (final == 'H' || final == 'f') {
+    if (m_formatValues.isEmpty()) {
+      const int row = qMax(0, m_currentFormatValue > 0 ? m_currentFormatValue - 1 : 0);
+      setCursorPosition(0, row);
+      return;
+    }
+
     const int row = qMax(0, m_formatValues.value(0, 1) - 1);
-    const int arg =
+    const int col =
       m_currentFormatValue > 0 ? m_currentFormatValue - 1 : m_formatValues.value(1, 1) - 1;
-    setCursorPosition(qMax(0, arg), row);
+    setCursorPosition(qMax(0, col), row);
     return;
   }
 

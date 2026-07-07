@@ -1311,6 +1311,10 @@ void IO::Drivers::Modbus::onReadReady()
 
   if (reply->error() != QModbusDevice::NoError) {
     reply->deleteLater();
+    ++m_currentGroupIndex;
+    if (m_currentGroupIndex < m_registerGroups.count())
+      pollNextGroup();
+
     return;
   }
 

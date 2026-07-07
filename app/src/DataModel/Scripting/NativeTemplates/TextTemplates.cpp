@@ -1190,7 +1190,7 @@ private:
 
     if (formatter == QStringLiteral("VTG")) {
       storeAt(6, numeric(5));
-      storeAt(7, numeric(7));
+      storeAt(7, numeric(1));
     }
   }
 

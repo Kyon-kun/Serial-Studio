@@ -493,6 +493,7 @@ void AI::Conversation::onToolCallRequested(const QString& callId,
     QJsonObject denial;
     denial[QStringLiteral("error")] =
       tr("Tool-call budget reached for this turn; no further tools will run.");
+    appendToolCallCard(callId, name, arguments, CallStatus::Blocked);
     recordToolResult(callId, name, denial);
     updateToolCallCard(callId, CallStatus::Blocked, denial);
     return;
@@ -978,6 +979,12 @@ void AI::Conversation::onReplyFinished()
 void AI::Conversation::onReplyError(const QString& message)
 {
   qCWarning(serialStudioAI) << "Reply error:" << message;
+
+  if (m_cancelled) {
+    teardownReply();
+    setBusy(false);
+    return;
+  }
 
   if (shouldRetryAfterError()) {
     scheduleTransientRetry(message);

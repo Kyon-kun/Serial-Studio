@@ -77,6 +77,7 @@ public slots:
   void setAutomaticUpdates(const bool enabled);
 
 private:
+  void instantiateCoreModules();
   void setupCrossModuleConnections();
   void registerCoreContextProperties(QQmlContext* ctx);
   void registerAppMetadataProperties(QQmlContext* ctx, bool grpcAvailable);

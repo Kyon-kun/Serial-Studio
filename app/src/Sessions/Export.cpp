@@ -29,6 +29,7 @@
 #  include "DataModel/Scripting/FrameParser.h"
 #  include "DataModel/Scripting/NativeTemplates/NativeTemplate.h"
 #  include "IO/ConnectionManager.h"
+#  include "Licensing/CommercialToken.h"
 #  include "Licensing/LemonSqueezy.h"
 #  include "MDF4/Player.h"
 #  include "Misc/TimerEvents.h"
@@ -595,6 +596,13 @@ Sessions::Export::Export()
   , m_operationMode(static_cast<int>(AppState::instance().operationMode()))
 {
   initializeWorker();
+
+  connect(
+    &Licensing::LemonSqueezy::instance(), &Licensing::LemonSqueezy::activatedChanged, this, [this] {
+      if (exportEnabled()
+          && (!Licensing::CommercialToken::current().isValid() || !SS_LICENSE_GUARD()))
+        setExportEnabled(false);
+    });
 }
 
 /**
@@ -761,7 +769,12 @@ void Sessions::Export::refreshProjectSnapshot()
  */
 void Sessions::Export::setExportEnabled(const bool enabled)
 {
-  const bool allow = enabled && AppState::instance().operationMode() != SerialStudio::ConsoleOnly;
+  const auto& tk = Licensing::CommercialToken::current();
+  const bool licensed =
+    tk.isValid() && SS_LICENSE_GUARD() && tk.featureTier() >= Licensing::FeatureTier::Trial;
+
+  const bool allow =
+    enabled && licensed && AppState::instance().operationMode() != SerialStudio::ConsoleOnly;
 
   if (m_exportEnabled.load(std::memory_order_relaxed) == allow)
     return;

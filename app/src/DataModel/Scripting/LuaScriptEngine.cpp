@@ -113,6 +113,18 @@ static void openSafeLibs(lua_State* L)
   // code-verify on
 }
 
+/**
+ * @brief Closes a Lua state after invalidating the interned-key cache it may have populated.
+ */
+static void closeLuaState(lua_State* state)
+{
+  if (!state)
+    return;
+
+  DataModel::FrameBuilder::instance().tableStore().clearLookupCache();
+  lua_close(state);
+}
+
 //--------------------------------------------------------------------------------------------------
 // Constructor & destructor
 //--------------------------------------------------------------------------------------------------
@@ -191,12 +203,8 @@ void DataModel::LuaScriptEngine::createState()
  */
 void DataModel::LuaScriptEngine::destroyState()
 {
-  if (m_state) {
-    DataModel::FrameBuilder::instance().tableStore().clearLookupCache();
-    lua_close(m_state);
-    m_state = nullptr;
-  }
-
+  closeLuaState(m_state);
+  m_state    = nullptr;
   m_loaded   = false;
   m_deadline = QDeadlineTimer(QDeadlineTimer::Forever);
 }
@@ -305,7 +313,25 @@ bool DataModel::LuaScriptEngine::loadScript(const QString& script,
   Q_ASSERT(sourceId >= 0);
   Q_ASSERT(!script.isEmpty());
 
-  destroyState();
+  lua_State* const prevState        = m_state;
+  const bool prevLoaded             = m_loaded;
+  const bool prevDisabled           = m_disabled;
+  const int prevSourceId            = m_sourceId;
+  const int prevParseRef            = m_parseRef;
+  const int prevConsecutiveTimeouts = m_consecutiveTimeouts;
+
+  auto restorePrevious = [&]() {
+    closeLuaState(m_state);
+    m_state               = prevState;
+    m_sourceId            = prevSourceId;
+    m_parseRef            = prevParseRef;
+    m_loaded              = prevLoaded;
+    m_disabled            = prevDisabled;
+    m_consecutiveTimeouts = prevConsecutiveTimeouts;
+    m_deadline            = QDeadlineTimer(QDeadlineTimer::Forever);
+  };
+
+  m_state    = nullptr;
   m_sourceId = sourceId;
   createState();
 
@@ -325,22 +351,30 @@ bool DataModel::LuaScriptEngine::loadScript(const QString& script,
       } else {
         qWarning() << "[LuaScriptEngine] Source" << sourceId << "syntax error:" << errorMsg;
       }
+      restorePrevious();
       return false;
     }
 
-    if (!runLoadedChunk(sourceId, showMessageBoxes))
+    if (!runLoadedChunk(sourceId, showMessageBoxes)) {
+      restorePrevious();
       return false;
+    }
 
-    if (!ensureParseFunction(sourceId, showMessageBoxes))
+    if (!ensureParseFunction(sourceId, showMessageBoxes)) {
+      restorePrevious();
       return false;
+    }
 
-    if (sourceId == 0 && !probeParseFunction(sourceId, showMessageBoxes))
+    if (sourceId == 0 && !probeParseFunction(sourceId, showMessageBoxes)) {
+      restorePrevious();
       return false;
+    }
 
     lua_getglobal(m_state, "parse");
     m_parseRef = luaL_ref(m_state, LUA_REGISTRYINDEX);
+    m_loaded   = true;
 
-    m_loaded = true;
+    closeLuaState(prevState);
     return true;
   } catch (const std::exception& e) {
     qWarning() << "[LuaScriptEngine] Source" << sourceId << "load uncaught exception:" << e.what();
@@ -348,8 +382,7 @@ bool DataModel::LuaScriptEngine::loadScript(const QString& script,
     qWarning() << "[LuaScriptEngine] Source" << sourceId << "load uncaught non-std exception";
   }
 
-  destroyState();
-  createState();
+  restorePrevious();
   return false;
 }
 
@@ -462,8 +495,6 @@ bool DataModel::LuaScriptEngine::probeParseFunction(int sourceId, bool showMessa
     qWarning() << "[LuaScriptEngine] Probe failed:" << lastError;
   }
 
-  destroyState();
-  createState();
   return false;
 }
 
@@ -495,7 +526,7 @@ QList<QStringList> DataModel::LuaScriptEngine::parseLuaText(const char* data, qs
       lua_pop(m_state, 1);
       qWarning() << "[LuaScriptEngine] Parse error:" << err;
       if (err.contains(QLatin1String("timed out")))
-        (void)noteTimeoutAndCheckDisabled(0);
+        (void)noteTimeoutAndCheckDisabled(m_sourceId);
 
       return {};
     }
@@ -566,7 +597,7 @@ QList<QStringList> DataModel::LuaScriptEngine::parseBinary(const QByteArray& fra
       lua_pop(m_state, 1);
       qWarning() << "[LuaScriptEngine] Parse error:" << err;
       if (err.contains(QLatin1String("timed out")))
-        (void)noteTimeoutAndCheckDisabled(0);
+        (void)noteTimeoutAndCheckDisabled(m_sourceId);
 
       return {};
     }

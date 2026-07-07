@@ -181,13 +181,6 @@ protected:
 private:
   int m_index;
 
-  double m_minX;
-  double m_maxX;
-  double m_minY;
-  double m_maxY;
-  double m_minZ;
-  double m_maxZ;
-
   double m_worldScale;
   double m_cameraAngleX;
   double m_cameraAngleY;

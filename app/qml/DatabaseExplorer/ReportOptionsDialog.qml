@@ -208,7 +208,7 @@ Widgets.SmartDialog {
     const byKey = {}
     for (let i = 0; i < datasets.length; ++i) {
       const d = datasets[i]
-      const key = d.sourceTitle + " " + d.group
+      const key = d.sourceTitle.length + ":" + d.sourceTitle + d.group
       if (!byKey[key]) {
         const distinct = Object.keys(sourcesPerGroup[d.group] || {}).length
         byKey[key] = {

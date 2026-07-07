@@ -48,6 +48,7 @@ Item {
   readonly property bool isBusy: (searchField && searchField.activeFocus)
                                  || (searchPopup && searchPopup.opened)
                                  || (_switcher && _switcher.popup && _switcher.popup.opened)
+                                 || (_tbContextMenu && _tbContextMenu.opened)
                                  || (startMenu && startMenu.visible)
 
   //
@@ -673,6 +674,7 @@ Item {
               acceptedButtons: Qt.RightButton
               onTapped: {
                 if (taskBar && taskBar.activeGroupId >= 1000) {
+                  root.tbRemoveWindowId = button.model.windowId
                   _tbContextMenu.popup()
                 }
               }
@@ -1109,5 +1111,19 @@ Item {
 
     height: 1
     color: Cpp_ThemeManager.colors["taskbar_border"]
+  }
+
+  //
+  // Taskbar button context menu for removing widgets from user workspaces
+  //
+  property int tbRemoveWindowId: -1
+
+  Menu {
+    id: _tbContextMenu
+
+    MenuItem {
+      text: qsTr("Remove from Workspace")
+      onTriggered: taskBar.removeWidgetFromActiveWorkspace(root.tbRemoveWindowId)
+    }
   }
 }

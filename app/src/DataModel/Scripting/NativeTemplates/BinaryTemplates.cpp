@@ -1158,7 +1158,7 @@ public:
       return latchedFrame();
 
     const int length = ((u8At(frame, 0) & 0x7F) << 8) | u8At(frame, 1);
-    if (frame.size() < 2 + length + 2)
+    if (length < 1 || frame.size() < 2 + length + 2)
       return latchedFrame();
 
     if (m_validateChecksum && !checksumOk(frame, length))

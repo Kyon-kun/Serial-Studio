@@ -55,7 +55,10 @@ static void openSafeLibs(lua_State* L)
  * @brief Constructs the script with no language loaded.
  */
 MQTT::PublisherScript::PublisherScript()
-  : m_language(JavaScript), m_loaded(false), m_luaState(nullptr)
+  : m_language(JavaScript)
+  , m_loaded(false)
+  , m_luaState(nullptr)
+  , m_deadline(QDeadlineTimer::Forever)
 {}
 
 /**
@@ -92,8 +95,15 @@ bool MQTT::PublisherScript::compile(const QString& source, int language, QString
     openSafeLibs(m_luaState);
     DataModel::installLuaCompat(m_luaState);
 
+    lua_pushlightuserdata(m_luaState, this);
+    lua_setfield(m_luaState, LUA_REGISTRYINDEX, "__ss_publisher__");
+    lua_sethook(m_luaState, watchdogHook, LUA_MASKCOUNT, kHookInstructionCount);
+
     const QByteArray utf8 = source.toUtf8();
-    if (luaL_dostring(m_luaState, utf8.constData()) != LUA_OK) {
+    m_deadline            = QDeadlineTimer(kRuntimeWatchdogMs);
+    const int status      = luaL_dostring(m_luaState, utf8.constData());
+    m_deadline            = QDeadlineTimer(QDeadlineTimer::Forever);
+    if (status != LUA_OK) {
       errorOut = QString::fromUtf8(lua_tostring(m_luaState, -1));
       destroyLua();
       return false;
@@ -180,7 +190,11 @@ bool MQTT::PublisherScript::run(const QByteArray& frame, QByteArray& payloadOut,
     }
 
     lua_pushlstring(m_luaState, frame.constData(), static_cast<size_t>(frame.size()));
-    if (lua_pcall(m_luaState, 1, 1, 0) != LUA_OK) {
+
+    m_deadline       = QDeadlineTimer(kRuntimeWatchdogMs);
+    const int status = lua_pcall(m_luaState, 1, 1, 0);
+    m_deadline       = QDeadlineTimer(QDeadlineTimer::Forever);
+    if (status != LUA_OK) {
       errorOut = QString::fromUtf8(lua_tostring(m_luaState, -1));
       lua_pop(m_luaState, 1);
       return false;
@@ -270,6 +284,24 @@ void MQTT::PublisherScript::resetJs()
   m_jsFunction = QJSValue();
   if (m_jsEngine)
     m_jsEngine->collectGarbage();
+}
+
+/**
+ * @brief Lua debug hook that aborts the running script once its deadline expires.
+ */
+void MQTT::PublisherScript::watchdogHook(lua_State* L, lua_Debug* ar)
+{
+  Q_UNUSED(ar)
+
+  lua_getfield(L, LUA_REGISTRYINDEX, "__ss_publisher__");
+  auto* self = static_cast<PublisherScript*>(lua_touserdata(L, -1));
+  lua_pop(L, 1);
+
+  if (!self)
+    return;
+
+  if (self->m_deadline.hasExpired())
+    luaL_error(L, "execution timed out after %d ms", kRuntimeWatchdogMs);
 }
 
 #endif  // BUILD_COMMERCIAL

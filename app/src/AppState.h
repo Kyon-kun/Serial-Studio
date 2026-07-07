@@ -77,7 +77,6 @@ public slots:
 
 private slots:
   void onProjectLoaded();
-  void onProjectFileCleared();
 
 private:
   [[nodiscard]] IO::FrameConfig deriveFrameConfig() const;

@@ -46,6 +46,10 @@
 #include "Misc/WorkspaceManager.h"
 #include "UI/Dashboard.h"
 
+#ifdef BUILD_COMMERCIAL
+#  include "Licensing/CommercialToken.h"
+#endif
+
 //--------------------------------------------------------------------------------------------------
 // Helper observer classes
 //--------------------------------------------------------------------------------------------------
@@ -418,6 +422,21 @@ void MDF4::Player::openFile()
  */
 void MDF4::Player::openFile(const QString& filePath)
 {
+#ifdef BUILD_COMMERCIAL
+  const auto& token = Licensing::CommercialToken::current();
+  const bool licensed =
+    token.isValid() && SS_LICENSE_GUARD() && token.featureTier() >= Licensing::FeatureTier::Trial;
+#else
+  const bool licensed = false;
+#endif
+
+  if (!licensed) {
+    Misc::Utilities::showMessageBox(
+      tr("MDF4 Playback is a Pro feature."),
+      tr("This feature requires a license. Please purchase one to enable MDF4 playback."));
+    return;
+  }
+
   if (IO::ConnectionManager::instance().isConnected()) {
     int response = Misc::Utilities::showMessageBox(
       tr("Disconnect from device?"),

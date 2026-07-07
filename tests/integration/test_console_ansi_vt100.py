@@ -472,20 +472,29 @@ def test_mixed_utf8_and_ansi(console_session):
 @pytest.mark.integration
 def test_buffer_fills_to_max_and_rolls(console_session):
     """
-    Sending more than MAX_LINES (1000) lines must roll the buffer without crash.
+    Sending far more data than the console history buffer holds must roll
+    it without crash.
 
-    The terminal caps at 1000 lines; sending 1200 ensures the oldest lines are
-    evicted and the buffer stays bounded.
+    console.getConfig only exposes the raw byte-buffer length, not the
+    Terminal widget's line count, so this asserts that length stays well
+    below the total bytes sent -- proving the oldest data is evicted
+    rather than retained forever.
     """
     api_client, device_simulator = console_session
     api_client.command("console.clear")
 
     chunk = ("A" * 79 + "\n") * 100  # 100 lines per chunk
+    total_bytes = len(chunk.encode()) * 13
     for _ in range(13):  # 1300 lines total
         _feed(device_simulator, chunk.encode(), delay=0.05)
 
     config = api_client.command("console.getConfig")
-    assert config.get("bufferLength", -1) >= 0
+    buffer_length = config.get("bufferLength", -1)
+    assert buffer_length >= 0
+    assert buffer_length < total_bytes, (
+        f"bufferLength {buffer_length} should be capped below the "
+        f"{total_bytes} bytes sent, proving the oldest data was evicted"
+    )
 
 
 @pytest.mark.integration
@@ -625,13 +634,17 @@ def test_bare_carriage_return(console_session):
 def test_crlf_line_endings(console_session):
     """CRLF line endings must not produce double-newlines or crash."""
     api_client, device_simulator = console_session
+    api_client.command("console.setShowTimestamp", {"enabled": False})
     api_client.command("console.clear")
 
     payload = b"line 1\r\nline 2\r\nline 3\r\n"
     _feed(device_simulator, payload)
 
+    # Each "\r\n" collapses to a single "\n"; a regression that double-counts
+    # it as two line breaks would inflate bufferLength beyond this exact size.
+    expected_length = len(payload.replace(b"\r\n", b"\n"))
     config = api_client.command("console.getConfig")
-    assert config.get("bufferLength", -1) >= 0
+    assert config.get("bufferLength", -1) == expected_length
 
 
 @pytest.mark.integration

@@ -239,8 +239,9 @@ class TestInjectionAttacks:
             security_client.command("project.setTitle", {"title": injection})
 
             # Verify the value was escaped/sanitized, not executed
-            result = security_client.command("project.getTitle")
-            if "uid=" in str(result) or "root" in str(result):
+            result = security_client.command("project.getStatus")
+            title = result.get("title", "")
+            if "uid=" in title or "root" in title:
                 vuln_tracker.log_vulnerability(
                     "CRITICAL",
                     "Command Injection",
@@ -590,6 +591,8 @@ class TestParameterValidation:
                 fps_value, (int, float)
             ):
                 pytest.fail(f"Server accepted invalid FPS type: {type(fps_value)}")
+            elif isinstance(fps_value, (int, float)) and not (1 <= fps_value <= 240):
+                pytest.fail(f"Server accepted out-of-range FPS: {fps_value}")
 
         except Exception:
             # Expected - validation should reject

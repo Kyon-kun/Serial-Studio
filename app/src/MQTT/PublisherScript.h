@@ -15,6 +15,7 @@
 
 #  include <memory>
 #  include <QByteArray>
+#  include <QDeadlineTimer>
 #  include <QJSEngine>
 #  include <QJSValue>
 #  include <QString>
@@ -22,6 +23,7 @@
 #  include "DataModel/Scripting/JsWatchdog.h"
 
 struct lua_State;
+struct lua_Debug;
 
 namespace MQTT {
 
@@ -50,10 +52,13 @@ public:
   void reset();
 
 private:
-  static constexpr int kRuntimeWatchdogMs = 500;
+  static constexpr int kRuntimeWatchdogMs    = 500;
+  static constexpr int kHookInstructionCount = 10000;
 
   void destroyLua();
   void resetJs();
+
+  static void watchdogHook(lua_State* L, lua_Debug* ar);
 
   int m_language;
   bool m_loaded;
@@ -65,6 +70,7 @@ private:
 
   // Lua engine state.
   lua_State* m_luaState;
+  QDeadlineTimer m_deadline;
 };
 
 }  // namespace MQTT

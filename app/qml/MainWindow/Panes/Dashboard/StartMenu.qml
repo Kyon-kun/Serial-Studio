@@ -556,6 +556,17 @@ Popup {
         if (checked !== taskBar.windowManager.autoLayoutEnabled)
           taskBar.windowManager.autoLayoutEnabled = checked
       }
+
+      //
+      // The Settings alias overwrites `checked` on restore, destroying the binding
+      // above, so re-sync explicitly when the live auto-layout state changes.
+      //
+      Connections {
+        target: taskBar.windowManager
+        function onAutoLayoutEnabledChanged() {
+          _autoLayoutBt.checked = taskBar.windowManager.autoLayoutEnabled
+        }
+      }
     }
 
     Widgets.MenuButton {

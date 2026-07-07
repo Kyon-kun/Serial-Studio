@@ -276,7 +276,7 @@ void BenchmarkRunner::appendParserPhases(bool numeric, bool mixed)
                         false,
                         false,
                         kNativeNumericFps,
-                        tr("Built-in parser (numeric)")});
+                        tr("Built-In parser (numeric)")});
     m_phases.push_back(
       {SerialStudio::Lua, false, false, false, false, kLuaNumericFps, tr("Lua parser (numeric)")});
     m_phases.push_back({SerialStudio::JavaScript,
@@ -294,7 +294,7 @@ void BenchmarkRunner::appendParserPhases(bool numeric, bool mixed)
                         false,
                         false,
                         kNativeMixedFps,
-                        tr("Built-in parser (mixed)")});
+                        tr("Built-In parser (mixed)")});
     m_phases.push_back(
       {SerialStudio::Lua, false, true, false, false, kLuaMixedFps, tr("Lua parser (mixed)")});
     m_phases.push_back({SerialStudio::JavaScript,
@@ -319,7 +319,7 @@ void BenchmarkRunner::appendDataExportPhases(bool numeric, bool mixed)
                         false,
                         false,
                         kUngatedFps,
-                        tr("Built-in + data export (numeric)")});
+                        tr("Built-In + data export (numeric)")});
     m_phases.push_back({SerialStudio::Lua,
                         true,
                         false,
@@ -342,7 +342,7 @@ void BenchmarkRunner::appendDataExportPhases(bool numeric, bool mixed)
                         false,
                         false,
                         kUngatedFps,
-                        tr("Built-in + data export (mixed)")});
+                        tr("Built-In + data export (mixed)")});
     m_phases.push_back(
       {SerialStudio::Lua, true, true, false, false, kUngatedFps, tr("Lua + data export (mixed)")});
     m_phases.push_back({SerialStudio::JavaScript,
@@ -367,7 +367,7 @@ void BenchmarkRunner::appendDashboardPhases(bool numeric, bool mixed)
                         true,
                         false,
                         kUngatedFps,
-                        tr("Built-in + dashboard (numeric)")});
+                        tr("Built-In + dashboard (numeric)")});
     m_phases.push_back(
       {SerialStudio::Lua, false, false, true, false, kUngatedFps, tr("Lua + dashboard (numeric)")});
     m_phases.push_back({SerialStudio::JavaScript,
@@ -385,7 +385,7 @@ void BenchmarkRunner::appendDashboardPhases(bool numeric, bool mixed)
                         true,
                         false,
                         kUngatedFps,
-                        tr("Built-in + dashboard (mixed)")});
+                        tr("Built-In + dashboard (mixed)")});
     m_phases.push_back(
       {SerialStudio::Lua, false, true, true, false, kUngatedFps, tr("Lua + dashboard (mixed)")});
     m_phases.push_back({SerialStudio::JavaScript,

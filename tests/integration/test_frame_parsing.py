@@ -249,8 +249,11 @@ def test_invalid_checksum_rejection(
         )
         valid_frames.append(frame)
 
-    # Create corrupted frame
-    payload = DataGenerator.generate_csv_frame()
+    # Corrupted frame uses sentinel values well outside generate_csv_frame()'s
+    # random ranges, so a snapshot taken before/after can prove it was dropped
+    # rather than merely that the app kept running.
+    sentinel_values = [555555.1, 555555.2, 555555.3, 555555.4, 555555.5, 555555.6]
+    payload = DataGenerator.generate_csv_frame(values=sentinel_values)
     frame = DataGenerator.wrap_frame(
         payload,
         start_delimiter="/*",
@@ -274,6 +277,9 @@ def test_invalid_checksum_rejection(
     device_simulator.send_frames(valid_frames, interval_seconds=0.1)
     time.sleep(0.8)
 
+    pre_data = api_client.get_dashboard_data()
+    pre_values = [d["value"] for d in pre_data["frame"]["groups"][0]["datasets"]]
+
     device_simulator.send_frame(corrupted_frame)
     time.sleep(0.5)
 
@@ -282,6 +288,13 @@ def test_invalid_checksum_rejection(
 
     data = api_client.get_dashboard_data()
     assert data["datasetCount"] >= 6, f"Expected datasets, got {data['datasetCount']}"
+    post_values = [d["value"] for d in data["frame"]["groups"][0]["datasets"]]
+    assert (
+        post_values == pre_values
+    ), "Corrupted-checksum frame must not update dataset values"
+    assert not any(
+        v.startswith("555555.") for v in post_values
+    ), "Corrupted-checksum frame's sentinel payload must not reach the dashboard"
 
 
 # ---------------------------------------------------------------------------

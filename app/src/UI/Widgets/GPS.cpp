@@ -53,6 +53,7 @@ constexpr double kInvPi   = 1.0 / M_PI;
 constexpr auto CLOUD_URL = "https://clouds.matteason.co.uk/images/4096x2048/clouds-alpha.png";
 // clang-format on
 
+QList<Widgets::GPS*> Widgets::GPS::s_instances;
 QCache<QString, QImage> Widgets::GPS::s_tileCache;
 QHash<QString, QNetworkReply*> Widgets::GPS::s_pending;
 bool Widgets::GPS::s_cacheInitialized = false;
@@ -78,6 +79,8 @@ Widgets::GPS::GPS(const int index, QQuickItem* parent)
   , m_latitude(0)
   , m_longitude(0)
 {
+  s_instances.append(this);
+
   setMipmap(true);
   setOpaquePainting(true);
   setAcceptHoverEvents(true);
@@ -141,6 +144,21 @@ Widgets::GPS::GPS(const int index, QQuickItem* parent)
     connect(&UI::Dashboard::instance(), &UI::Dashboard::updated, this, &Widgets::GPS::updateData);
     center();
   }
+}
+
+/**
+ * @brief Deregisters the widget and drops its in-flight tile requests from the shared map.
+ */
+Widgets::GPS::~GPS()
+{
+  s_instances.removeAll(this);
+
+  const auto owned = m_network.findChildren<QNetworkReply*>();
+  for (auto it = s_pending.begin(); it != s_pending.end();)
+    if (owned.contains(it.value()))
+      it = s_pending.erase(it);
+    else
+      ++it;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -653,7 +671,8 @@ void Widgets::GPS::onTileFetched(QNetworkReply* reply)
     QImage* image = new QImage();
     if (image->loadFromData(reply->readAll())) {
       s_tileCache.insert(url, image);
-      update();
+      for (auto* instance : std::as_const(s_instances))
+        instance->update();
     }
 
     else

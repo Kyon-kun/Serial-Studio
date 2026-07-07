@@ -31,6 +31,7 @@
 #  include <QTransform>
 #  include <QVariantList>
 #  include <QVariantMap>
+#  include <vector>
 
 namespace Widgets {
 
@@ -265,6 +266,7 @@ private:
   qreal m_height;
   QPainterPath m_path;
   State m_state;
+  std::vector<State> m_stateStack;
   QString m_projectDir;
 };
 

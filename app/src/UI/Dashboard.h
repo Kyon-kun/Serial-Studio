@@ -422,6 +422,7 @@ private:
   QMap<int, PlotClock> m_plotClocks;
 
   DSP::AxisData m_pltXAxis;
+  DSP::AxisData m_pltNullY;
   DSP::AxisData m_multipltXAxis;
 
   QMap<int, DSP::AxisData> m_xAxisData;

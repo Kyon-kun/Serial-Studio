@@ -151,7 +151,7 @@ bool IO::Protocols::XMODEM::handleAckByte(quint8 ch)
 
     m_bytesSent = qMax<qint64>(0, m_bytesSent - m_lastBlockBytes);
     if (!m_file.seek(m_lastBlockStart)) [[unlikely]] {
-      m_file.close();
+      resetState();
       Q_EMIT finished(false, tr("Failed to seek in file"));
       return false;
     }
@@ -294,11 +294,17 @@ void IO::Protocols::XMODEM::sendBlock()
   int blockSize   = m_use1K ? 1024 : 128;
   QByteArray data = m_file.read(blockSize);
   if (data.isEmpty()) {
+    if (m_file.error() != QFile::NoError) [[unlikely]] {
+      resetState();
+      Q_EMIT finished(false, tr("File read error"));
+      return;
+    }
     sendEOT();
     return;
   }
 
   if (data.size() > blockSize) [[unlikely]] {
+    resetState();
     Q_EMIT finished(false, tr("File read returned more data than requested"));
     return;
   }
@@ -380,7 +386,7 @@ void IO::Protocols::XMODEM::handleTimeout()
   } else if (m_state == State::WaitingForAck) {
     m_bytesSent = qMax<qint64>(0, m_bytesSent - m_lastBlockBytes);
     if (!m_file.seek(m_lastBlockStart)) [[unlikely]] {
-      m_file.close();
+      resetState();
       Q_EMIT finished(false, tr("Failed to seek in file"));
       return;
     }

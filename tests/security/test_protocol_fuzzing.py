@@ -24,6 +24,10 @@ import time
 import uuid
 from typing import List, Any
 
+import pytest
+
+pytestmark = [pytest.mark.security, pytest.mark.fuzzing]
+
 
 class ProtocolFuzzer:
     """Protocol-level fuzzer for Serial Studio API"""
@@ -410,6 +414,49 @@ class ProtocolFuzzer:
             print(f"    Response: {repr(response[:50])}")
 
         print("\n" + "=" * 80)
+
+
+def test_json_structure_fuzz(fuzzer):
+    """Malformed JSON payloads must not crash or hang the server."""
+    fuzzer.fuzz_json_structure()
+    assert not fuzzer.crashes, f"crashes found: {fuzzer.crashes}"
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
+
+
+def test_field_values_fuzz(fuzzer):
+    """Boundary field values must not hang the server."""
+    fuzzer.fuzz_field_values()
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
+
+
+def test_protocol_violations_fuzz(fuzzer):
+    """Protocol-level violations must not hang the server."""
+    fuzzer.fuzz_protocol_violations()
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
+
+
+def test_batch_commands_fuzz(fuzzer):
+    """Malformed and oversized batches must not hang the server."""
+    fuzzer.fuzz_batch_commands()
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
+
+
+def test_raw_message_type_fuzz(fuzzer):
+    """Malformed raw-message payloads must not hang the server."""
+    fuzzer.fuzz_raw_message_type()
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
+
+
+def test_command_names_fuzz(fuzzer):
+    """Mutated and injected command names must not crash the client."""
+    fuzzer.fuzz_command_names()
+
+
+def test_random_data_fuzz(fuzzer):
+    """Random binary payloads must not crash or hang the server."""
+    fuzzer.fuzz_random_data(iterations=20)
+    assert not fuzzer.crashes, f"crashes found: {fuzzer.crashes}"
+    assert not fuzzer.hangs, f"hangs found: {fuzzer.hangs}"
 
 
 def main():

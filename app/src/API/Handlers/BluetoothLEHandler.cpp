@@ -240,13 +240,14 @@ API::CommandResponse API::Handlers::BluetoothLEHandler::selectService(const QStr
   const int serviceIndex   = params.value(QStringLiteral("serviceIndex")).toInt();
   auto* ble                = IO::ConnectionManager::instance().connectedBluetoothLE();
   const auto& serviceNames = ble->serviceNames();
+  const int serviceCount   = serviceNames.count() - 1;
 
-  if (serviceIndex < 0 || serviceIndex >= serviceNames.count()) {
+  if (serviceIndex < 0 || serviceIndex >= serviceCount) {
     return CommandResponse::makeError(id,
                                       ErrorCode::InvalidParam,
                                       QStringLiteral("Invalid serviceIndex: %1. Valid range: 0-%2")
                                         .arg(serviceIndex)
-                                        .arg(serviceNames.count() - 1));
+                                        .arg(serviceCount - 1));
   }
 
   ble->selectService(serviceIndex + 1);
@@ -302,14 +303,15 @@ API::CommandResponse API::Handlers::BluetoothLEHandler::setCharacteristicIndex(
   const int characteristicIndex   = params.value(QStringLiteral("characteristicIndex")).toInt();
   auto* ble                       = IO::ConnectionManager::instance().connectedBluetoothLE();
   const auto& characteristicNames = ble->characteristicNames();
+  const int characteristicCount   = characteristicNames.count() - 1;
 
-  if (characteristicIndex < 0 || characteristicIndex >= characteristicNames.count()) {
+  if (characteristicIndex < 0 || characteristicIndex >= characteristicCount) {
     return CommandResponse::makeError(
       id,
       ErrorCode::InvalidParam,
       QStringLiteral("Invalid characteristicIndex: %1. Valid range: 0-%2")
         .arg(characteristicIndex)
-        .arg(characteristicNames.count() - 1));
+        .arg(characteristicCount - 1));
   }
 
   ble->setCharacteristicIndex(characteristicIndex + 1);
@@ -413,9 +415,9 @@ API::CommandResponse API::Handlers::BluetoothLEHandler::getDeviceList(const QStr
   const auto& deviceNames = ble->deviceNames();
 
   QJsonArray devices;
-  for (int i = 0; i < deviceNames.count(); ++i) {
+  for (int i = 1; i < deviceNames.count(); ++i) {
     QJsonObject device;
-    device[QStringLiteral("index")] = i;
+    device[QStringLiteral("index")] = i - 1;
     device[QStringLiteral("name")]  = deviceNames.at(i);
     devices.append(device);
   }
@@ -438,9 +440,9 @@ API::CommandResponse API::Handlers::BluetoothLEHandler::getServiceList(const QSt
   const auto& serviceNames = ble->serviceNames();
 
   QJsonArray services;
-  for (int i = 0; i < serviceNames.count(); ++i) {
+  for (int i = 1; i < serviceNames.count(); ++i) {
     QJsonObject service;
-    service[QStringLiteral("index")] = i;
+    service[QStringLiteral("index")] = i - 1;
     service[QStringLiteral("name")]  = serviceNames.at(i);
     services.append(service);
   }
@@ -462,16 +464,16 @@ API::CommandResponse API::Handlers::BluetoothLEHandler::getCharacteristicList(
   const auto& characteristicNames = ble->characteristicNames();
 
   QJsonArray characteristics;
-  for (int i = 0; i < characteristicNames.count(); ++i) {
+  for (int i = 1; i < characteristicNames.count(); ++i) {
     QJsonObject characteristic;
-    characteristic[QStringLiteral("index")] = i;
+    characteristic[QStringLiteral("index")] = i - 1;
     characteristic[QStringLiteral("name")]  = characteristicNames.at(i);
     characteristics.append(characteristic);
   }
 
   QJsonObject result;
   result[QStringLiteral("characteristicList")]         = characteristics;
-  result[QStringLiteral("currentCharacteristicIndex")] = ble->characteristicIndex();
+  result[QStringLiteral("currentCharacteristicIndex")] = ble->characteristicIndex() - 1;
   return CommandResponse::makeSuccess(id, result);
 }
 

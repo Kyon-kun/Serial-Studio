@@ -155,6 +155,7 @@ public slots:
   void replaySelectedSession();
 
   void addTag(const QString& label);
+  void addTagAndAssign(int sessionId, const QString& label);
   void deleteTag(int tagId);
   void renameTag(int tagId, const QString& newLabel);
   void assignTagToSession(int sessionId, int tagId);

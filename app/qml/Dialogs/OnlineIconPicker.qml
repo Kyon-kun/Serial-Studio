@@ -52,6 +52,7 @@ Widgets.SmartDialog {
   onVisibleChanged: {
     if (visible) {
       root.selectedIndex = -1
+      errorLabel.visible = false
       searchField.forceActiveFocus()
     }
   }

@@ -516,6 +516,11 @@ private:
   [[nodiscard]] bool setGroupsInFolderEnabled(int folderId, bool enabled);
   void syncRuntime();
 
+  [[nodiscard]] QSet<int> duplicateGroupFolderSubtree(int rootFolderId);
+  [[nodiscard]] QSet<int> duplicateTableFolderSubtree(int rootFolderId);
+  void appendTableCopyToFolder(const DataModel::TableDef& src, int parentFolderId);
+  void duplicateTableByPath(const QString& tablePath);
+
   int nextDatasetIndex();
   bool finalizeProjectSave();
   void clearTransientState();
@@ -601,6 +606,7 @@ private:
   bool m_changeDrivenTransforms;
   int m_nextUniqueId;
   bool m_modified;
+  bool m_initialized;
   bool m_silentReload;
   QString m_filePath;
   bool m_suppressMessageBoxes;

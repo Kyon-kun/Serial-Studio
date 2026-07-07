@@ -492,7 +492,13 @@ API::CommandResponse API::Handlers::WindowHandler::setLayout(const QString& id,
     return noSession(id);
 
   const QJsonObject layout = params.value(QStringLiteral("layout")).toObject();
-  QMetaObject::invokeMethod(wm, [wm, layout]() { (void)wm->restoreLayout(layout); });
+  bool restored            = false;
+  QMetaObject::invokeMethod(wm,
+                            [wm, layout, &restored]() { restored = wm->restoreLayout(layout); });
+
+  if (!restored)
+    return CommandResponse::makeError(
+      id, ErrorCode::InvalidParam, QStringLiteral("Failed to restore layout"));
 
   return CommandResponse::makeSuccess(id);
 }

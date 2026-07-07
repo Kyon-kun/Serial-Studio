@@ -41,11 +41,14 @@ class ScriptApiCallBridge : public QObject {
 public:
   explicit ScriptApiCallBridge(int sourceId, QObject* parent = nullptr);
 
+  void bindSourceId(const int* sourceId);
+
   Q_INVOKABLE [[nodiscard]] QVariantMap call(const QJSValue& methodVal, const QJSValue& paramsVal);
   Q_INVOKABLE [[nodiscard]] QVariantList listCommands();
 
 private:
-  int m_sourceId;
+  int m_ownSourceId;
+  const int* m_sourceId;
 };
 
 /**
@@ -55,6 +58,7 @@ class ScriptApiCall {
 public:
   static void installLua(lua_State* L, int sourceId);
   static void installJS(QJSEngine* js, int sourceId);
+  static void bindSourceIdJS(QJSEngine* js, const int* sourceId);
   static void installHelperBridgesJS(QJSEngine* js, int sourceId);
   static void installAll(QJSEngine* js, int sourceId);
   static void installAll(lua_State* L, int sourceId);

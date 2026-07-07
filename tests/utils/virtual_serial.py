@@ -119,7 +119,11 @@ class DualSerialPorts:
     def open(self) -> None:
         """Open both PTY pairs."""
         self.alpha.open()
-        self.bravo.open()
+        try:
+            self.bravo.open()
+        except Exception:
+            self.alpha.close()
+            raise
 
     def close(self) -> None:
         """Close both PTY pairs."""

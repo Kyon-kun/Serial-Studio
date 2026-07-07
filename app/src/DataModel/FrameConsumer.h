@@ -111,7 +111,10 @@ public:
   void close() override
   {
     try {
-      processData();
+      // code-verify off: drain even when disabled so a just-disabled consumer's backlog writes out
+      while (drainBatch() > 0) {
+      }
+      // code-verify on
       closeResources();
     } catch (const std::exception& e) {
       qWarning() << "[FrameConsumer] Exception during close:" << e.what();

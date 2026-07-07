@@ -183,7 +183,7 @@ bool DataModel::CFrameParser::loadScript(const QString& script, int sourceId, bo
   QJsonParseError parse_error;
   const auto doc = QJsonDocument::fromJson(script.toUtf8(), &parse_error);
   if (parse_error.error != QJsonParseError::NoError || !doc.isObject()) {
-    reportLoadError(QObject::tr("The native parser configuration is not a valid JSON object."),
+    reportLoadError(QObject::tr("The Built-In parser configuration is not a valid JSON object."),
                     sourceId,
                     showMessageBoxes);
     return false;
@@ -193,7 +193,7 @@ bool DataModel::CFrameParser::loadScript(const QString& script, int sourceId, bo
   const QString template_id = descriptor.value(kTemplateKey).toString();
   const auto* tmpl          = nativeTemplateById(template_id);
   if (!tmpl) {
-    reportLoadError(QObject::tr("Unknown native parser template: \"%1\".").arg(template_id),
+    reportLoadError(QObject::tr("Unknown Built-In parser template: \"%1\".").arg(template_id),
                     sourceId,
                     showMessageBoxes);
     return false;

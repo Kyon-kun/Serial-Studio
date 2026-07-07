@@ -110,7 +110,7 @@ bool FileOpenEventFilter::eventFilter(QObject* obj, QEvent* event)
 TrackpadScrollFilter::TrackpadScrollFilter(QObject* parent) : QObject(parent), m_reentry(false) {}
 
 /**
- * @brief Multiplies trackpad pixelDelta so QML Flickables scroll usably; angleDelta untouched.
+ * @brief Scales trackpad pixelDelta (currently 1:1) and re-dispatches it; angleDelta untouched.
  */
 bool TrackpadScrollFilter::eventFilter(QObject* obj, QEvent* event)
 {

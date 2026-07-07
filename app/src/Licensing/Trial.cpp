@@ -33,6 +33,7 @@
 #include "LemonSqueezy.h"
 #include "MachineID.h"
 #include "Misc/Utilities.h"
+#include "MonotonicClock.h"
 
 /**
  * @brief Builds and installs a commercial token for an active trial.
@@ -137,7 +138,7 @@ bool Licensing::Trial::trialAvailable() const
  */
 int Licensing::Trial::daysRemaining() const
 {
-  return QDateTime::currentDateTimeUtc().daysTo(m_trialExpiry);
+  return MonotonicClock::now().toUTC().daysTo(m_trialExpiry);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -175,7 +176,7 @@ void Licensing::Trial::readSettings()
 
   const bool enabledStored    = (enaStr == "true");
   const bool registeredStored = (regStr == "true");
-  const bool notExpired       = QDateTime::currentDateTimeUtc() <= m_trialExpiry;
+  const bool notExpired       = MonotonicClock::now().toUTC() <= m_trialExpiry;
 
   m_deviceRegistered = registeredStored;
   m_trialEnabled     = enabledStored && notExpired && registeredStored;

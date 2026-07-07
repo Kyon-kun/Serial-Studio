@@ -207,16 +207,15 @@ def test_frame_size_impact(benchmark, api_client, device_simulator, frame_size):
 
     def send_sized_frames():
         groups = []
-        for i in range(num_datasets // 10):
+        for i in range(0, num_datasets, 10):
             datasets = [
                 {"title": f"S{j}", "value": f"{j * 1.23:.2f}", "units": "V"}
-                for j in range(10)
+                for j in range(i, min(i + 10, num_datasets))
             ]
-            groups.append({"title": f"G{i}", "datasets": datasets})
+            groups.append({"title": f"G{i // 10}", "datasets": datasets})
 
         frames = []
         for _ in range(100):
-            payload = DataGenerator.generate_json_frame(groups=groups)
             frame = DataGenerator.wrap_frame(
                 DataGenerator.generate_json_frame(groups=groups),
                 checksum_type=ChecksumType.CRC16,

@@ -12,6 +12,7 @@
 #ifdef ENABLE_GRPC
 
 #  include <atomic>
+#  include <chrono>
 #  include <cstddef>
 #  include <grpcpp/grpcpp.h>
 #  include <memory>
@@ -49,6 +50,14 @@ struct RawStreamContext {
   grpc::ServerWriter<serialstudio::RawBatch>* writer = nullptr;
   grpc::ServerContext* context                       = nullptr;
   std::atomic<bool> cancelled{false};
+};
+
+/**
+ * @brief Raw device bytes paired with the receipt time captured when enqueued on the hotpath.
+ */
+struct RawPacket {
+  QByteArray data;
+  std::chrono::steady_clock::time_point timestamp;
 };
 
 /**
@@ -121,7 +130,7 @@ private:
   std::thread m_writerThread;
 
   moodycamel::ReaderWriterQueue<DataModel::TimestampedFramePtr> m_frameQueue;
-  moodycamel::ReaderWriterQueue<QByteArray> m_rawQueue;
+  moodycamel::ReaderWriterQueue<RawPacket> m_rawQueue;
 
   std::mutex m_frameStreamsMutex;
   std::vector<std::shared_ptr<FrameStreamContext>> m_frameStreams;

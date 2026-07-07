@@ -56,7 +56,7 @@ Item {
     settings.localContentCanAccessRemoteUrls: true
 
     onLoadingChanged: function(loadRequest) {
-      if (loadRequest.status === WebEngineView.LoadSucceededStatus)
+      if (loadRequest.status !== WebEngineView.LoadStartedStatus)
         root.ready = true
     }
 

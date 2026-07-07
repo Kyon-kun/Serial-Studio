@@ -21,6 +21,7 @@
 
 #include "API/Handlers/CSVPlayerHandler.h"
 
+#include <limits>
 #include <QJsonArray>
 
 #include "API/CommandRegistry.h"
@@ -243,9 +244,11 @@ API::CommandResponse API::Handlers::CSVPlayerHandler::step(const QString& id,
     return CommandResponse::makeSuccess(id, result);
   }
 
-  const int absDelta = std::abs(delta);
+  const int absDelta =
+    (delta == std::numeric_limits<int>::min()) ? std::numeric_limits<int>::max() : std::abs(delta);
+  const int steps    = qBound(0, absDelta, player.frameCount());
   const bool forward = delta > 0;
-  for (int i = 0; i < absDelta; ++i)
+  for (int i = 0; i < steps; ++i)
     if (forward)
       player.nextFrame();
     else

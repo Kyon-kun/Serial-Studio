@@ -147,6 +147,10 @@ def test_memory_exhaustion(tester):
                 "Memory Leak", f"Potential leak: {memory_increase:.2f} MB increase"
             )
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_cpu_exhaustion(tester):
     """Test CPU exhaustion attacks"""
@@ -238,6 +242,10 @@ def test_cpu_exhaustion(tester):
     except Exception as e:
         print(f"    Exception: {e}")
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_connection_flood(tester):
     """Test connection flooding"""
@@ -284,6 +292,10 @@ def test_connection_flood(tester):
     else:
         tester.log_success("Connection Flood", "Server unresponsive after flood")
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_slowloris_attack(tester):
     """Test Slowloris-style slow connection attack"""
@@ -308,11 +320,14 @@ def test_slowloris_attack(tester):
     payload = b'{"type":"command","id":"slow","command":"api.getCommands"}\n'
 
     for i in range(min(len(payload), 30)):  # Send ~30 bytes over time
+        dead_sockets = []
         for sock in slow_sockets:
             try:
                 sock.send(bytes([payload[i]]))
             except:
-                slow_sockets.remove(sock)
+                dead_sockets.append(sock)
+        for sock in dead_sockets:
+            slow_sockets.remove(sock)
         time.sleep(0.5)  # 2 bytes per second
 
     # Check if server times out slow connections
@@ -336,6 +351,10 @@ def test_slowloris_attack(tester):
             sock.close()
         except:
             pass
+
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
 
 
 def test_bandwidth_exhaustion(tester):
@@ -382,6 +401,10 @@ def test_bandwidth_exhaustion(tester):
     except Exception as e:
         print(f"    Exception: {e}")
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_queue_overflow(tester):
     """Test queue overflow attacks"""
@@ -422,6 +445,10 @@ def test_queue_overflow(tester):
     except Exception as e:
         print(f"    Exception: {e}")
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_fork_bomb_simulation(tester):
     """Simulate fork bomb via rapid batch commands"""
@@ -454,6 +481,10 @@ def test_fork_bomb_simulation(tester):
 
     except Exception as e:
         print(f"    Exception: {e}")
+
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
 
 
 def test_amplification_attack(tester):
@@ -491,6 +522,10 @@ def test_amplification_attack(tester):
     except Exception as e:
         print(f"    Exception: {e}")
 
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
+
 
 def test_recursive_operations(tester):
     """Test recursive or circular operations"""
@@ -518,6 +553,10 @@ def test_recursive_operations(tester):
 
     except Exception as e:
         print(f"    Exception: {e}")
+
+    assert (
+        not tester.successful_attacks
+    ), f"DoS attack succeeded: {tester.successful_attacks}"
 
 
 def main():

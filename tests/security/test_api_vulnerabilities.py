@@ -25,6 +25,8 @@ import uuid
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.api_client import SerialStudioClient, APIError
 
@@ -97,6 +99,7 @@ def test_json_parsing_exploits(tester):
                     "Server accepts deeply nested JSON without depth limit",
                     nested[:100],
                 )
+                pytest.fail("Server accepts deeply nested JSON without depth limit")
         except (socket.timeout, ConnectionError):
             print("    Server closed connection (GOOD)")
 
@@ -197,6 +200,7 @@ def test_command_injection(tester):
                     f"Server attempted to open file outside project dir: {payload}",
                     payload,
                 )
+                pytest.fail(f"Server opened file outside project dir: {payload}")
             except APIError as e:
                 # Expected to fail, check error message doesn't leak info
                 if "permission" in e.message.lower() or "access" in e.message.lower():
@@ -239,6 +243,7 @@ def test_command_injection(tester):
                         "Format string vulnerability may exist",
                         payload,
                     )
+                    pytest.fail(f"Format string vulnerability may exist: {payload}")
             except APIError:
                 pass
 
@@ -271,6 +276,9 @@ def test_buffer_exhaustion(tester):
                 "Buffer Exhaustion",
                 "Server buffered 100MB without newline, potential memory exhaustion",
                 "100MB of 'A' chars",
+            )
+            pytest.fail(
+                "Server buffered 100MB without newline, potential memory exhaustion"
             )
     except (socket.timeout, ConnectionError):
         print("    Server closed connection (GOOD)")

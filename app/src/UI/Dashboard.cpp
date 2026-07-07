@@ -325,7 +325,8 @@ bool UI::Dashboard::useTimeXAxis(const DataModel::Dataset& dataset) const
  */
 bool UI::Dashboard::useTimeXAxisGroup(const DataModel::Group& group) const
 {
-  return !group.datasets.empty() && group.datasets.front().xAxisId == DataModel::kXAxisTime;
+  return !group.datasets.empty()
+      && SerialStudio::groupXAxisMode(group) == SerialStudio::XAxisMode::Time;
 }
 
 /**
@@ -1275,9 +1276,7 @@ void UI::Dashboard::activateAction(const int index, const bool guiTrigger)
       (void)IO::ConnectionManager::instance().writeDataToDevice(action.sourceId,
                                                                 DataModel::get_tx_bytes(action));
 
-    if (m_repeatCounters.contains(index))
-      m_repeatCounters[index]--;
-
+    tickRepeatTimer(index, m_timers, m_repeatCounters);
     return;
   }
 
@@ -1457,48 +1456,50 @@ void UI::Dashboard::hotpathRxFrame(const DataModel::TimestampedFramePtr& frame)
 
   const int sid = payload.sourceId;
 
-  // code-verify off
-  // clk must be fully resolved here: reconfigureDashboard (below) move-assigns m_plotClocks and
-  // dangles this reference, so nothing after the structureChanged block may read clk.
-  PlotClock& clk = m_plotClocks[sid];
-  // code-verify on
-
-  if (!clk.originSet) [[unlikely]] {
-    clk.origin          = frame->timestamp;
-    clk.originSet       = true;
-    clk.groupCount      = 0;
-    clk.groupStartSec   = 0;
-    clk.displayTimeSec  = 0;
-    clk.samplePeriodSec = 0;
-  }
-  clk.relativeFrameTimeSec = std::chrono::duration<double>(frame->timestamp - clk.origin).count();
-
-  ++clk.groupCount;
-  if (clk.relativeFrameTimeSec > clk.groupStartSec) {
-    const int n      = (clk.groupCount > 1) ? (clk.groupCount - 1) : 1;
-    const double gap = clk.relativeFrameTimeSec - clk.groupStartSec;
-
+  {
     // code-verify off
-    // Divide only for rare multi-sample coarse-clock groups; fine-timestamp sources hit n == 1.
-    const double period = (n > 1) ? (gap / n) : gap;
+    // Scoped tight: reconfigureDashboard (below) move-assigns m_plotClocks, so this reference
+    // must not survive past this block.
+    PlotClock& clk = m_plotClocks[sid];
     // code-verify on
 
-    clk.samplePeriodSec =
-      (clk.samplePeriodSec > 0) ? (0.8 * clk.samplePeriodSec + 0.2 * period) : period;
-    clk.groupStartSec = clk.relativeFrameTimeSec;
-    clk.groupCount    = 1;
+    if (!clk.originSet) [[unlikely]] {
+      clk.origin          = frame->timestamp;
+      clk.originSet       = true;
+      clk.groupCount      = 0;
+      clk.groupStartSec   = 0;
+      clk.displayTimeSec  = 0;
+      clk.samplePeriodSec = 0;
+    }
+    clk.relativeFrameTimeSec = std::chrono::duration<double>(frame->timestamp - clk.origin).count();
+
+    ++clk.groupCount;
+    if (clk.relativeFrameTimeSec > clk.groupStartSec) {
+      const int n      = (clk.groupCount > 1) ? (clk.groupCount - 1) : 1;
+      const double gap = clk.relativeFrameTimeSec - clk.groupStartSec;
+
+      // code-verify off
+      // Divide only for rare multi-sample coarse-clock groups; fine-timestamp sources hit n == 1.
+      const double period = (n > 1) ? (gap / n) : gap;
+      // code-verify on
+
+      clk.samplePeriodSec =
+        (clk.samplePeriodSec > 0) ? (0.8 * clk.samplePeriodSec + 0.2 * period) : period;
+      clk.groupStartSec = clk.relativeFrameTimeSec;
+      clk.groupCount    = 1;
+    }
+    const double expected = clk.displayTimeSec + clk.samplePeriodSec;
+
+    double displayNext = qMax(expected, clk.relativeFrameTimeSec);
+
+    const double forwardError = clk.relativeFrameTimeSec - expected;
+    if (clk.samplePeriodSec > 0 && clk.samplePeriodSec < kSmoothMaxPeriodSec && forwardError > 0
+        && forwardError < kSmoothMaxForwardSec)
+      displayNext = expected;
+
+    clk.displayTimeSec   = displayNext;
+    m_plotDisplayTimeSec = displayNext;
   }
-  const double expected = clk.displayTimeSec + clk.samplePeriodSec;
-
-  double displayNext = qMax(expected, clk.relativeFrameTimeSec);
-
-  const double forwardError = clk.relativeFrameTimeSec - expected;
-  if (clk.samplePeriodSec > 0 && clk.samplePeriodSec < kSmoothMaxPeriodSec && forwardError > 0
-      && forwardError < kSmoothMaxForwardSec)
-    displayNext = expected;
-
-  clk.displayTimeSec   = displayNext;
-  m_plotDisplayTimeSec = displayNext;
 
   const auto genIt = m_sourceStructureGen.constFind(sid);
   const bool genKnown =
@@ -2358,14 +2359,8 @@ void UI::Dashboard::configureWaterfallSeries()
  */
 void UI::Dashboard::registerXAxisIfNeeded(const DataModel::Dataset& dataset)
 {
-#ifdef BUILD_COMMERCIAL
-  const auto& tk = Licensing::CommercialToken::current();
-  if (!tk.isValid() || !SS_LICENSE_GUARD() || tk.featureTier() < Licensing::FeatureTier::Trial)
+  if (!SerialStudio::datasetXAxisEnabled())
     return;
-#else
-  Q_UNUSED(dataset);
-  return;
-#endif
 
   const int xSource = dataset.xAxisId;
   if (m_xAxisData.contains(xSource))
@@ -2565,6 +2560,9 @@ void UI::Dashboard::configureLineSeries()
       if (!d->plt)
         continue;
 
+      if (useTimeXAxis(*d))
+        continue;
+
       DSP::AxisData yAxis(points() + 1);
       m_yAxisData.insert(d->uniqueId, yAxis);
 
@@ -2585,19 +2583,16 @@ void UI::Dashboard::configureLineSeries()
 
       DSP::LineSeries series;
       series.x = &m_pltXAxis;
-      series.y = &m_yAxisData[yDataset.uniqueId];
+      series.y = &m_pltNullY;
       m_pltValues.append(series);
     }
-#ifdef BUILD_COMMERCIAL
-    else if (const auto& tk2 = Licensing::CommercialToken::current();
-             m_datasets.contains(yDataset.xAxisId) && tk2.isValid() && SS_LICENSE_GUARD()
-             && tk2.featureTier() >= Licensing::FeatureTier::Trial) {
+
+    else if (SerialStudio::datasetXAxisEnabled() && m_datasets.contains(yDataset.xAxisId)) {
       DSP::LineSeries series;
       series.x = &m_xAxisData[yDataset.xAxisId];
       series.y = &m_yAxisData[yDataset.uniqueId];
       m_pltValues.append(series);
     }
-#endif
 
     else {
       DSP::LineSeries series;
@@ -2642,15 +2637,7 @@ void UI::Dashboard::configureLineSeries()
       }
     }
 
-#ifdef BUILD_COMMERCIAL
-    const auto& tk = Licensing::CommercialToken::current();
-    const int xAxisId =
-      (tk.isValid() && SS_LICENSE_GUARD() && tk.featureTier() >= Licensing::FeatureTier::Trial)
-        ? yDataset.xAxisId
-        : -1;
-#else
-    const int xAxisId = -1;
-#endif
+    const int xAxisId = SerialStudio::datasetXAxisEnabled() ? yDataset.xAxisId : -1;
 
     auto xDsIt = m_datasets.find(xAxisId);
     if (xDsIt == m_datasets.end())

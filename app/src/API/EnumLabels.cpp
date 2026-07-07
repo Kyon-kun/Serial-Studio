@@ -549,6 +549,8 @@ QString API::EnumLabels::datasetOptionSlug(int singleBitValue)
       return QStringLiteral("led");
     case SerialStudio::DatasetWaterfall:
       return QStringLiteral("waterfall");
+    case SerialStudio::DatasetMeter:
+      return QStringLiteral("meter");
   }
   return QString();
 }

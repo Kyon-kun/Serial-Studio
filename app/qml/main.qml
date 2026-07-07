@@ -431,6 +431,7 @@ Item {
   DialogLoader {
     id: aiAssistantLoader
 
+    asynchronous: false
     source: "qrc:/serial-studio.com/gui/qml/AI/AssistantPanel.qml"
   }
 

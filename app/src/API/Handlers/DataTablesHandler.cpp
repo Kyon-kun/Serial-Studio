@@ -416,24 +416,34 @@ API::CommandResponse API::Handlers::DataTablesHandler::tableDelete(const QString
     return CommandResponse::makeError(
       id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: name"));
 
-  auto& pm           = DataModel::ProjectModel::instance();
-  const auto& tables = pm.tables();
-  const auto it =
-    std::find_if(tables.begin(), tables.end(), [&name](const auto& t) { return t.name == name; });
+  auto& pm            = DataModel::ProjectModel::instance();
+  const auto& tables  = pm.tables();
+  const auto& folders = pm.editorTableFolders();
 
-  if (it == tables.end())
+  QString path;
+  const DataModel::TableDef* def = nullptr;
+  for (const auto& t : tables) {
+    const QString full = DataModel::tableFullPath(folders, t.parentFolderId, t.name);
+    if (full == name || t.name == name) {
+      path = full;
+      def  = &t;
+      break;
+    }
+  }
+
+  if (!def)
     return CommandResponse::makeError(
       id, ErrorCode::InvalidParam, QStringLiteral("Table not found: %1").arg(name));
 
   const bool isDryRun = params.value(QStringLiteral("dryRun")).toBool(false);
 
   QJsonArray registers;
-  for (const auto& r : it->registers)
+  for (const auto& r : def->registers)
     registers.append(r.name);
 
   QJsonObject result;
   result[QStringLiteral("name")]          = name;
-  result[QStringLiteral("registerCount")] = static_cast<int>(it->registers.size());
+  result[QStringLiteral("registerCount")] = static_cast<int>(def->registers.size());
   result[QStringLiteral("registers")]     = registers;
 
   if (isDryRun) {
@@ -445,7 +455,7 @@ API::CommandResponse API::Handlers::DataTablesHandler::tableDelete(const QString
     return CommandResponse::makeSuccess(id, result);
   }
 
-  pm.deleteTable(name);
+  pm.deleteTable(path);
   result[QStringLiteral("deleted")] = true;
   return CommandResponse::makeSuccess(id, result);
 }
@@ -466,21 +476,40 @@ API::CommandResponse API::Handlers::DataTablesHandler::tableRename(const QString
     return CommandResponse::makeError(
       id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: newName"));
 
-  auto& pm = DataModel::ProjectModel::instance();
+  auto& pm            = DataModel::ProjectModel::instance();
+  const auto& tables  = pm.tables();
+  const auto& folders = pm.editorTableFolders();
 
-  const auto& preTables = pm.tables();
-  const bool hasOld     = std::any_of(
-    preTables.begin(), preTables.end(), [&oldName](const auto& t) { return t.name == oldName; });
-  const bool hasNew = std::any_of(
-    preTables.begin(), preTables.end(), [&newName](const auto& t) { return t.name == newName; });
-  const bool collides = hasNew && (oldName != newName);
+  QString oldPath;
+  int parentFolderId = -1;
+  for (const auto& t : tables) {
+    const QString full = DataModel::tableFullPath(folders, t.parentFolderId, t.name);
+    if (full == oldName || t.name == oldName) {
+      oldPath        = full;
+      parentFolderId = t.parentFolderId;
+      break;
+    }
+  }
+
+  const QString newLeaf = newName.simplified().remove(QLatin1Char('/'));
+  bool collides         = false;
+  for (const auto& t : tables) {
+    if (DataModel::tableFullPath(folders, t.parentFolderId, t.name) == oldPath)
+      continue;
+
+    if (t.parentFolderId == parentFolderId && t.name == newLeaf) {
+      collides = true;
+      break;
+    }
+  }
 
   bool applied = false;
-  if (hasOld && !collides) {
-    pm.renameTable(oldName, newName);
-    const auto& tables = pm.tables();
-    applied            = std::any_of(
-      tables.begin(), tables.end(), [&newName](const auto& t) { return t.name == newName; });
+  if (!oldPath.isEmpty() && !collides) {
+    pm.renameTable(oldPath, newName);
+    const auto& post = pm.tables();
+    applied          = std::any_of(post.begin(), post.end(), [&](const auto& t) {
+      return t.parentFolderId == parentFolderId && t.name == newLeaf;
+    });
   }
 
   QJsonObject result;
@@ -510,6 +539,23 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerAdd(const QString
     return CommandResponse::makeError(
       id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: name"));
 
+  auto& pm            = DataModel::ProjectModel::instance();
+  const auto& tables  = pm.tables();
+  const auto& folders = pm.editorTableFolders();
+
+  QString path;
+  for (const auto& t : tables) {
+    const QString full = DataModel::tableFullPath(folders, t.parentFolderId, t.name);
+    if (full == table || t.name == table) {
+      path = full;
+      break;
+    }
+  }
+
+  if (path.isEmpty())
+    return CommandResponse::makeError(
+      id, ErrorCode::InvalidParam, QStringLiteral("Table not found: %1").arg(table));
+
   const bool computed = params.value(QStringLiteral("computed")).toBool(true);
 
   QVariant defaultValue(0.0);
@@ -518,11 +564,22 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerAdd(const QString
   else if (params.contains(QStringLiteral("value")))
     defaultValue = jsonToVariant(params.value(QStringLiteral("value")));
 
-  DataModel::ProjectModel::instance().addRegister(table, name, computed, defaultValue);
+  pm.addRegister(path, name, computed, defaultValue);
+
+  QString actualName = name;
+  for (const auto& t : pm.tables()) {
+    if (DataModel::tableFullPath(folders, t.parentFolderId, t.name) != path)
+      continue;
+
+    if (!t.registers.empty())
+      actualName = t.registers.back().name;
+
+    break;
+  }
 
   QJsonObject result;
   result[QStringLiteral("table")]    = table;
-  result[QStringLiteral("name")]     = name;
+  result[QStringLiteral("name")]     = actualName;
   result[QStringLiteral("computed")] = computed;
   result[QStringLiteral("added")]    = true;
   return CommandResponse::makeSuccess(id, result);
@@ -545,20 +602,30 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerDelete(const QStr
     return CommandResponse::makeError(
       id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: name"));
 
-  auto& pm           = DataModel::ProjectModel::instance();
-  const auto& tables = pm.tables();
-  const auto tit =
-    std::find_if(tables.begin(), tables.end(), [&table](const auto& t) { return t.name == table; });
+  auto& pm            = DataModel::ProjectModel::instance();
+  const auto& tables  = pm.tables();
+  const auto& folders = pm.editorTableFolders();
 
-  if (tit == tables.end())
+  QString path;
+  const DataModel::TableDef* def = nullptr;
+  for (const auto& t : tables) {
+    const QString full = DataModel::tableFullPath(folders, t.parentFolderId, t.name);
+    if (full == table || t.name == table) {
+      path = full;
+      def  = &t;
+      break;
+    }
+  }
+
+  if (!def)
     return CommandResponse::makeError(
       id, ErrorCode::InvalidParam, QStringLiteral("Table not found: %1").arg(table));
 
-  const auto rit = std::find_if(tit->registers.begin(),
-                                tit->registers.end(),
+  const auto rit = std::find_if(def->registers.begin(),
+                                def->registers.end(),
                                 [&name](const auto& r) { return r.name == name; });
 
-  if (rit == tit->registers.end())
+  if (rit == def->registers.end())
     return CommandResponse::makeError(
       id, ErrorCode::InvalidParam, QStringLiteral("Register not found: %1/%2").arg(table, name));
 
@@ -577,7 +644,7 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerDelete(const QStr
     return CommandResponse::makeSuccess(id, result);
   }
 
-  pm.deleteRegister(table, name);
+  pm.deleteRegister(path, name);
   result[QStringLiteral("deleted")] = true;
   return CommandResponse::makeSuccess(id, result);
 }
@@ -598,19 +665,30 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerUpdate(const QStr
     return CommandResponse::makeError(
       id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: name"));
 
-  const auto& tables = DataModel::ProjectModel::instance().tables();
-  const auto tit =
-    std::find_if(tables.begin(), tables.end(), [&table](const auto& t) { return t.name == table; });
+  auto& pm            = DataModel::ProjectModel::instance();
+  const auto& tables  = pm.tables();
+  const auto& folders = pm.editorTableFolders();
 
-  if (tit == tables.end())
+  QString path;
+  const DataModel::TableDef* def = nullptr;
+  for (const auto& t : tables) {
+    const QString full = DataModel::tableFullPath(folders, t.parentFolderId, t.name);
+    if (full == table || t.name == table) {
+      path = full;
+      def  = &t;
+      break;
+    }
+  }
+
+  if (!def)
     return CommandResponse::makeError(
       id, ErrorCode::InvalidParam, QStringLiteral("Table not found: %1").arg(table));
 
-  const auto rit = std::find_if(tit->registers.begin(),
-                                tit->registers.end(),
+  const auto rit = std::find_if(def->registers.begin(),
+                                def->registers.end(),
                                 [&name](const auto& r) { return r.name == name; });
 
-  if (rit == tit->registers.end())
+  if (rit == def->registers.end())
     return CommandResponse::makeError(
       id, ErrorCode::InvalidParam, QStringLiteral("Register not found: %1/%2").arg(table, name));
 
@@ -628,8 +706,14 @@ API::CommandResponse API::Handlers::DataTablesHandler::registerUpdate(const QStr
   else if (params.contains(QStringLiteral("value")))
     defaultValue = jsonToVariant(params.value(QStringLiteral("value")));
 
-  (void)DataModel::ProjectModel::instance().updateRegister(
-    table, name, newName, computed, defaultValue);
+  const bool updated = pm.updateRegister(path, name, newName, computed, defaultValue);
+
+  if (!updated)
+    return CommandResponse::makeError(
+      id,
+      ErrorCode::InvalidParam,
+      QStringLiteral("Register update failed: %1/%2 -> %3 (name in use or invalid)")
+        .arg(table, name, newName));
 
   QJsonObject result;
   result[QStringLiteral("table")]    = table;

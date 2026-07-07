@@ -214,7 +214,7 @@ AI::FileSandbox::Resolved AI::FileSandbox::resolveRead(const QString& input) con
     return {true, canonical, {}, {}};
 
   for (const auto& dropped : droppedPaths())
-    if (canonical == dropped)
+    if (isWithinRoot(canonical, dropped))
       return {true, canonical, {}, {}};
 
   return {false,
@@ -298,7 +298,7 @@ static bool looksBinary(const QByteArray& sample)
 QString AI::FileSandbox::registerDroppedPath(const QString& localPath)
 {
   const QFileInfo dropped(localPath);
-  if (dropped.isSymLink() || !dropped.isFile())
+  if (dropped.isSymLink() || !dropped.exists())
     return {};
 
   const auto canonical = dropped.canonicalFilePath();

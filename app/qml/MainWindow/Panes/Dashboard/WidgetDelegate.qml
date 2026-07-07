@@ -232,9 +232,8 @@ Widgets.MiniWindow {
   // Per-source connection state (suppressed during replay)
   //
   property bool sourceDisconnected: false
-  readonly property bool replayActive: SerialStudio.isAnyPlayerOpen()
   function _refreshSourceConnection() {
-    sourceDisconnected = !replayActive
+    sourceDisconnected = !SerialStudio.isAnyPlayerOpen()
                          && !Cpp_Benchmark_Runner.running
                          && !Cpp_IO_Manager.isDeviceConnected(root.deviceIndex)
   }

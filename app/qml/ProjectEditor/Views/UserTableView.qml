@@ -64,6 +64,8 @@ Widgets.Pane {
 
     if (!ok)
       Qt.callLater(root.refresh)
+
+    return ok
   }
 
   onTableNameChanged: Qt.callLater(refresh)
@@ -313,6 +315,13 @@ Widgets.Pane {
 
           rowHeight: root.rowHeight
 
+          //
+          // Live per-row edit state; modelData goes stale after a successful edit.
+          //
+          property var committedValue: modelData.value
+          property string committedName: modelData.name
+          property bool committedComputed: modelData.type === "computed"
+
           RowLayout {
             spacing: 0
             anchors.fill: parent
@@ -361,8 +370,10 @@ Widgets.Pane {
 
               onActivated: (idx) => {
                 const computed = idx === 1
-                if (computed !== (modelData.type === "computed")) {
-                  root.commitRegister(modelData.name, modelData.name, computed, modelData.value)
+                if (computed !== regRow.committedComputed) {
+                  if (root.commitRegister(regRow.committedName, regRow.committedName,
+                                          computed, regRow.committedValue))
+                    regRow.committedComputed = computed
                 }
               }
             }
@@ -393,11 +404,10 @@ Widgets.Pane {
              background: Item {}
 
               onTextEdited: {
-                if (text !== modelData.name && text.length > 0) {
-                  root.commitRegister(modelData.name,
-                                      text,
-                                      modelData.type === "computed",
-                                      modelData.value)
+                if (text !== regRow.committedName && text.length > 0) {
+                  if (root.commitRegister(regRow.committedName, text,
+                                          regRow.committedComputed, regRow.committedValue))
+                    regRow.committedName = text
                 }
               }
             }
@@ -431,10 +441,9 @@ Widgets.Pane {
                 const newVal = modelData.valueType === "number"
                                  ? parseFloat(text || "0")
                                  : text
-                root.commitRegister(modelData.name,
-                                    modelData.name,
-                                    modelData.type === "computed",
-                                    newVal)
+                if (root.commitRegister(regRow.committedName, regRow.committedName,
+                                        regRow.committedComputed, newVal))
+                  regRow.committedValue = newVal
               }
             }
 
@@ -452,7 +461,7 @@ Widgets.Pane {
               ToolButton {
                 id: copyRegBtn
 
-                readonly property string accessCode: root.registerAccessCode(modelData.name)
+                readonly property string accessCode: root.registerAccessCode(regRow.committedName)
 
                 padding: 2
                 flat: true
@@ -500,7 +509,8 @@ Widgets.Pane {
                 ToolTip.visible: hovered
                 ToolTip.text: qsTr("Delete register")
 
-                onClicked: Cpp_JSON_ProjectModel.confirmDeleteRegister(root.tableName, modelData.name)
+                onClicked: Cpp_JSON_ProjectModel.confirmDeleteRegister(root.tableName,
+                                                                       regRow.committedName)
               }
             }
           }

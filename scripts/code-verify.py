@@ -1998,6 +1998,12 @@ _ADVISORY_KINDS = frozenset(
         "perf-recursive-hotpath",
         "perf-false-sharing-risk",
         "perf-virtual-hotpath",
+        # New `X::instance()` call site outside the composition root. Spec 0001
+        # captures each dependency as a member instead of reaching through the
+        # Meyers singleton at every use. Advisory: ~1,850 existing sites make
+        # the report a migration ratchet, not a gate; promotion to blocking is
+        # per-class at the ratchet stage.
+        "arch-singleton-instance",
     }
 )
 
@@ -2096,7 +2102,7 @@ the *why* survives.
 
 ## Static-analysis rules (semantic)
 
-These come from `scripts/code_format_rules.py` and use a tree-sitter
+These come from `scripts/code_verify_rules.py` and use a tree-sitter
 C++ AST plus targeted line scans. CLAUDE.md is the source of truth;
 the kinds below are short labels.
 
@@ -2233,6 +2239,15 @@ the kinds below are short labels.
   up) wrap the call in `// code-verify off`.
 - `qt-prefer-newline` — `std::endl` flushes the underlying buffer on every
   emission. Use `'\n'` (or `Qt::endl` when explicit flushing is the point).
+- `arch-singleton-instance` — a new `X::instance()` call site under `app/src`.
+  Every one reaches through a Meyers singleton whose construction order is
+  unpinned; spec 0001 captures each dependency as a member instead (ctor init
+  list for leaves, `setupExternalConnections()` for core modules) or wires it
+  in the `ModuleManager` composition root. Sanctioned and never flagged: the
+  root files (`main.cpp`, `Misc/ModuleManager.cpp`), the accessor's own
+  `X& X::instance()` body, `setupExternalConnections()` wiring bodies, and the
+  interim `static auto& x = X::instance();` hotpath cache. Advisory: the
+  codebase has ~1,850 existing sites, so the report is the migration ratchet.
 
 ## Performance / CPU-microarchitecture rules
 

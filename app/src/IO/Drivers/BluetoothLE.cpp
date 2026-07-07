@@ -575,7 +575,12 @@ qint64 IO::Drivers::BluetoothLE::write(const QByteArray& data)
       && m_selectedCharacteristic < m_characteristics.count()) {
     const auto& characteristic = m_characteristics.at(m_selectedCharacteristic);
     if (characteristic.isValid()) {
-      m_service->writeCharacteristic(characteristic, data, QLowEnergyService::WriteWithResponse);
+      const auto props = characteristic.properties();
+      const auto mode  = (props & QLowEnergyCharacteristic::WriteNoResponse)
+                         ? QLowEnergyService::WriteWithoutResponse
+                         : QLowEnergyService::WriteWithResponse;
+
+      m_service->writeCharacteristic(characteristic, data, mode);
       return data.length();
     }
 

@@ -22,11 +22,9 @@
 #pragma once
 
 #include <QHash>
-#include <QMutex>
 #include <QObject>
 
 #include "API/MCPProtocol.h"
-#include "DataModel/Frame.h"
 
 namespace API {
 /**
@@ -60,10 +58,6 @@ public:
   [[nodiscard]] QByteArray processMessage(const QByteArray& data, const QString& sessionId);
 
   void clearSession(const QString& sessionId);
-  void updateCurrentFrame(const DataModel::Frame& frame);
-
-public slots:
-  void onFrameReceived(const DataModel::Frame& frame);
 
 private:
   MCP::MCPResponse processRequest(const MCP::MCPRequest& request, const QString& sessionId);
@@ -95,10 +89,6 @@ private:
 
 private:
   QHash<QString, ClientSession> m_sessions;
-  DataModel::Frame m_currentFrame;
-  QMutex m_frameMutex;
-  QVector<DataModel::Frame> m_frameHistory;
-  static constexpr int kMaxFrameHistory = 100;
 };
 
 }  // namespace API

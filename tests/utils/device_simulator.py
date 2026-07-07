@@ -245,6 +245,7 @@ class DeviceSimulator:
         sim._frame_generator = lambda: DataGenerator.wrap_frame(
             DataGenerator.generate_json_frame(),
             checksum_type=checksum_type,
+            mode="project",
         )
         return sim
 
@@ -264,6 +265,7 @@ class DeviceSimulator:
         sim._frame_generator = lambda: DataGenerator.wrap_frame(
             DataGenerator.generate_csv_frame(),
             checksum_type=checksum_type,
+            mode="project",
         )
         return sim
 

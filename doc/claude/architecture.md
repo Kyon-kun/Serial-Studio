@@ -88,7 +88,7 @@ export or report workers.
 
 **Hotpath signal hops must be `Qt::DirectConnection`.** A queued connection between two
 main-thread objects costs a `QMetaCallEvent` alloc + event-queue insertion per emit; at
-10+ kHz that fills FrameReader's 4096-slot queue faster than the consumer drains and
+10+ kHz that fills FrameReader's 65536-slot queue faster than the consumer drains and
 trips `Frame queue full — frame dropped`. Known direct sites:
 
 - `DeviceManager::frameReady → ConnectionManager::onFrameReady`
@@ -183,7 +183,7 @@ the per-frame dashboard sub-hotpaths + a dashboard-slowdown readout. The gated r
 `FrameBuilder` parse-budget guard (an interactive 80%-duty throttle that a 100%-duty benchmark
 would trip every window) via `setParseBudgetEnabled(false)` and run **no** exporters or dashboard,
 so the gate measures pure parse capacity; the exporter and dashboard phases are deliberately *not*
-gated (their consumers can't drain faster than a flat-out producer, so the 1024-slot pool exhausts
+gated (their consumers can't drain faster than a flat-out producer, so the 8192-slot pool exhausts
 into the heap-fallback path — that penalty is the point of the readout). Each run lasts until both
 the `--benchmark-frames` floor (default 1M) and the `--benchmark-seconds` window (default 10) are
 met. Throughput = `FrameBuilder::parsedFrameCount()` / elapsed; `--benchmark-output FILE` mirrors
@@ -194,6 +194,60 @@ on hotpath edits and re-states this check.)
 The optimization/hardening/sanitizer/allocator flags this gate is measured under live in four
 cmake modules (`cmake/Optimization.cmake`, `Hardening.cmake`, `Sanitizers.cmake`, `MiMalloc.cmake`),
 one per-toolchain branch each; the `cpp-compiler-flags` skill maps them and the two-stage PGO flow.
+
+## Composition Root & Construction Order (ModuleManager)
+
+`Misc::ModuleManager` is the composition root in all but name. `initializeQmlInterface` starts the
+timers, wires everything through `setupCrossModuleConnections()` (an ordered run of
+`setupExternalConnections()` calls followed by `restoreLastProject()`), installs the message
+handler, registers the `Cpp_*` QML context properties, then loads `main.qml`. Three standing
+invariants hold it together:
+
+- **All `setupExternalConnections()` run before `restoreLastProject()`.** `restoreLastProject` is
+  the last call inside `setupCrossModuleConnections` (ModuleManager.cpp:699); a module that reacts
+  to project load must have its wiring in place first.
+- **Context properties come after wiring, before the QML load.** `registerCoreContextProperties` /
+  `registerCommercialContextProperties` / `registerAppMetadataProperties` run after
+  `setupCrossModuleConnections()` and before `registerImageProvidersAndLoadQml` (`m_engine.load`),
+  so QML never binds a half-wired object.
+- **`qInstallMessageHandler(MessageHandler)` runs only after `Console::Handler` and
+  `NotificationCenter` exist.** `MessageHandler` (ModuleManager.cpp:141) constructs both on the
+  first warning **from any thread**, and `Console::Handler`'s ctor pulls `CommonFonts` (which
+  touches the font database, GUI-thread-only). Installing the handler after
+  `setupCrossModuleConnections` forces both onto the GUI thread first, so no worker-thread warning
+  triggers their first construction off-thread.
+
+**Pinned instantiation order** (the topological order the modules must construct in): `Translator`,
+`TimerEvents`, `CommonFonts`, `WorkspaceManager`, `NotificationCenter`, `ThemeManager`,
+`ExtensionManager`, `ControlScript`, **`ProjectModel` before `AppState`**, [`LemonSqueezy` /
+`MachineID`, commercial], `FrameBuilder`, `IO::ConnectionManager`, `Console::Handler`,
+`API::Server`, `CSV::Player`, `MDF4::Player`, [`Sessions::Player`], the exports, `FrameParser`, and
+`UI::Dashboard` **last** (its ctor wires multiple core modules, the file/session players, and
+`TimerEvents`).
+
+**The `ProjectModel`-before-`AppState` rule kills a live hazard.** `AppState`'s ctor calls
+`deriveFrameConfig()`, whose ProjectFile branch calls `ProjectModel::instance()` (AppState.cpp), so
+on a machine whose saved `operation_mode` is ProjectFile, ProjectModel is constructed *inside*
+AppState's ctor; on a QuickPlot machine it is constructed later. `ProjectModel`'s ctor then calls
+`newJsonFile()`, which emits `groupsChanged` while AppState is still mid-init (the fenced comment at
+ProjectModel.cpp:162 exists for exactly this reason). Constructing ProjectModel first makes the
+settings-conditional edge impossible.
+
+`ModuleManager::instantiateCoreModules()` (ModuleManager.cpp:611, called first inside
+`setupCrossModuleConnections`) now enforces this order directly in code: it force-constructs
+every core singleton in the pinned sequence above (ProjectModel before AppState; the commercial
+`MachineID` / `LemonSqueezy` pair under `BUILD_COMMERCIAL`; Dashboard last), replacing the old
+settings-dependent lazy first-use order. Spec `doc/claude/specs/0001-composition-root/` keeps the
+ctor-edge proof.
+
+**The pinned order creates a protected surface: everything reachable from ProjectModel's ctor
+(`newJsonFile()`, `watchProjectFile()`, `scheduleAutoSave()`, `ControlScript::setCode`) runs
+BEFORE AppState and Dashboard exist.** Calling `AppState::instance()` or `UI::Dashboard::instance()`
+from that closure recurses the Meyers guard on ProjectFile machines and aborts at startup
+(`__cxa_guard_acquire detected recursive initialization` — this shipped and crashed once, 2026-07-07).
+`newJsonFile()`'s Dashboard sync is gated on `m_initialized` (set at the end of the ctor);
+`scheduleAutoSave()` is safe only because the empty-`m_filePath` early-return precedes its AppState
+read. Any new code in this closure must keep those guards or add its own `m_initialized` gate.
 
 ## AppState — Single Source of Truth
 
@@ -218,7 +272,7 @@ ConsoleOnly (replaced DeviceSendsJSON, 2026-04) bypasses CircularBuffer + queue;
 
 ## IO Architecture — No Singleton Drivers
 
-- 9 drivers, **public ctors**, no `static instance()`.
+- 10 drivers, **public ctors**, no `static instance()`.
 - `ConnectionManager` (singleton, `Cpp_IO_Manager`) owns one **UI-config** instance per type:
   `instance().uart()`, `.network()`, `.bluetoothLE()`, etc. QML context properties
   (`Cpp_IO_Serial`, etc.) point at these.
@@ -325,10 +379,11 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
   template combo lives in the secondary toolbar next to a Help button and "Test With
   Sample Data". Per-template docs ship at
   `app/rcc/scripts/native/<id>.md` (exposed via
-  `NativeParserEditor::templateDocumentation`). The bridge is
-  `DataModel::NativeParserEditor` (registered as `SerialStudio.NativeParserEditor`).
+  `FrameParserModel::templateDocumentation`). The bridge is
+  `DataModel::FrameParserModel` (registered as QML type `FrameParserModel` in the
+  `SerialStudio` module, see ModuleManager.cpp:545).
 - **The frame parser test dialog is QML** (`app/qml/Dialogs/FrameParserTest.qml`, one dialog
-  for all three languages), backed by the same `NativeParserEditor` bridge: pipeline
+  for all three languages), backed by the same `FrameParserModel` bridge: pipeline
   get/setters write through `ProjectModel::updateSource`, and `dryRun()` branches by source
   language (JS/Lua → live engines via `runFrameParserPipeline`, Native →
   `runNativeTemplatePipeline`). The old QWidget `FrameParserTestDialog` was deleted;
@@ -380,8 +435,10 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
   from the main thread after the loop, never from the watchdog thread.
 - Non-finite numeric results are rejected (`[[unlikely]]` guarded) and `rawValue` is returned.
 - **Editor**: `DatasetTransformEditor` prefills a multiline-comment placeholder when the
-  dataset has no transform; `onApply` discards code that doesn't define `transform()` via
-  `definesTransformFunction()` so the placeholder never persists.
+  dataset has no transform; `onApply` runs `validateTransform(code, language, error)` which
+  returns a `TransformStatus` (`Ok` / `SyntaxError` / `NoFunction`). `SyntaxError` and
+  `NoFunction` (the placeholder or any code that doesn't define `transform()`) block
+  persistence and keep the dialog open with a warning, so the placeholder never persists.
 
 ## Data Tables — Central Data Bus
 
@@ -407,10 +464,10 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
   produces sorted columns + `uniqueIdToColumnIndex` map. CSV and MDF4 export raw + transformed.
 - **Session DB lives in `app/src/Sessions/`** (NOT `app/src/SQLite/`):
   - `Sessions::DatabaseManager` — singleton owning the open `.db`; backs `app/qml/DatabaseExplorer/`.
-  - `SQLite::Export` (`Sessions/Export.h/.cpp`): `FrameConsumer`-based; tables
+  - `Sessions::Export` (`Sessions/Export.h/.cpp`): `FrameConsumer`-based; tables
     `sessions/columns/readings/raw_bytes/table_snapshots`; second lock-free queue for raw
     bytes via `ConnectionManager::onRawDataReceived`. WAL mode, batch transactions.
-  - `SQLite::Player`: replays a stored session through the FrameBuilder pipeline using the
+  - `Sessions::Player`: replays a stored session through the FrameBuilder pipeline using the
     **final** (post-transform) reading columns, with a uid->cell replay column map installed via
     `FrameBuilder::setReplayColumnMap` (same mechanism as MDF4). **All three players count as
     final-value players** (`SerialStudio::isFinalValuePlayerOpen`), so per-dataset transforms
@@ -435,11 +492,26 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
 
 ## Other Subsystems
 
-- **Plot X-Axis (Time / Dataset)**: `Dataset::xAxisId` selects the plot X source: `kXAxisTime (-2)`,
-  the **default**, or a dataset `uniqueId (>=0)` (`Frame.h`). The old `kXAxisSamples (-1)` is **removed
-  as a user option** (kept only as a migration sentinel: deserialize maps `-1 -> -2`,
-  `migrateLegacyXAxisIds` maps legacy index/samples -> Time). Time is free; dataset-as-X stays
-  Pro/Trial-gated. **Time plots do NOT use the raw sample ring.** They use a per-curve
+- **Plot X-Axis (Time / Samples / Dataset)**: `Dataset::xAxisId` selects the plot X source, and
+  there are three **live** modes: `kXAxisTime (-2)` the **default**, `kXAxisSamples (-1)`, or a
+  dataset `uniqueId (>=0)` (`Frame.h`). Time and Samples are **free**; dataset-as-X stays
+  Pro/Trial-gated (the `SerialStudio::datasetXAxisEnabled()` predicate in `Plot.cpp` /
+  `Dashboard::registerXAxisIfNeeded`). When unlicensed or Trial-expired, a dataset-X plot
+  **silently degrades to Samples**: the dataset-X branch in `configureLineSeries` fails its gate
+  and falls through to the shared Samples carrier. Samples is live: a shared monotonic index ring
+  (`m_pltXAxis`, `fillRange`) + the per-dataset y ring, rendered via `downsampleMonotonic`.
+  Deserialize **preserves `-1` verbatim** (Frame.cpp:301, `ss_jsr(obj, Keys::XAxis, kXAxisTime)`);
+  `migrateLegacyXAxisIds` (ProjectModelLoading.cpp:158) keeps Time and Samples untouched, remaps
+  legacy positive frame-indices to dataset uniqueIds, and maps any other `<= 0` / unresolvable id
+  to Time. **Selector reality**: the per-dataset X combo lists Time | Samples | every dataset
+  (`ProjectModel::xDataSources`); the multiplot **group** combo is Time | Samples only and fans the
+  chosen value into every member dataset's `xAxisId` (`ProjectEditor` `kGroupView_xAxis`), read back
+  canonically from `datasets.front()` (`useTimeXAxisGroup`), a known encoding wart slated for a
+  group-level `xAxisId` field. **Carrier invariant**: `m_pltValues` holds one `DSP::LineSeries` per
+  plot widget **including time plots** (index-aligned with the widget list; `m_pltValues.size() !=
+  plotCount` is the reconfigure trigger, Dashboard.cpp:2008, asserted at :2151); a time plot's
+  carrier is effectively a placeholder, since its curve renders from the `TimeRing`, not the
+  carrier's y ring. **Time plots do NOT use the raw sample ring.** They use a per-curve
   `DSP::TimeRing` (`DSP.h`): a bounded `(time, value)` ring that **decimates on ingest** to a
   **min/max envelope pair** per `interval = 2 * windowSec / capacity` second cell (two slots
   reserved per cell so a saturated source still spans the window). Cell boundaries sit on an
@@ -469,8 +541,8 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
   timestamps stay raw. Fine-timestamp sources (audio) hit the n==1 path and are unchanged. Ticks
   render the **magnitude** in an adaptive unit (`PlotWidget.qml` `timeAxis` + `secondsAgoFormat`
   + `timeUnitFactor`/`timeUnitName`): the title and ticks switch between `s` / `ms` / `us` from
-  the span, so e.g. a 10 ms window reads `Time (ms)` with `10 8 6 4 2 0`. Dataset-X plots, FFT,
-  GPS, 3D keep the raw-ring + downsample path.
+  the span, so e.g. a 10 ms window reads `Time (ms)` with `10 8 6 4 2 0`. Dataset-X plots, Samples
+  plots, FFT, GPS, 3D keep the raw-ring + downsample path.
 - **Downsampler cost model** (`DSP.h`): all three downsamplers (`downsampleMonotonic`,
   `downsampleTimeWindow`, `downsampleWindowAbsolute`) are single-pass — the visible span resolves
   via `dsLowerBound`/`dsUpperBound` binary searches (monotonic X/time is a hard precondition,
@@ -579,7 +651,7 @@ of `app/src/DataModel/Frame.h` as `inline constexpr QLatin1StringView` (alias `K
   `writeRequested(QByteArray)`; controller calls `ConnectionManager::writeData()`.
 - **Modbus Map Importer (Pro)**: `DataModel::ModbusMapImporter` imports CSV/XML/JSON →
   auto-generates a Modbus project; preview in `ModbusPreviewDialog.qml`. Pairs with
-  `IO::Drivers::Modbus::generateRegisterGroupProject`.
+  `IO::Drivers::Modbus::generateProject`.
 - **Importer parser output**: the Modbus map and DBC importers generate **commented,
   declarative Lua parsers** (`frameParserLanguage = Lua`), not native map templates — the
   `modbus_register_map` / `can_signal_map` templates and `MapTemplates.cpp` were removed

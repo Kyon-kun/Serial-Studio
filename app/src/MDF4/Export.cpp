@@ -544,6 +544,24 @@ void MDF4::Export::closeFile()
 #endif
 }
 
+#ifdef BUILD_COMMERCIAL
+/**
+ * @brief Captures the current project schema frame and queues it to the worker as the template.
+ */
+void MDF4::Export::refreshTemplateFrame()
+{
+  auto* worker = static_cast<ExportWorker*>(m_worker);
+  DataModel::Frame frame;
+  if (AppState::instance().operationMode() == SerialStudio::ProjectFile)
+    frame = DataModel::FrameBuilder::instance().frame();
+
+  QMetaObject::invokeMethod(
+    worker,
+    [worker, frame = std::move(frame)] { worker->setTemplateFrame(frame); },
+    Qt::QueuedConnection);
+}
+#endif
+
 /**
  * @brief Configures signal/slot connections with the modules this exporter depends on.
  */
@@ -552,25 +570,16 @@ void MDF4::Export::setupExternalConnections()
 #ifdef BUILD_COMMERCIAL
   connect(
     &IO::ConnectionManager::instance(), &IO::ConnectionManager::connectedChanged, this, [this] {
-      if (IO::ConnectionManager::instance().isConnected()) {
-        auto* worker = static_cast<ExportWorker*>(m_worker);
-        DataModel::Frame frame;
-        if (AppState::instance().operationMode() == SerialStudio::ProjectFile)
-          frame = DataModel::FrameBuilder::instance().frame();
-
-        QMetaObject::invokeMethod(
-          worker,
-          [worker, frame = std::move(frame)] { worker->setTemplateFrame(frame); },
-          Qt::QueuedConnection);
-      }
-
-      else {
+      if (IO::ConnectionManager::instance().isConnected())
+        refreshTemplateFrame();
+      else
         closeFile();
-      }
     });
   connect(&IO::ConnectionManager::instance(), &IO::ConnectionManager::pausedChanged, this, [this] {
     if (IO::ConnectionManager::instance().paused())
       closeFile();
+    else if (IO::ConnectionManager::instance().isConnected())
+      refreshTemplateFrame();
   });
 
   connect(&AppState::instance(), &AppState::operationModeChanged, this, [this] {

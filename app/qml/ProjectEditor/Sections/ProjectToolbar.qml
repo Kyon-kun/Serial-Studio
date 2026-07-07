@@ -449,7 +449,7 @@ Rectangle {
       Widgets.ToolbarButton {
         text: qsTr("Web View")
         Layout.alignment: Qt.AlignVCenter
-        ToolTip.text: qsTr("Add an web viewer")
+        ToolTip.text: qsTr("Add a web viewer")
         icon.source: "qrc:/icons/project-editor/toolbar/add-webview.svg"
         onClicked: Cpp_JSON_ProjectModel.addGroup(qsTr("Web View"), SerialStudio.WebView)
       }

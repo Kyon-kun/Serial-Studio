@@ -147,7 +147,7 @@ Mission-critical telemetry. Hotpath violations are blockers.
    `while(true)` only with a provable termination invariant — document it.
 3. **No allocation after init on the hotpath.** No `new`/`make_shared`/`.append()` on the
    dashboard path. `FrameBuilder::acquireFrame()` draws each `TimestampedFramePtr` from a
-   fixed-size slot pool (`kFramePoolSize = 1024`); the slot is recycled when the last
+   fixed-size slot pool (`kFramePoolSize = 8192`); the slot is recycled when the last
    consumer drops the shared_ptr (custom deleter flips `inUse` to false). Don't bypass the
    pool with a direct `std::make_shared<TimestampedFrame>(...)` on the hotpath — that
    re-introduces a per-frame heap alloc. Pool exhaustion logs once and falls back to

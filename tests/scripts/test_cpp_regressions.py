@@ -21,7 +21,7 @@ def test_project_model_save_returns_real_result():
     result of finalizeProjectSave() rather than a hardcoded `true`. The explanatory
     in-body comment was stripped by the comment-cleanup pass, so pin the behaviour to
     the code: the non-dialog tail of saveJsonFile returns finalizeProjectSave()."""
-    text = _read("app/src/DataModel/ProjectModel.cpp")
+    text = _read("app/src/DataModel/Project/ProjectModelPersistence.cpp")
 
     body = re.search(
         r"bool DataModel::ProjectModel::saveJsonFile\(const bool askPath\)[\s\S]*?\n\}",
@@ -181,6 +181,8 @@ def test_frame_parser_uses_qcoreapplication_event_forwarding():
 
 def test_project_editor_bounds_checks_combo_indices():
     text = _read("app/src/DataModel/ProjectEditor.cpp")
+    for tu in sorted((ROOT / "app/src/DataModel/Project").glob("ProjectEditor*.cpp")):
+        text += tu.read_text(encoding="utf-8")
 
     for expected in [
         "if (widgetIdx < 0 || widgetIdx >= keys.size())",
@@ -291,13 +293,25 @@ def test_license_guard_present_in_gps():
 
 
 def test_license_guard_present_in_plot():
-    """Widgets::Plot custom X-axis must check SS_LICENSE_GUARD()."""
-    text = _read("app/src/UI/Widgets/Plot.cpp")
+    """Widgets::Plot custom X-axis gates through SerialStudio::datasetXAxisEnabled(),
+    whose body must carry the SS_LICENSE_GUARD() predicate."""
+    plot = _read("app/src/UI/Widgets/Plot.cpp")
 
     assert re.search(
-        r"tk\.isValid\(\)\s*&&\s*SS_LICENSE_GUARD\(\)",
-        text,
-    ), "SS_LICENSE_GUARD() missing from Plot custom X-axis guard"
+        r"SerialStudio::datasetXAxisEnabled\(\)",
+        plot,
+    ), "Plot custom X-axis must gate through SerialStudio::datasetXAxisEnabled()"
+
+    helper = _read("app/src/SerialStudio.cpp")
+    body = re.search(
+        r"bool SerialStudio::datasetXAxisEnabled\(\)[\s\S]*?\n\}",
+        helper,
+    )
+    assert body is not None, "datasetXAxisEnabled() body must be present"
+    assert re.search(
+        r"\w+\.isValid\(\)\s*&&\s*SS_LICENSE_GUARD\(\)",
+        body.group(0),
+    ), "SS_LICENSE_GUARD() missing from datasetXAxisEnabled()"
 
 
 def test_license_guard_cmake_generator_exists():
@@ -822,7 +836,7 @@ def test_frame_parser_pipeline_dispatches_quick_plot_branch():
 def test_frame_parser_dry_run_requires_input_bytes():
     """project.frameParser.dryRun must reject calls without inputBytes / inputBytesHex
     and must not silently fall back to sampleFrame/sampleFrames anymore."""
-    text = _read("app/src/API/Handlers/ProjectHandler.cpp")
+    text = _read("app/src/API/Handlers/ProjectHandlerParser.cpp")
 
     body = re.search(
         r"API::CommandResponse API::Handlers::ProjectHandler::frameParserDryRun"

@@ -3164,6 +3164,107 @@ def _qml_rules(src: str, path: Path, fence_mask: list[bool]) -> list[Finding]:
 
 
 # ---------------------------------------------------------------------------
+# Composition-root rule (spec 0001): new `X::instance()` call sites
+# ---------------------------------------------------------------------------
+#
+# Every `X::instance()` reaches through a Meyers singleton whose construction
+# order is unpinned. The composition root (ModuleManager) captures each
+# dependency as a member instead; this advisory rule keeps the surface from
+# growing while the migration proceeds. Sanctioned sites carry no finding:
+# the root files, the accessor's own `instance()` body, `setupExternalConnections()`
+# wiring bodies, and the interim `static auto& x = X::instance()` hotpath cache.
+
+# Qualified accessor call: `X::instance()`, `A::B::instance()`, etc.
+_SINGLETON_INSTANCE_RE = re.compile(r"\b[A-Za-z_][\w:]*::instance\(\)")
+
+# Interim hotpath cache of a singleton reference/pointer -- not a fresh edge.
+_SINGLETON_CACHE_RE = re.compile(
+    r"^\s*static\s+(?:const\s+)?auto\s*[&*]\s*\w+\s*=\s*&?\s*"
+    r"[A-Za-z_][\w:]*::instance\(\)"
+)
+
+# Files that ARE the composition root / process entry: instance() here is
+# intentional wiring, matched on the repo-relative path tail.
+_SINGLETON_ROOT_FILES = ("/app/src/main.cpp", "/app/src/Misc/ModuleManager.cpp")
+
+# Enclosing functions where instance() is sanctioned: the Meyers accessor's
+# own definition and each module's setupExternalConnections() wiring body.
+_SINGLETON_SANCTIONED_FUNCS = frozenset({"instance", "setupExternalConnections"})
+
+
+def _enclosing_def_name(node, src: bytes) -> str:
+    """Rightmost name segment of a function_definition, unwrapping the
+    reference/pointer return-type declarators that `_function_name` skips.
+    The Meyers accessor `X& X::instance()` returns a reference, so its
+    declarator hides one `reference_declarator` deep."""
+    decl = node.child_by_field_name("declarator")
+    while decl is not None and decl.type in (
+        "reference_declarator",
+        "pointer_declarator",
+    ):
+        decl = next((c for c in decl.children if c.type == "function_declarator"), None)
+    if decl is None or decl.type != "function_declarator":
+        return _function_name(node, src)
+    inner = decl.child_by_field_name("declarator")
+    if inner is None:
+        return _function_name(node, src)
+    return _node_text(inner, src).split("::")[-1].strip()
+
+
+def _singleton_instance_findings(
+    src_text: str, path: Path, fence_mask: list[bool]
+) -> list[Finding]:
+    """Flag new `X::instance()` call sites outside the composition root.
+
+    The enclosing-function checks need the C++ AST, so the rule degrades to a
+    no-op when tree-sitter is unavailable (same as `_cpp_rules`)."""
+    if path.suffix not in (".cpp", ".cc", ".cxx", ".mm", ".h", ".hpp", ".hxx"):
+        return []
+    if _is_vendored_path(path):
+        return []
+    posix = path.resolve().as_posix()
+    if any(posix.endswith(tail) for tail in _SINGLETON_ROOT_FILES):
+        return []
+    if not HAS_TREE_SITTER:
+        return []
+
+    src = src_text.encode("utf-8")
+    tree = _CPP_PARSER.parse(src)
+    sanctioned_spans: list[tuple[int, int]] = []
+    for n in _walk(tree.root_node):
+        if n.type != "function_definition":
+            continue
+        if _enclosing_def_name(n, src) in _SINGLETON_SANCTIONED_FUNCS:
+            sanctioned_spans.append((n.start_point[0] + 1, n.end_point[0] + 1))
+
+    def sanctioned(line: int) -> bool:
+        return any(lo <= line <= hi for lo, hi in sanctioned_spans)
+
+    out: list[Finding] = []
+    for i, raw in enumerate(src_text.split("\n"), start=1):
+        if i - 1 < len(fence_mask) and fence_mask[i - 1]:
+            continue
+        scrubbed = _strip_strings_and_line_comments(raw)
+        if not _SINGLETON_INSTANCE_RE.search(scrubbed):
+            continue
+        if _SINGLETON_CACHE_RE.search(scrubbed):
+            continue
+        if sanctioned(i):
+            continue
+        out.append(
+            Finding(
+                i,
+                "arch-singleton-instance",
+                "new ::instance() call site -- capture the dependency as a "
+                "member (ctor init list for leaves, setupExternalConnections "
+                "for core modules) or wire it in the ModuleManager composition "
+                "root; see doc/claude/specs/0001-composition-root/",
+            )
+        )
+    return out
+
+
+# ---------------------------------------------------------------------------
 # Public entry point
 # ---------------------------------------------------------------------------
 
@@ -3184,6 +3285,7 @@ def analyze(path: Path, src_text: str, fence_mask: list[bool]) -> list[Finding]:
         out.extend(_trailing_doxy_findings(src_text, path, fence_mask))
         out.extend(_stdio_findings(src_text, path, fence_mask))
         out.extend(_api_scope_naming_findings(src_text, path, fenced))
+        out.extend(_singleton_instance_findings(src_text, path, fence_mask))
         return out
     if suffix == ".qml":
         out.extend(_qml_rules(src_text, path, fence_mask))

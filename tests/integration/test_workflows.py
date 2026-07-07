@@ -244,27 +244,21 @@ def test_long_running_session(api_client, device_simulator, clean_state):
     start_time = time.time()
     frames_sent = 0
 
-    try:
-        while (time.time() - start_time) < duration_seconds:
-            frames = DataGenerator.generate_realistic_telemetry(
-                duration_seconds=batch_size / frequency_hz,
-                frequency_hz=frequency_hz,
-                frame_format="json",
-                checksum_type=ChecksumType.CRC16,
-            )
+    while (time.time() - start_time) < duration_seconds:
+        frames = DataGenerator.generate_realistic_telemetry(
+            duration_seconds=batch_size / frequency_hz,
+            frequency_hz=frequency_hz,
+            frame_format="json",
+            checksum_type=ChecksumType.CRC16,
+        )
 
-            try:
-                device_simulator.send_frames(
-                    frames, interval_seconds=1.0 / frequency_hz
-                )
-                frames_sent += len(frames)
-            except RuntimeError:
-                # Connection may have dropped - this is what we're testing for
-                print(f"Connection dropped after {frames_sent} frames")
-                break
-
-    except Exception as e:
-        print(f"Exception during long-running test: {e}")
+        try:
+            device_simulator.send_frames(frames, interval_seconds=1.0 / frequency_hz)
+            frames_sent += len(frames)
+        except RuntimeError:
+            # Connection may have dropped - this is what we're testing for
+            print(f"Connection dropped after {frames_sent} frames")
+            break
 
     elapsed = time.time() - start_time
 

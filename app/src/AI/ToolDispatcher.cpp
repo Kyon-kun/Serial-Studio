@@ -2211,7 +2211,7 @@ QJsonObject AI::ToolDispatcher::executeCommand(const QString& requestedName,
   Misc::JsonValidator::Limits limits;
   limits.maxFileSize  = 1 * 1024 * 1024;
   limits.maxDepth     = 32;
-  limits.maxArraySize = 1000;
+  limits.maxArraySize = 1024;
 
   if (!Misc::JsonValidator::validateStructure(QJsonValue(args), limits)) {
     qCWarning(AI::serialStudioAI) << "Tool args validation failed for" << name;

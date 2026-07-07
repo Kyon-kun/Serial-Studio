@@ -1,0 +1,999 @@
+/*
+ * Serial Studio
+ * https://serial-studio.com/
+ *
+ * Copyright (C) 2020-2025 Alex Spataru
+ *
+ * This file is dual-licensed:
+ *
+ * - Under the GNU GPLv3 (or later) for builds that exclude Pro modules.
+ * - Under the Serial Studio Commercial License for builds that include
+ *   any Pro functionality.
+ *
+ * You must comply with the terms of one of these licenses, depending
+ * on your use case.
+ *
+ * For GPL terms, see <https://www.gnu.org/licenses/gpl-3.0.html>
+ * For commercial terms, see LICENSE_COMMERCIAL.md in the project root.
+ *
+ * SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-SerialStudio-Commercial
+ */
+
+#include <cmath>
+#include <memory>
+#include <QDirIterator>
+#include <QFileInfo>
+#include <QHash>
+#include <QJsonObject>
+#include <QSet>
+#include <QTimer>
+
+#include "DataModel/FrameBuilder.h"
+#include "DataModel/ProjectEditor.h"
+#include "DataModel/ProjectModel.h"
+#include "IO/Checksum.h"
+#include "IO/ConnectionManager.h"
+#include "Misc/IconEngine.h"
+#include "Misc/Translator.h"
+#include "Misc/Utilities.h"
+#include "SerialStudio.h"
+
+#ifdef BUILD_COMMERCIAL
+#  include "MQTT/Publisher.h"
+#  include "MQTT/PublisherScriptEditor.h"
+#endif
+#include "ProjectEditorItemIds.h"
+#include "ProjectEditorShared.h"
+
+namespace DataModel {
+
+/**
+ * @brief Marks every group folder that owns at least one group, and every one that owns at least
+ *        one ENABLED group, by walking each group's ancestor-folder chain. Feeds derived folder
+ *        dimming in the tree (a folder shows disabled only when all its groups are disabled).
+ */
+static void accumulateFolderEnabled(const std::vector<DataModel::GroupFolder>& folders,
+                                    const std::vector<DataModel::Group>& groups,
+                                    QHash<int, bool>& hasGroup,
+                                    QHash<int, bool>& hasEnabled)
+{
+  QHash<int, int> parentOf;
+  for (const auto& f : folders)
+    parentOf.insert(f.folderId, f.parentFolderId);
+
+  const int kMax = static_cast<int>(folders.size());
+  for (const auto& g : groups) {
+    int cur = g.parentFolderId;
+    for (int i = 0; i <= kMax && cur != -1; ++i) {
+      hasGroup[cur] = true;
+      if (g.enabled)
+        hasEnabled[cur] = true;
+
+      cur = parentOf.value(cur, -1);
+    }
+  }
+}
+
+}  // namespace DataModel
+
+//--------------------------------------------------------------------------------------------------
+// Model builders
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Coalesces rapid ProjectModel mutation bursts into a single rebuild.
+ */
+void DataModel::ProjectEditor::scheduleTreeRebuild()
+{
+  if (!m_rebuildTimer.isActive())
+    m_rebuildTimer.start();
+}
+
+/**
+ * @brief Rebuilds the project-structure tree, restoring expansion and selection.
+ */
+void DataModel::ProjectEditor::buildTreeModel()
+{
+  m_rootItems.clear();
+  m_groupItems.clear();
+  m_sourceItems.clear();
+  m_actionItems.clear();
+  m_datasetItems.clear();
+  m_outputWidgetItems.clear();
+  m_sourceParserItems.clear();
+  m_userTableItems.clear();
+  m_groupFolderItems.clear();
+  m_tableFolderItems.clear();
+  m_workspaceItems.clear();
+  m_workspaceFolderItems.clear();
+  m_groupsRootItem     = nullptr;
+  m_tablesRootItem     = nullptr;
+  m_systemDatasetsItem = nullptr;
+  m_workspacesRootItem = nullptr;
+  m_mqttPublisherItem  = nullptr;
+  m_controlScriptItem  = nullptr;
+
+  const bool seeding = m_seedExpansionFromModel;
+  QHash<QString, bool> expandedStates;
+  if (seeding) {
+    const auto& persisted = DataModel::ProjectModel::instance().treeExpansion();
+    for (auto it = persisted.constBegin(); it != persisted.constEnd(); ++it)
+      expandedStates.insert(it.key(), it.value().toBool());
+
+    m_seedExpansionFromModel = false;
+  } else if (m_treeModel) {
+    saveExpandedStateMap(m_treeModel->invisibleRootItem(), expandedStates, "");
+  }
+
+  if (m_currentSelectionConnection) {
+    QObject::disconnect(m_currentSelectionConnection);
+    m_currentSelectionConnection = QMetaObject::Connection();
+  }
+
+  if (m_selectionModel) {
+    m_selectionModel->deleteLater();
+    m_selectionModel = nullptr;
+  }
+
+  if (m_treeModel) {
+    m_treeModel->disconnect(this);
+    m_treeModel->deleteLater();
+    m_treeModel = nullptr;
+  }
+
+  m_treeModel = new CustomModel(this);
+
+  const auto& pm = DataModel::ProjectModel::instance();
+  auto* root     = new QStandardItem(pm.title());
+  root->setData(root->text(), TreeViewText);
+  root->setData("qrc:/icons/project-editor/treeview/project-setup.svg", TreeViewIcon);
+  root->setData(true, TreeViewExpanded);
+
+  m_treeModel->appendRow(root);
+  m_rootItems.insert(root, kRootItem);
+
+  buildTreeItems(root, expandedStates);
+
+  m_selectionModel             = new QItemSelectionModel(m_treeModel);
+  m_currentSelectionConnection = connect(m_selectionModel,
+                                         &QItemSelectionModel::currentChanged,
+                                         this,
+                                         &DataModel::ProjectEditor::onCurrentSelectionChanged);
+
+  connect(m_selectionModel, &QItemSelectionModel::selectionChanged, this, [this] {
+    onCurrentSelectionChanged(m_selectionModel->currentIndex(), QModelIndex());
+  });
+
+  Q_EMIT treeModelChanged();
+
+  const auto revealIndex = consumePendingSelection();
+  if (!revealIndex.isValid())
+    restoreTreeSelection();
+
+  if (!seeding)
+    DataModel::ProjectModel::instance().setTreeExpansion(snapshotTreeExpansion());
+
+  Q_EMIT treeRebuildFinished(revealIndex);
+}
+
+/**
+ * @brief Selects a node queued by a deferred add-* signal handler.
+ */
+QModelIndex DataModel::ProjectEditor::consumePendingSelection()
+{
+  if (m_pendingSelectionKind == PendingSelectionKind::None || !m_selectionModel)
+    return {};
+
+  const auto kind = m_pendingSelectionKind;
+  const auto gid  = m_pendingSelectionGroupId;
+  const auto iid  = m_pendingSelectionItemId;
+
+  m_pendingSelectionKind    = PendingSelectionKind::None;
+  m_pendingSelectionGroupId = -1;
+  m_pendingSelectionItemId  = -1;
+
+  const auto pickFirst = [this](const auto& map, auto&& pred) -> QModelIndex {
+    for (auto it = map.begin(); it != map.end(); ++it) {
+      if (!pred(it.value()))
+        continue;
+
+      const auto idx = it.key()->index();
+      m_selectionModel->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect);
+      return idx;
+    }
+    return {};
+  };
+
+  if (kind == PendingSelectionKind::Source)
+    return pickFirst(m_sourceItems, [iid](const auto& v) { return v.sourceId == iid; });
+
+  if (kind == PendingSelectionKind::Group)
+    return pickFirst(m_groupItems, [gid](const auto& v) { return v.groupId == gid; });
+
+  if (kind == PendingSelectionKind::Dataset)
+    return pickFirst(m_datasetItems,
+                     [gid, iid](const auto& v) { return v.groupId == gid && v.datasetId == iid; });
+
+  if (kind == PendingSelectionKind::OutputWidget)
+    return pickFirst(m_outputWidgetItems,
+                     [gid, iid](const auto& v) { return v.groupId == gid && v.widgetId == iid; });
+
+  return {};
+}
+
+/**
+ * @brief Appends source tree items with their frame-parser children. No-op when filtering.
+ */
+void DataModel::ProjectEditor::appendSourceTreeItems(QStandardItem* root)
+{
+  Q_ASSERT(root != nullptr);
+  if (!m_treeSearchQuery.trimmed().isEmpty())
+    return;
+
+  const auto& sources    = DataModel::ProjectModel::instance().sources();
+  const bool multiSource = sources.size() > 1;
+
+  for (const auto& source : sources) {
+    auto* sourceItem = new QStandardItem(source.title);
+    sourceItem->setData(-1, TreeViewFrameIndex);
+    sourceItem->setData(busTypeIcon(source.busType), TreeViewIcon);
+    sourceItem->setData(source.title, TreeViewText);
+    sourceItem->setData(source.sourceId, TreeViewSourceId);
+    sourceItem->setData(multiSource ? source.title : QString(), TreeViewSourceName);
+    sourceItem->setData(true, TreeViewExpanded);
+    sourceItem->setData(KindSource, TreeItemKind);
+    sourceItem->setData(source.sourceId, TreeItemId);
+
+    auto* parserItem = new QStandardItem(tr("Frame Parser"));
+    parserItem->setData(-1, TreeViewFrameIndex);
+    parserItem->setData("qrc:/icons/project-editor/treeview/code.svg", TreeViewIcon);
+    parserItem->setData(tr("Frame Parser"), TreeViewText);
+    sourceItem->appendRow(parserItem);
+    m_sourceParserItems.insert(parserItem, source);
+
+    root->appendRow(sourceItem);
+    m_sourceItems.insert(sourceItem, source);
+  }
+}
+
+/**
+ * @brief Appends action tree items, filtered by the current search query.
+ */
+void DataModel::ProjectEditor::appendActionTreeItems(QStandardItem* root)
+{
+  Q_ASSERT(root != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  const auto& actions     = DataModel::ProjectModel::instance().actions();
+
+  for (const auto& action : actions) {
+    if (filterActive && !action.title.contains(q, Qt::CaseInsensitive))
+      continue;
+
+    auto* actionItem = new QStandardItem(action.title);
+    actionItem->setData(-1, TreeViewFrameIndex);
+    actionItem->setData("qrc:/icons/project-editor/treeview/action.svg", TreeViewIcon);
+    actionItem->setData(action.title, TreeViewText);
+    actionItem->setData(KindAction, TreeItemKind);
+    actionItem->setData(action.actionId, TreeItemId);
+    actionItem->setData(-1, TreeItemParentId);
+    root->appendRow(actionItem);
+    m_actionItems.insert(actionItem, action);
+  }
+}
+
+/**
+ * @brief Appends dataset children of a group, filtered by the current search query.
+ */
+void DataModel::ProjectEditor::appendDatasetChildren(QStandardItem* groupItem,
+                                                     const DataModel::Group& group)
+{
+  Q_ASSERT(groupItem != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  const bool groupMatches = !filterActive || group.title.contains(q, Qt::CaseInsensitive);
+
+  for (const auto& dataset : group.datasets) {
+    if (filterActive && !groupMatches && !dataset.title.contains(q, Qt::CaseInsensitive))
+      continue;
+
+    auto* datasetItem = new QStandardItem(dataset.title);
+    auto widgets      = SerialStudio::getDashboardWidgets(dataset);
+    QString dIcon     = "qrc:/icons/project-editor/treeview/dataset.svg";
+    if (widgets.count() > 0)
+      dIcon = SerialStudio::dashboardWidgetIcon(widgets.first(), false);
+
+    datasetItem->setData(dIcon, TreeViewIcon);
+    datasetItem->setData(dataset.title, TreeViewText);
+    datasetItem->setData(dataset.index, TreeViewFrameIndex);
+    datasetItem->setData(dataset.sourceId, TreeViewSourceId);
+    datasetItem->setData(QString(), TreeViewSourceName);
+    datasetItem->setData(dataset.virtual_, TreeViewVirtual);
+    datasetItem->setData(group.enabled && dataset.enabled, TreeViewEnabled);
+    datasetItem->setData(dataset.enabled, TreeViewSelfEnabled);
+    datasetItem->setData(KindDataset, TreeItemKind);
+    datasetItem->setData(dataset.datasetId, TreeItemId);
+    datasetItem->setData(group.groupId, TreeItemParentId);
+    groupItem->appendRow(datasetItem);
+    m_datasetItems.insert(datasetItem, dataset);
+  }
+}
+
+/**
+ * @brief Appends output-widget children of a group. Skipped entirely when filtering.
+ */
+void DataModel::ProjectEditor::appendOutputWidgetChildren(QStandardItem* groupItem,
+                                                          const DataModel::Group& group)
+{
+  Q_ASSERT(groupItem != nullptr);
+  if (!m_treeSearchQuery.trimmed().isEmpty())
+    return;
+
+  for (const auto& ow : group.outputWidgets) {
+    auto* owItem = new QStandardItem(ow.title);
+
+    QString owIcon;
+    switch (ow.type) {
+      case DataModel::OutputWidgetType::Button:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-button.svg");
+        break;
+      case DataModel::OutputWidgetType::Slider:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-slider.svg");
+        break;
+      case DataModel::OutputWidgetType::Toggle:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-toggle.svg");
+        break;
+      case DataModel::OutputWidgetType::TextField:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-textfield.svg");
+        break;
+      case DataModel::OutputWidgetType::Knob:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-knob.svg");
+        break;
+      default:
+        owIcon = QStringLiteral("qrc:/icons/project-editor/treeview/output-widget.svg");
+        break;
+    }
+
+    owItem->setData(owIcon, TreeViewIcon);
+    owItem->setData(ow.title, TreeViewText);
+    owItem->setData(-2, TreeViewFrameIndex);
+    owItem->setData(ow.sourceId, TreeViewSourceId);
+    owItem->setData(QString(), TreeViewSourceName);
+    owItem->setData(group.enabled, TreeViewEnabled);
+    owItem->setData(KindOutputWidget, TreeItemKind);
+    owItem->setData(ow.widgetId, TreeItemId);
+    owItem->setData(group.groupId, TreeItemParentId);
+    groupItem->appendRow(owItem);
+    m_outputWidgetItems.insert(owItem, ow);
+  }
+}
+
+/**
+ * @brief Appends the Groups subtree (groups, datasets, output widgets) into root.
+ */
+void DataModel::ProjectEditor::appendGroupTreeItems(QStandardItem* root,
+                                                    QHash<QString, bool>& expandedStates)
+{
+  Q_ASSERT(root != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  const auto matches      = [&q](const QString& s) {
+    return s.contains(q, Qt::CaseInsensitive);
+  };
+
+  const auto groupFilteredOut = [&](const DataModel::Group& g, bool groupTitleMatches) {
+    if (!filterActive || groupTitleMatches)
+      return false;
+
+    for (const auto& ds : g.datasets)
+      if (matches(ds.title))
+        return false;
+
+    return true;
+  };
+
+  const auto& groups     = DataModel::ProjectModel::instance().groups();
+  const auto& folders    = DataModel::ProjectModel::instance().editorGroupFolders();
+  const bool showFolders = !filterActive && !folders.empty();
+
+  bool anyGroup = false;
+  for (const auto& group : groups) {
+    const bool groupMatches = !filterActive || matches(group.title);
+    if (!groupFilteredOut(group, groupMatches)) {
+      anyGroup = true;
+      break;
+    }
+  }
+
+  if (!anyGroup && !showFolders)
+    return;
+
+  auto* groupsRoot = new QStandardItem(tr("Dashboard Widgets"));
+  groupsRoot->setData(tr("Dashboard Widgets"), TreeViewText);
+  groupsRoot->setData("qrc:/icons/project-editor/treeview/dashboard-widgets.svg", TreeViewIcon);
+  groupsRoot->setData(-1, TreeViewFrameIndex);
+  groupsRoot->setData(true, TreeViewExpanded);
+
+  QHash<int, QStandardItem*> folderItems;
+  if (showFolders)
+    folderItems =
+      appendGroupFolderItems(groupsRoot, root->text() + "/" + groupsRoot->text(), expandedStates);
+
+  for (const auto& group : groups) {
+    const bool groupMatches = !filterActive || matches(group.title);
+    if (groupFilteredOut(group, groupMatches))
+      continue;
+
+    auto* groupItem = new QStandardItem(group.title);
+    auto icon = SerialStudio::dashboardWidgetIcon(SerialStudio::getDashboardWidget(group), false);
+
+    groupItem->setData(icon, TreeViewIcon);
+    groupItem->setData(-1, TreeViewFrameIndex);
+    groupItem->setData(group.title, TreeViewText);
+    groupItem->setData(QString(), TreeViewSourceName);
+    groupItem->setData(group.sourceId, TreeViewSourceId);
+    groupItem->setData(group.enabled, TreeViewEnabled);
+    groupItem->setData(group.enabled, TreeViewSelfEnabled);
+    groupItem->setData(KindGroup, TreeItemKind);
+    groupItem->setData(group.groupId, TreeItemId);
+    groupItem->setData(group.parentFolderId, TreeItemParentId);
+
+    if (filterActive)
+      groupItem->setData(true, TreeViewExpanded);
+
+    appendDatasetChildren(groupItem, group);
+    appendOutputWidgetChildren(groupItem, group);
+
+    QString gPath = root->text() + "/" + groupsRoot->text();
+    if (showFolders && group.parentFolderId != -1 && folderItems.contains(group.parentFolderId))
+      gPath += "/" + folderDisplayPath(folders, group.parentFolderId);
+
+    gPath += "/" + group.title;
+    if (!filterActive)
+      restoreExpandedStateMap(groupItem, expandedStates, gPath);
+
+    QStandardItem* parent =
+      (showFolders && group.parentFolderId != -1 && folderItems.contains(group.parentFolderId))
+        ? folderItems.value(group.parentFolderId)
+        : groupsRoot;
+    parent->appendRow(groupItem);
+    m_groupItems.insert(groupItem, group);
+  }
+
+  if (!filterActive)
+    restoreExpandedStateMap(groupsRoot, expandedStates, root->text() + "/" + groupsRoot->text());
+
+  root->appendRow(groupsRoot);
+  m_groupsRootItem = groupsRoot;
+}
+
+/**
+ * @brief Materializes the group folder items and re-parents them; returns the id->item map.
+ */
+QHash<int, QStandardItem*> DataModel::ProjectEditor::appendGroupFolderItems(
+  QStandardItem* groupsRoot, const QString& pathPrefix, QHash<QString, bool>& expandedStates)
+{
+  const auto& folders = DataModel::ProjectModel::instance().editorGroupFolders();
+  const auto& groups  = DataModel::ProjectModel::instance().groups();
+
+  QHash<int, bool> folderHasGroup;
+  QHash<int, bool> folderHasEnabled;
+  accumulateFolderEnabled(folders, groups, folderHasGroup, folderHasEnabled);
+
+  QHash<int, QStandardItem*> folderItems;
+  for (const auto& f : folders) {
+    const bool folderEnabled =
+      !folderHasGroup.value(f.folderId, false) || folderHasEnabled.value(f.folderId, false);
+
+    auto* item = new QStandardItem(f.title);
+    item->setData(f.title, TreeViewText);
+    item->setData(QStringLiteral("qrc:/icons/project-editor/treeview/folder.svg"), TreeViewIcon);
+    item->setData(-1, TreeViewFrameIndex);
+    item->setData(KindGroupFolder, TreeItemKind);
+    item->setData(f.folderId, TreeItemId);
+    item->setData(f.parentFolderId, TreeItemParentId);
+    item->setData(folderEnabled, TreeViewEnabled);
+
+    const QString fPath = pathPrefix + QStringLiteral("/") + folderDisplayPath(folders, f.folderId);
+    restoreExpandedStateMap(item, expandedStates, fPath);
+    folderItems.insert(f.folderId, item);
+  }
+
+  for (const auto& f : folders) {
+    auto* item            = folderItems.value(f.folderId);
+    QStandardItem* parent = (f.parentFolderId != -1 && folderItems.contains(f.parentFolderId))
+                            ? folderItems.value(f.parentFolderId)
+                            : groupsRoot;
+    parent->appendRow(item);
+    m_groupFolderItems.insert(item, f.folderId);
+  }
+
+  return folderItems;
+}
+
+/**
+ * @brief Appends the "Shared Memory" subtree (Pro only) with system + user tables.
+ */
+void DataModel::ProjectEditor::appendSharedMemoryTreeItems(QStandardItem* root,
+                                                           QHash<QString, bool>& expandedStates)
+{
+  Q_ASSERT(root != nullptr);
+
+#ifdef BUILD_COMMERCIAL
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  const auto matches      = [&q](const QString& s) {
+    return s.contains(q, Qt::CaseInsensitive);
+  };
+
+  const auto& userTables = DataModel::ProjectModel::instance().tables();
+  bool includeSharedRoot =
+    !filterActive || matches(tr("Shared Memory")) || matches(tr("Dataset Values"));
+  if (!includeSharedRoot) {
+    for (const auto& t : userTables) {
+      if (matches(t.name)) {
+        includeSharedRoot = true;
+        break;
+      }
+    }
+  }
+
+  if (!includeSharedRoot)
+    return;
+
+  auto* tablesRoot = new QStandardItem(tr("Shared Memory"));
+  tablesRoot->setData(tr("Shared Memory"), TreeViewText);
+  tablesRoot->setData("qrc:/icons/project-editor/treeview/shared-memory.svg", TreeViewIcon);
+  tablesRoot->setData(-1, TreeViewFrameIndex);
+  tablesRoot->setData(true, TreeViewExpanded);
+
+  auto* sysDsItem = new QStandardItem(tr("Dataset Values"));
+  sysDsItem->setData(tr("Dataset Values"), TreeViewText);
+  sysDsItem->setData("qrc:/icons/project-editor/treeview/dataset-values.svg", TreeViewIcon);
+  sysDsItem->setData(-1, TreeViewFrameIndex);
+  tablesRoot->appendRow(sysDsItem);
+
+  const auto& tableFolders    = DataModel::ProjectModel::instance().editorTableFolders();
+  const bool showTableFolders = !filterActive && !tableFolders.empty();
+
+  QHash<int, QStandardItem*> folderItems;
+  if (showTableFolders)
+    folderItems =
+      appendTableFolderItems(tablesRoot, root->text() + "/" + tr("Shared Memory"), expandedStates);
+
+  for (const auto& table : userTables) {
+    if (filterActive && !matches(table.name))
+      continue;
+
+    const QString path = DataModel::tableFullPath(tableFolders, table.parentFolderId, table.name);
+
+    auto* tableItem = new QStandardItem(table.name);
+    tableItem->setData(table.name, TreeViewText);
+    tableItem->setData("qrc:/icons/project-editor/treeview/shared-table.svg", TreeViewIcon);
+    tableItem->setData(-1, TreeViewFrameIndex);
+    tableItem->setData(KindUserTable, TreeItemKind);
+    tableItem->setData(-1, TreeItemId);
+    tableItem->setData(table.parentFolderId, TreeItemParentId);
+    tableItem->setData(path, TreeItemPath);
+
+    QStandardItem* parent =
+      (showTableFolders && table.parentFolderId != -1 && folderItems.contains(table.parentFolderId))
+        ? folderItems.value(table.parentFolderId)
+        : tablesRoot;
+    parent->appendRow(tableItem);
+    m_userTableItems.insert(tableItem, path);
+  }
+
+  restoreExpandedStateMap(tablesRoot, expandedStates, root->text() + "/" + tablesRoot->text());
+  root->appendRow(tablesRoot);
+  m_tablesRootItem     = tablesRoot;
+  m_systemDatasetsItem = sysDsItem;
+#else
+  Q_UNUSED(root);
+  Q_UNUSED(expandedStates);
+#endif
+}
+
+/**
+ * @brief Materializes the table folder items and re-parents them; returns the id->item map.
+ */
+QHash<int, QStandardItem*> DataModel::ProjectEditor::appendTableFolderItems(
+  QStandardItem* tablesRoot, const QString& pathPrefix, QHash<QString, bool>& expandedStates)
+{
+  const auto& folders = DataModel::ProjectModel::instance().editorTableFolders();
+
+  QHash<int, QStandardItem*> folderItems;
+  for (const auto& f : folders) {
+    auto* item = new QStandardItem(f.title);
+    item->setData(f.title, TreeViewText);
+    item->setData(QStringLiteral("qrc:/icons/project-editor/treeview/folder.svg"), TreeViewIcon);
+    item->setData(-1, TreeViewFrameIndex);
+    item->setData(KindTableFolder, TreeItemKind);
+    item->setData(f.folderId, TreeItemId);
+    item->setData(f.parentFolderId, TreeItemParentId);
+
+    const QString fPath = pathPrefix + QStringLiteral("/") + folderDisplayPath(folders, f.folderId);
+    restoreExpandedStateMap(item, expandedStates, fPath);
+    folderItems.insert(f.folderId, item);
+  }
+
+  for (const auto& f : folders) {
+    auto* item            = folderItems.value(f.folderId);
+    QStandardItem* parent = (f.parentFolderId != -1 && folderItems.contains(f.parentFolderId))
+                            ? folderItems.value(f.parentFolderId)
+                            : tablesRoot;
+    parent->appendRow(item);
+    m_tableFolderItems.insert(item, f.folderId);
+  }
+
+  return folderItems;
+}
+
+/**
+ * @brief Builds a workspace tree item from a workspace record.
+ */
+QStandardItem* DataModel::ProjectEditor::createWorkspaceItem(const DataModel::Workspace& ws)
+{
+  auto* wsItem = new QStandardItem(ws.title);
+  wsItem->setData(ws.title, TreeViewText);
+  wsItem->setData(ws.icon.isEmpty() ? QStringLiteral("qrc:/icons/dashboard-small/workspace.svg")
+                                    : Misc::IconEngine::resolveActionIconSource(ws.icon),
+                  TreeViewIcon);
+  wsItem->setData(-1, TreeViewFrameIndex);
+  wsItem->setData(KindWorkspace, TreeItemKind);
+  wsItem->setData(ws.workspaceId, TreeItemId);
+  wsItem->setData(ws.parentFolderId, TreeItemParentId);
+  wsItem->setData(workspaceHasUnresolvedRefs(ws.workspaceId), TreeViewWorkspaceStale);
+  return wsItem;
+}
+
+/**
+ * @brief Builds the folder hierarchy under the Workspaces root (folders first, then workspaces).
+ */
+void DataModel::ProjectEditor::buildWorkspaceFolderTree(QStandardItem* wsRoot,
+                                                        const QString& pathPrefix,
+                                                        QHash<QString, bool>& expandedStates)
+{
+  Q_ASSERT(wsRoot != nullptr);
+
+  const auto& folders    = DataModel::ProjectModel::instance().editorWorkspaceFolders();
+  const auto& workspaces = DataModel::ProjectModel::instance().editorWorkspaces();
+
+  QHash<int, QStandardItem*> folderItems;
+  for (const auto& f : folders) {
+    auto* item = new QStandardItem(f.title);
+    item->setData(f.title, TreeViewText);
+    item->setData(QStringLiteral("qrc:/icons/project-editor/treeview/folder.svg"), TreeViewIcon);
+    item->setData(-1, TreeViewFrameIndex);
+    item->setData(KindWorkspaceFolder, TreeItemKind);
+    item->setData(f.folderId, TreeItemId);
+    item->setData(f.parentFolderId, TreeItemParentId);
+
+    const QString fPath = pathPrefix + QStringLiteral("/") + folderDisplayPath(folders, f.folderId);
+    restoreExpandedStateMap(item, expandedStates, fPath);
+    folderItems.insert(f.folderId, item);
+  }
+
+  for (const auto& f : folders) {
+    auto* item            = folderItems.value(f.folderId);
+    QStandardItem* parent = (f.parentFolderId != -1 && folderItems.contains(f.parentFolderId))
+                            ? folderItems.value(f.parentFolderId)
+                            : wsRoot;
+    parent->appendRow(item);
+    m_workspaceFolderItems.insert(item, f.folderId);
+  }
+
+  for (const auto& ws : workspaces) {
+    auto* wsItem          = createWorkspaceItem(ws);
+    QStandardItem* parent = (ws.parentFolderId != -1 && folderItems.contains(ws.parentFolderId))
+                            ? folderItems.value(ws.parentFolderId)
+                            : wsRoot;
+    parent->appendRow(wsItem);
+    m_workspaceItems.insert(wsItem, ws.workspaceId);
+  }
+}
+
+/**
+ * @brief Appends the "Workspaces" subtree, filtered by the current search query.
+ */
+void DataModel::ProjectEditor::appendWorkspaceTreeItems(QStandardItem* root,
+                                                        QHash<QString, bool>& expandedStates)
+{
+  Q_ASSERT(root != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  const auto matches      = [&q](const QString& s) {
+    return s.contains(q, Qt::CaseInsensitive);
+  };
+
+  const auto& workspaces = DataModel::ProjectModel::instance().editorWorkspaces();
+  bool includeWorkspaces = !filterActive || matches(tr("Workspaces"));
+  if (!includeWorkspaces) {
+    for (const auto& ws : workspaces) {
+      if (matches(ws.title)) {
+        includeWorkspaces = true;
+        break;
+      }
+    }
+  }
+
+  if (!includeWorkspaces)
+    return;
+
+  auto* wsRoot = new QStandardItem(tr("Workspaces"));
+  wsRoot->setData(tr("Workspaces"), TreeViewText);
+  wsRoot->setData("qrc:/icons/project-editor/treeview/workspaces.svg", TreeViewIcon);
+  wsRoot->setData(-1, TreeViewFrameIndex);
+  wsRoot->setData(true, TreeViewExpanded);
+
+  if (filterActive) {
+    for (const auto& ws : workspaces) {
+      if (!matches(ws.title))
+        continue;
+
+      auto* wsItem = createWorkspaceItem(ws);
+      wsRoot->appendRow(wsItem);
+      m_workspaceItems.insert(wsItem, ws.workspaceId);
+    }
+  } else {
+    buildWorkspaceFolderTree(wsRoot, root->text() + "/" + tr("Workspaces"), expandedStates);
+  }
+
+  restoreExpandedStateMap(wsRoot, expandedStates, root->text() + "/" + wsRoot->text());
+  root->appendRow(wsRoot);
+  m_workspacesRootItem = wsRoot;
+}
+
+/**
+ * @brief Appends the single-instance "MQTT Publisher" node (Pro) to the project tree.
+ */
+void DataModel::ProjectEditor::appendMqttPublisherTreeItem(QStandardItem* root)
+{
+  Q_ASSERT(root != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  if (filterActive && !tr("MQTT Publisher").contains(q, Qt::CaseInsensitive))
+    return;
+
+  auto* item = new QStandardItem(tr("MQTT Publisher"));
+  item->setData(tr("MQTT Publisher"), TreeViewText);
+  item->setData("qrc:/icons/project-editor/treeview/mqtt-publisher.svg", TreeViewIcon);
+  item->setData(-1, TreeViewFrameIndex);
+  item->setData(KindMqttPublisher, TreeItemKind);
+  item->setData(-1, TreeItemId);
+  item->setData(-1, TreeItemParentId);
+
+  root->appendRow(item);
+  m_mqttPublisherItem = item;
+}
+
+/**
+ * @brief Appends the project-global control-script node to the tree.
+ */
+void DataModel::ProjectEditor::appendControlScriptTreeItem(QStandardItem* root)
+{
+  Q_ASSERT(root != nullptr);
+
+  const QString q         = m_treeSearchQuery.trimmed();
+  const bool filterActive = !q.isEmpty();
+  if (filterActive && !tr("Control Loop").contains(q, Qt::CaseInsensitive))
+    return;
+
+  auto* item = new QStandardItem(tr("Control Loop"));
+  item->setData(tr("Control Loop"), TreeViewText);
+  item->setData("qrc:/icons/project-editor/treeview/control-script.svg", TreeViewIcon);
+  item->setData(-1, TreeViewFrameIndex);
+  item->setData(KindControlScript, TreeItemKind);
+  item->setData(-1, TreeItemId);
+  item->setData(-1, TreeItemParentId);
+
+  root->appendRow(item);
+  m_controlScriptItem = item;
+}
+
+/**
+ * @brief Populates the tree under root with sources, actions, groups, datasets.
+ */
+void DataModel::ProjectEditor::buildTreeItems(QStandardItem* root,
+                                              QHash<QString, bool>& expandedStates)
+{
+  Q_ASSERT(root != nullptr);
+
+  appendControlScriptTreeItem(root);
+#ifdef BUILD_COMMERCIAL
+  appendMqttPublisherTreeItem(root);
+#endif
+
+  appendActionTreeItems(root);
+  appendSourceTreeItems(root);
+  appendGroupTreeItems(root, expandedStates);
+  appendSharedMemoryTreeItems(root, expandedStates);
+  appendWorkspaceTreeItems(root, expandedStates);
+
+  auto* spacer = new QStandardItem(" ");
+  spacer->setData(" ", TreeViewText);
+  spacer->setData("", TreeViewIcon);
+  spacer->setData(-1, TreeViewFrameIndex);
+  spacer->setEnabled(false);
+  spacer->setSelectable(false);
+  root->appendRow(spacer);
+}
+
+/**
+ * @brief Restores the tree selection by matching IDs against the current view.
+ */
+void DataModel::ProjectEditor::restoreTreeSelection()
+{
+  const auto findKey = [](const auto& map, auto&& pred) -> QStandardItem* {
+    for (auto it = map.begin(); it != map.end(); ++it)
+      if (pred(it.value()))
+        return it.key();
+
+    return nullptr;
+  };
+
+  QStandardItem* toSelect = nullptr;
+
+  if (m_currentView == DatasetView) {
+    const auto gid = m_selectedDataset.groupId;
+    const auto did = m_selectedDataset.datasetId;
+    toSelect       = findKey(
+      m_datasetItems, [gid, did](const auto& v) { return v.groupId == gid && v.datasetId == did; });
+  }
+
+  if (!toSelect && m_currentView == GroupView) {
+    const auto gid = m_selectedGroup.groupId;
+    toSelect       = findKey(m_groupItems, [gid](const auto& v) { return v.groupId == gid; });
+  }
+
+  if (!toSelect && m_currentView == ActionView) {
+    const auto aid = m_selectedAction.actionId;
+    toSelect       = findKey(m_actionItems, [aid](const auto& v) { return v.actionId == aid; });
+  }
+
+  if (!toSelect && m_currentView == SourceView) {
+    const auto sid = m_selectedSource.sourceId;
+    toSelect       = findKey(m_sourceItems, [sid](const auto& v) { return v.sourceId == sid; });
+  }
+
+  if (!toSelect && m_currentView == OutputWidgetView) {
+    const auto gid = m_selectedOutputWidget.groupId;
+    const auto wid = m_selectedOutputWidget.widgetId;
+    toSelect       = findKey(m_outputWidgetItems,
+                       [gid, wid](const auto& v) { return v.groupId == gid && v.widgetId == wid; });
+  }
+
+  if (m_currentView == DataTablesView)
+    toSelect = m_tablesRootItem;
+
+  if (m_currentView == SystemDatasetsView)
+    toSelect = m_systemDatasetsItem;
+
+  if (m_currentView == UserTableView) {
+    const auto name = m_selectedUserTable;
+    toSelect        = findKey(m_userTableItems, [&name](const auto& v) { return v == name; });
+    if (!toSelect)
+      toSelect = m_tablesRootItem;
+  }
+
+  if (m_currentView == WorkspacesView)
+    toSelect = m_workspacesRootItem;
+
+  if (m_currentView == WorkspaceView) {
+    const int wid = m_selectedWorkspaceId;
+    toSelect      = findKey(m_workspaceItems, [wid](const auto& v) { return v == wid; });
+    if (!toSelect)
+      toSelect = m_workspacesRootItem;
+  }
+
+  if (m_currentView == GroupsView)
+    toSelect = m_groupsRootItem;
+
+  if (m_currentView == GroupFolderView) {
+    const int fid = m_selectedGroupFolderId;
+    toSelect      = findKey(m_groupFolderItems, [fid](const auto& v) { return v == fid; });
+    if (!toSelect)
+      toSelect = m_groupsRootItem;
+  }
+
+  if (m_currentView == TableFolderView) {
+    const int fid = m_selectedTableFolderId;
+    toSelect      = findKey(m_tableFolderItems, [fid](const auto& v) { return v == fid; });
+    if (!toSelect)
+      toSelect = m_tablesRootItem;
+  }
+
+  if (m_currentView == WorkspaceFolderView) {
+    const int fid = m_selectedFolderId;
+    toSelect      = findKey(m_workspaceFolderItems, [fid](const auto& v) { return v == fid; });
+    if (!toSelect)
+      toSelect = m_workspacesRootItem;
+  }
+
+  if (!toSelect && m_currentView == SourceFrameParserView) {
+    const auto sid = m_selectedSource.sourceId;
+    toSelect = findKey(m_sourceParserItems, [sid](const auto& v) { return v.sourceId == sid; });
+  }
+
+  if (!toSelect && m_currentView == MqttPublisherView)
+    toSelect = m_mqttPublisherItem;
+
+  if (!toSelect && m_currentView == ControlScriptView)
+    toSelect = m_controlScriptItem;
+
+  if (!toSelect)
+    toSelect = findKey(m_rootItems, [](const auto& v) { return v == kRootItem; });
+
+  if (toSelect)
+    m_selectionModel->setCurrentIndex(toSelect->index(), QItemSelectionModel::ClearAndSelect);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Records TreeViewExpanded state of the subtree into a path-keyed map.
+ */
+void DataModel::ProjectEditor::saveExpandedStateMap(QStandardItem* item,
+                                                    QHash<QString, bool>& map,
+                                                    const QString& title)
+{
+  if (!item)
+    return;
+
+  map[title] = item->data(TreeViewExpanded).toBool();
+
+  for (auto i = 0; i < item->rowCount(); ++i) {
+    QStandardItem* child = item->child(i);
+    auto childT          = title.isEmpty() ? child->text() : title + "/" + child->text();
+    saveExpandedStateMap(child, map, childT);
+  }
+}
+
+/**
+ * @brief Restores TreeViewExpanded state from the saved path-keyed map.
+ */
+void DataModel::ProjectEditor::restoreExpandedStateMap(QStandardItem* item,
+                                                       QHash<QString, bool>& map,
+                                                       const QString& title,
+                                                       bool defaultExpanded)
+{
+  if (!item)
+    return;
+
+  if (map.contains(title))
+    item->setData(map[title], TreeViewExpanded);
+  else
+    item->setData(defaultExpanded, TreeViewExpanded);
+}
+
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Serializes the live tree's expansion state into a path-keyed JSON object.
+ */
+QJsonObject DataModel::ProjectEditor::snapshotTreeExpansion()
+{
+  QJsonObject obj;
+  if (!m_treeModel)
+    return obj;
+
+  QHash<QString, bool> states;
+  saveExpandedStateMap(m_treeModel->invisibleRootItem(), states, "");
+  for (auto it = states.constBegin(); it != states.constEnd(); ++it)
+    obj.insert(it.key(), it.value());
+
+  return obj;
+}
+
+/**
+ * @brief Pushes the current tree expansion into the project model (e.g. after a manual toggle).
+ */
+void DataModel::ProjectEditor::persistTreeExpansion()
+{
+  DataModel::ProjectModel::instance().setTreeExpansion(snapshotTreeExpansion());
+}

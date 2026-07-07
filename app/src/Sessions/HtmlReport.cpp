@@ -145,7 +145,6 @@ static QString formatDate(const QString& iso)
  */
 Sessions::HtmlReport::HtmlReport(QObject* parent)
   : QObject(parent)
-  , m_htmlWritten(false)
 #  ifdef SERIAL_STUDIO_WITH_WEBENGINE
   , m_page(nullptr)
   , m_printStarted(false)
@@ -228,10 +227,8 @@ void Sessions::HtmlReport::render(const ReportData& data,
 
   bool htmlOk = true;
   if (m_opts.format == HtmlReportOptions::Format::Html
-      || m_opts.format == HtmlReportOptions::Format::Both) {
+      || m_opts.format == HtmlReportOptions::Format::Both)
     writeHtmlArtifact(m_htmlPath, m_htmlCache, htmlOk);
-    m_htmlWritten = htmlOk;
-  }
 
   if (m_opts.format == HtmlReportOptions::Format::Html) {
     Q_EMIT finished(m_htmlPath, htmlOk);

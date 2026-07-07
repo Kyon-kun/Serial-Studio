@@ -1328,7 +1328,7 @@ Close current CSV file.
 python test_api.py send csvExport.close
 ```
 
-### CSV Player Commands (9)
+### CSV Player Commands (6)
 
 CSV file playback control:
 
@@ -1348,30 +1348,27 @@ Close current CSV file.
 
 **Parameters:** None
 
-#### 🟢 `csvPlayer.play`
-Start playback.
+#### 🟢 `csvPlayer.setPaused`
+Pause or resume playback.
 
-**Parameters:** None
+**Parameters:**
+- `paused` (bool): true to pause, false to resume
 
-#### 🟢 `csvPlayer.pause`
-Pause playback.
+**Example:**
+```bash
+python test_api.py send csvPlayer.setPaused -p paused=true
+```
 
-**Parameters:** None
+#### 🟢 `csvPlayer.step`
+Step the player by a number of frames.
 
-#### 🟢 `csvPlayer.toggle`
-Toggle play/pause state.
+**Parameters:**
+- `delta` (int, optional, default `1`): frames to advance; negative steps backward
 
-**Parameters:** None
-
-#### 🟢 `csvPlayer.nextFrame`
-Advance to next frame.
-
-**Parameters:** None
-
-#### 🟢 `csvPlayer.previousFrame`
-Go to previous frame.
-
-**Parameters:** None
+**Example:**
+```bash
+python test_api.py send csvPlayer.step -p delta=-1
+```
 
 #### 🟢 `csvPlayer.setProgress`
 Seek to position in file.
@@ -2082,7 +2079,7 @@ Close current MDF4 file.
 
 **Parameters:** None
 
-### MDF4 Player Commands - Pro (9)
+### MDF4 Player Commands - Pro (6)
 
 MDF4 file playback control (same interface as CSV Player):
 
@@ -2102,30 +2099,27 @@ Close current MDF4 file.
 
 **Parameters:** None
 
-#### 🔵 `mdf4Player.play`
-Start playback.
+#### 🔵 `mdf4Player.setPaused`
+Pause or resume playback.
 
-**Parameters:** None
+**Parameters:**
+- `paused` (bool): true to pause, false to resume
 
-#### 🔵 `mdf4Player.pause`
-Pause playback.
+**Example:**
+```bash
+python test_api.py send mdf4Player.setPaused -p paused=true
+```
 
-**Parameters:** None
+#### 🔵 `mdf4Player.step`
+Step the player by a number of frames.
 
-#### 🔵 `mdf4Player.toggle`
-Toggle play/pause state.
+**Parameters:**
+- `delta` (int, optional, default `1`): frames to advance; negative steps backward
 
-**Parameters:** None
-
-#### 🔵 `mdf4Player.nextFrame`
-Advance to next frame.
-
-**Parameters:** None
-
-#### 🔵 `mdf4Player.previousFrame`
-Go to previous frame.
-
-**Parameters:** None
+**Example:**
+```bash
+python test_api.py send mdf4Player.step -p delta=-1
+```
 
 #### 🔵 `mdf4Player.setProgress`
 Seek to position in file.

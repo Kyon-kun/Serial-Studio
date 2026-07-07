@@ -692,6 +692,23 @@ void Sessions::DatabaseManager::addTag(const QString& label)
 }
 
 /**
+ * @brief Inserts a tag if needed and assigns it to a session in one worker operation.
+ */
+void Sessions::DatabaseManager::addTagAndAssign(int sessionId, const QString& label)
+{
+  if (!isOpen() || label.trimmed().isEmpty())
+    return;
+
+  setBusy(true);
+  QMetaObject::invokeMethod(m_worker,
+                            "addTagAndAssign",
+                            Qt::QueuedConnection,
+                            Q_ARG(int, sessionId),
+                            Q_ARG(QString, label),
+                            Q_ARG(quint64, nextToken()));
+}
+
+/**
  * @brief Dispatches a tag delete to the worker.
  */
 void Sessions::DatabaseManager::deleteTag(int tagId)

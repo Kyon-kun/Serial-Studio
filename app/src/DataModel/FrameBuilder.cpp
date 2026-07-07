@@ -2391,6 +2391,10 @@ QVariant DataModel::FrameBuilder::applyTransformJs(TransformEngine& engine,
   if (result.isString())
     return QVariant(result.toString());
 
+  if (result.isError()) [[unlikely]]
+    qWarning() << "[FrameBuilder] JS transform call failed for dataset" << uniqueId << ":"
+               << result.toString();
+
   return rawValue;
 }
 

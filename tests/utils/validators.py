@@ -30,16 +30,16 @@ def validate_frame_structure(
     Raises:
         AssertionError: If validation fails
     """
-    assert "t" in frame, "Frame missing 't' (title) field"
-    assert "g" in frame, "Frame missing 'g' (groups) field"
-    assert isinstance(frame["g"], list), "Groups must be a list"
+    assert "title" in frame, "Frame missing 'title' field"
+    assert "groups" in frame, "Frame missing 'groups' field"
+    assert isinstance(frame["groups"], list), "Groups must be a list"
 
     if expected_groups is not None:
         assert (
-            len(frame["g"]) == expected_groups
-        ), f"Expected {expected_groups} groups, got {len(frame['g'])}"
+            len(frame["groups"]) == expected_groups
+        ), f"Expected {expected_groups} groups, got {len(frame['groups'])}"
 
-    for i, group in enumerate(frame["g"]):
+    for i, group in enumerate(frame["groups"]):
         assert isinstance(group, dict), f"Group {i} is not a dict"
         assert "title" in group, f"Group {i} missing title"
         assert "datasets" in group, f"Group {i} missing datasets"
@@ -194,7 +194,7 @@ def validate_export_file_integrity(
 
     if file_type == "csv":
         with open(export_path, "r", encoding="utf-8") as f:
-            csv.reader(f)
-            assert True, "CSV file is readable"
+            rows = list(csv.reader(f))
+            assert rows, "CSV file has no rows"
 
     return True

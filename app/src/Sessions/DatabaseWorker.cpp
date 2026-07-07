@@ -278,6 +278,63 @@ void Sessions::DatabaseWorker::addTag(const QString& label, quint64 token)
 }
 
 /**
+ * @brief Inserts a tag if new and links it to a session atomically, avoiding a stale lookup.
+ */
+void Sessions::DatabaseWorker::addTagAndAssign(int sessionId, const QString& label, quint64 token)
+{
+  if (!m_db.isOpen() || label.trimmed().isEmpty()) {
+    Q_EMIT mutationFinished(token, false, tr("Database not open or empty label"));
+    return;
+  }
+
+  if (!m_db.transaction()) {
+    Q_EMIT mutationFinished(token, false, m_db.lastError().text());
+    return;
+  }
+
+  const QString trimmed = label.trimmed();
+  QSqlQuery q(m_db);
+  q.prepare("INSERT INTO tags (label) VALUES (?) ON CONFLICT(label) DO NOTHING");
+  q.bindValue(0, trimmed);
+  if (!q.exec()) {
+    m_db.rollback();
+    Q_EMIT mutationFinished(token, false, q.lastError().text());
+    return;
+  }
+
+  q.prepare("SELECT tag_id FROM tags WHERE label = ? COLLATE NOCASE");
+  q.bindValue(0, trimmed);
+  if (!q.exec() || !q.next()) {
+    m_db.rollback();
+    Q_EMIT mutationFinished(token, false, q.lastError().text());
+    return;
+  }
+
+  const int tagId = q.value(0).toInt();
+  q.prepare("INSERT INTO session_tags (session_id, tag_id) VALUES (?, ?) "
+            "ON CONFLICT(session_id, tag_id) DO NOTHING");
+  q.bindValue(0, sessionId);
+  q.bindValue(1, tagId);
+  if (!q.exec()) {
+    m_db.rollback();
+    Q_EMIT mutationFinished(token, false, q.lastError().text());
+    return;
+  }
+
+  if (!m_db.commit()) {
+    m_db.rollback();
+    Q_EMIT mutationFinished(token, false, m_db.lastError().text());
+    return;
+  }
+
+  refreshTagListInternal();
+  refreshSessionListInternal();
+  Q_EMIT tagListRefreshed(m_tagList);
+  Q_EMIT sessionListRefreshed(m_sessionList);
+  Q_EMIT mutationFinished(token, true, QString());
+}
+
+/**
  * @brief Removes a tag and its session associations in a single transaction.
  */
 void Sessions::DatabaseWorker::deleteTag(int tagId, quint64 token)

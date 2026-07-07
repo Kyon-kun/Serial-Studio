@@ -688,12 +688,11 @@ static API::CommandResponse applyAddTileDatasetOption(int groupId,
   QJsonObject p;
   p.insert(QStringLiteral("groupId"), groupId);
   p.insert(Keys::DatasetId, datasetId);
-  QJsonArray opts;
-  opts.append(slug);
-  p.insert(QStringLiteral("options"), opts);
+  p.insert(QStringLiteral("option"), slug);
+  p.insert(QStringLiteral("enabled"), true);
   const auto optResp =
-    forward(QStringLiteral("project.dataset.setOptions"), QStringLiteral("inner"), p);
-  steps.append(toStep(QStringLiteral("dataset.setOptions"), optResp));
+    forward(QStringLiteral("project.dataset.setOption"), QStringLiteral("inner"), p);
+  steps.append(toStep(QStringLiteral("dataset.setOption"), optResp));
   return optResp;
 }
 

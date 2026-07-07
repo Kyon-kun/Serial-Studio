@@ -115,7 +115,6 @@ private slots:
 
   [[nodiscard]] QString cachePath() const;
   [[nodiscard]] QString exampleCachePath(const QString& id) const;
-  [[nodiscard]] static QString stripMarkdownImages(const QString& markdown);
 
 private:
   bool m_loading;

@@ -234,6 +234,7 @@ DataModel::JsScriptEngine::JsScriptEngine()
   m_engine.installExtensions(QJSEngine::ConsoleExtension | QJSEngine::GarbageCollectionExtension);
 
   DataModel::ScriptApiCall::installAll(&m_engine, m_sourceId);
+  DataModel::ScriptApiCall::bindSourceIdJS(&m_engine, &m_sourceId);
 }
 
 /**
@@ -331,7 +332,7 @@ QList<QStringList> DataModel::JsScriptEngine::parseString(const QString& frame)
 
   if (m_watchdog.lastCallTimedOut()) [[unlikely]] {
     qWarning() << "[JsScriptEngine] parse() timed out after" << kRuntimeWatchdogMs << "ms";
-    (void)noteTimeoutAndCheckDisabled(0);
+    (void)noteTimeoutAndCheckDisabled(m_sourceId);
     return {};
   }
 
@@ -379,7 +380,7 @@ QList<QStringList> DataModel::JsScriptEngine::parseBinary(const QByteArray& fram
 
   if (m_watchdog.lastCallTimedOut()) [[unlikely]] {
     qWarning() << "[JsScriptEngine] parse() timed out after" << kRuntimeWatchdogMs << "ms";
-    (void)noteTimeoutAndCheckDisabled(0);
+    (void)noteTimeoutAndCheckDisabled(m_sourceId);
     return {};
   }
 

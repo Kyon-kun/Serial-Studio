@@ -94,6 +94,7 @@ public slots:
   void setSessionNotes(int sessionId, const QString& notes, quint64 token);
 
   void addTag(const QString& label, quint64 token);
+  void addTagAndAssign(int sessionId, const QString& label, quint64 token);
   void deleteTag(int tagId, quint64 token);
   void renameTag(int tagId, const QString& newLabel, quint64 token);
   void assignTag(int sessionId, int tagId, quint64 token);

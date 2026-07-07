@@ -409,7 +409,7 @@ void API::GRPC::GRPCServer::hotpathTxData(const QByteArray& data)
   if (!m_enabled || data.isEmpty())
     return;
 
-  m_rawQueue.try_enqueue(data);
+  m_rawQueue.try_enqueue(RawPacket{data, std::chrono::steady_clock::now()});
 }
 
 /**
@@ -569,14 +569,14 @@ void API::GRPC::GRPCServer::writerLoop()
 
     {
       serialstudio::RawBatch batch;
-      QByteArray data;
-      while (m_rawQueue.try_dequeue(data)) {
+      RawPacket packet;
+      while (m_rawQueue.try_dequeue(packet)) {
         did_work = true;
         auto* rd = batch.add_packets();
-        rd->set_data(data.constData(), data.size());
-        rd->set_timestamp_ms(std::chrono::duration_cast<std::chrono::milliseconds>(
-                               std::chrono::steady_clock::now().time_since_epoch())
-                               .count());
+        rd->set_data(packet.data.constData(), packet.data.size());
+        rd->set_timestamp_ms(
+          std::chrono::duration_cast<std::chrono::milliseconds>(packet.timestamp.time_since_epoch())
+            .count());
       }
 
       if (batch.packets_size() > 0)

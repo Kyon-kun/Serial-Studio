@@ -72,6 +72,7 @@ to run from any directory.
 | `code-verify.py` | Structural + tone linter for C++/QML/H. `--fix` rewrites in place; `--check` regenerates `.code-report`. Errors block CI; advisories are baseline-debt cleanup. |
 | `documentation-verify.py` | Markdown linter for AI-narration / marketing copy. Read-only; writes `.doc-report`. Targets `README.md`, `AGENTS.md`, `doc/help/**`, `examples/**/README.md` (CLAUDE.md is exempt). |
 | `expand-doxygen.py` | Rewrites single-line `/** text */` into the canonical 3-line block. |
+| `tu-cutter.py` | Deterministic TU splitter for god-class .cpp files: key-based manifest drives verbatim block moves into per-concern TUs + shared headers; refuses to cut unless the block parse reconstructs the original exactly. Used for the 2026-07 ProjectModel/ProjectEditor/ProjectHandler split (spec 0002). |
 
 Suppression: wrap a region in `// code-verify off` / `// code-verify on` (C++ and QML);
 `<!-- doc-verify off -->` / `<!-- doc-verify on -->` (Markdown). Suppressions are a
@@ -144,7 +145,7 @@ benchmark mechanics) in [doc/claude/architecture.md](doc/claude/architecture.md)
 - **`FrameReader` and `CircularBuffer` are main-thread / SPSC. Never add mutexes.** Recreate
   via `resetFrameReader()` / `reconfigure()`.
 - **Hotpath signal hops must be `Qt::DirectConnection`.** Queued between two main-thread
-  objects fills the 4096-slot queue at 10+ kHz and drops frames.
+  objects fills the 65536-slot queue at 10+ kHz and drops frames.
 - **No allocation, no Frame copy on the dashboard path.** Draw the Dashboard frame from
   `FrameBuilder::acquireFrame()` (slot pool, aliasing shared_ptr — no per-frame control
   block), never a direct `make_shared<TimestampedFrame>`. The async-sink fan-out in
@@ -182,6 +183,29 @@ benchmark mechanics) in [doc/claude/architecture.md](doc/claude/architecture.md)
   `optimize("...")` macro (breaks the IEEE-stable + Lua-unwind invariants). `SS_ASSUME` must restate
   a guard that already ran, never a precondition on a parsed frame. The `datasets+publish` stage is
   ~70-80% of per-frame time — gate any change here with `--benchmark-hotpath`.
+
+## Startup & Composition Root — Non-Negotiable
+
+- **`ModuleManager::instantiateCoreModules()` pins singleton construction order** (ProjectModel
+  before AppState, Dashboard last). Never reorder or add entries without re-running the ctor-edge
+  proof in [doc/claude/specs/0001-composition-root/](doc/claude/specs/0001-composition-root/).
+- **ProjectModel's ctor closure is a protected surface** (`newJsonFile`, `watchProjectFile`,
+  `scheduleAutoSave`, the `ControlScript::setCode` chain): it runs before AppState/Dashboard exist.
+  Calling `AppState::instance()` / `UI::Dashboard::instance()` there recurses the Meyers guard and
+  aborts at startup — this shipped and crashed once (2026-07-07). Gate new code on `m_initialized`
+  (see architecture.md "Composition Root & Construction Order").
+- **A ctor-edge proof dies when ctor-reachable code changes.** Any edit inside that closure
+  re-triggers the check, no matter how unrelated the edit looks.
+
+## Project Layout — the god files are split
+
+`ProjectModel` / `ProjectEditor` implementations live across per-concern TUs in
+`app/src/DataModel/Project/` (+ `ProjectModelShared.h`, `ProjectEditorItemIds.h`,
+`ProjectEditorShared.h`); `ProjectHandler` across `API/Handlers/ProjectHandler{File,Entities,
+Parser,Batch}.cpp` + `ProjectApiSupport.h`, with registration staying in `ProjectHandler.cpp`.
+Facade headers are unchanged — QML/API contracts intact. Map in
+[doc/claude/directory-map.md](doc/claude/directory-map.md); splitter: `scripts/tu-cutter.py`
+(spec 0002 holds the manifests' logic and the collaborator-extraction plan).
 
 ## Code Style — Essentials
 

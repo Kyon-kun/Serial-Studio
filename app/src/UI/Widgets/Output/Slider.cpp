@@ -19,7 +19,8 @@
  * @brief Constructs a slider output widget.
  */
 Widgets::Output::Slider::Slider(const DataModel::OutputWidget& config, QQuickItem* parent)
-  : Base(config, parent), m_currentValue(config.minValue)
+  : Base(config, parent)
+  , m_currentValue(qBound(config.minValue, config.initialValue, config.maxValue))
 {}
 
 //--------------------------------------------------------------------------------------------------

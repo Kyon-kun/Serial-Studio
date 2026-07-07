@@ -119,7 +119,15 @@ void Sessions::Player::shutdown()
     m_worker->requestCancel();
 
   m_workerThread->quit();
-  m_workerThread->wait(5000);
+  const bool joined = m_workerThread->wait(5000);
+
+  if (!joined) {
+    qWarning() << "[Sessions::Player] Loader thread did not stop within 5 s; leaking the "
+                  "worker and thread to avoid tearing down objects it still uses";
+    m_worker       = nullptr;
+    m_workerThread = nullptr;
+    return;
+  }
 
   delete m_worker;
   m_worker = nullptr;
@@ -721,8 +729,10 @@ void Sessions::Player::updateData()
 
     if (m_framePos < frameCount() - 1)
       QTimer::singleShot(qMax(0LL, msUntilNext), Qt::PreciseTimer, this, [this] {
-        if (isOpen() && isPlaying())
+        if (isOpen() && isPlaying()) {
+          ++m_framePos;
           updateData();
+        }
       });
     else
       pause();

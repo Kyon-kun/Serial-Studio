@@ -1386,13 +1386,9 @@ QString DataModel::ProtoImporter::formatDispatchEntry(const ProtoField& field,
     const int childRecIdx =
       (childCursor < rec.childRecordIndex.size()) ? rec.childRecordIndex.at(childCursor) : -1;
     ++childCursor;
-    if (childRecIdx < 0) {
-      QString entry = QStringLiteral("[%1] = { type = 'bytes', wire = 2, out = %2 }")
-                        .arg(field.tag)
-                        .arg(datasetIdx);
-      ++datasetIdx;
-      return entry;
-    }
+    if (childRecIdx < 0)
+      return QString();
+
     return QStringLiteral("[%1] = { type = 'message', wire = 2, table = %2 }")
       .arg(field.tag)
       .arg(records.at(childRecIdx).varName);

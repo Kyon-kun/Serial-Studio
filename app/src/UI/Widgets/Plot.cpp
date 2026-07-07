@@ -24,10 +24,6 @@
 #include "DSP.h"
 #include "UI/Dashboard.h"
 
-#ifdef BUILD_COMMERCIAL
-#  include "Licensing/CommercialToken.h"
-#endif
-
 //--------------------------------------------------------------------------------------------------
 // Constructor & initialization
 //--------------------------------------------------------------------------------------------------
@@ -91,15 +87,7 @@ void Widgets::Plot::resolveXAxis(const DataModel::Dataset& yDataset)
     return;
   }
 
-#ifdef BUILD_COMMERCIAL
-  const auto& tk = Licensing::CommercialToken::current();
-  const auto xAxisId =
-    (tk.isValid() && SS_LICENSE_GUARD() && tk.featureTier() >= Licensing::FeatureTier::Trial)
-      ? yDataset.xAxisId
-      : -1;
-#else
-  const auto xAxisId = -1;
-#endif
+  const auto xAxisId = SerialStudio::datasetXAxisEnabled() ? yDataset.xAxisId : -1;
 
   const auto& datasets = UI::Dashboard::instance().datasets();
   if (datasets.contains(xAxisId)) {
@@ -655,7 +643,7 @@ void Widgets::Plot::updateRange()
   }
 
   const auto& yD = GET_DATASET(SerialStudio::DashboardPlot, m_index);
-  if (yD.xAxisId >= 0) {
+  if (SerialStudio::datasetXAxisEnabled() && yD.xAxisId >= 0) {
     const auto& datasets = UI::Dashboard::instance().datasets();
     auto it              = datasets.find(yD.xAxisId);
     if (it != datasets.end()) {
@@ -687,20 +675,12 @@ void Widgets::Plot::calculateAutoScaleRange()
   yChanged  = computeMinMaxValues(m_minY, m_maxY, dy, true, [](const QPointF& p) { return p.y(); });
   yChanged |= updateDataExtremes(dy);
 
-#ifdef BUILD_COMMERCIAL
-  if (const auto& tk2 = Licensing::CommercialToken::current();
-      !m_timeAxis && tk2.isValid() && SS_LICENSE_GUARD()
-      && tk2.featureTier() >= Licensing::FeatureTier::Trial) {
-    if (UI::Dashboard::instance().datasets().contains(dy.xAxisId)) {
-      const auto& dx = UI::Dashboard::instance().datasets()[dy.xAxisId];
-      xChanged =
-        computeMinMaxValues(m_minX, m_maxX, dx, false, [](const QPointF& p) { return p.x(); });
-    }
+  if (!m_timeAxis && SerialStudio::datasetXAxisEnabled()
+      && UI::Dashboard::instance().datasets().contains(dy.xAxisId)) {
+    const auto& dx = UI::Dashboard::instance().datasets()[dy.xAxisId];
+    xChanged =
+      computeMinMaxValues(m_minX, m_maxX, dx, false, [](const QPointF& p) { return p.x(); });
   }
-#else
-  if (false) {
-  }
-#endif
 
   else if (!m_timeAxis) {
     const auto points = UI::Dashboard::instance().points();

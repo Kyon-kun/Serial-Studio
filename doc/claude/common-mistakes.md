@@ -20,7 +20,7 @@ the style sections (CLAUDE.md "Code Style") — don't restate.
 | BLE `selectDevice(index)` with placeholder compensation in `setDriverProperty` | `setDriverProperty` is raw; `selectDevice` subtracts 1. |
 | Querying the **live** driver for `configurationOk()` | Check the **UI** driver — live may not be synced yet. |
 | Setter without guard return | `if (m_foo == foo) return;` before assign + emit. |
-| Looking for session DB code under `app/src/SQLite/` | It's `app/src/Sessions/` — `namespace Sessions` for DatabaseManager, `namespace SQLite` for Export/Player. |
+| Looking for session DB code under `app/src/SQLite/` | It's `app/src/Sessions/` — `namespace Sessions` for DatabaseManager, Export, and Player (all three). |
 | Mixing workspace IDs with group IDs | Workspace IDs are ≥ 1000; `Taskbar::deleteWorkspace()` branches on that. |
 | Stamping `current_writer_version()` on every live `Frame::serialize` | Only project saves (`ProjectModel::serializeToJson`) carry version metadata. Live frames keep `schemaVersion = 0`. |
 | `Per-dataset transformCode` with a leftover placeholder | `DatasetTransformEditor::onApply` discards code that doesn't define `transform()`. |

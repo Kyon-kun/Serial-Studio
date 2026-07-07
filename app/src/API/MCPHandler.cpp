@@ -23,11 +23,12 @@
 
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QMutexLocker>
 
 #include "API/CommandRegistry.h"
 #include "API/Server.h"
 #include "AppInfo.h"
+#include "DataModel/Frame.h"
+#include "UI/Dashboard.h"
 
 //--------------------------------------------------------------------------------------------------
 // Constructor & singleton access
@@ -161,27 +162,6 @@ QByteArray API::MCPHandler::processMessage(const QByteArray& data, const QString
 void API::MCPHandler::clearSession(const QString& sessionId)
 {
   m_sessions.remove(sessionId);
-}
-
-/**
- * @brief Update current frame for resource reads
- */
-void API::MCPHandler::updateCurrentFrame(const DataModel::Frame& frame)
-{
-  QMutexLocker locker(&m_frameMutex);
-  m_currentFrame = frame;
-
-  m_frameHistory.append(frame);
-  if (m_frameHistory.size() > kMaxFrameHistory)
-    m_frameHistory.removeFirst();
-}
-
-/**
- * @brief Slot to receive frames from dashboard
- */
-void API::MCPHandler::onFrameReceived(const DataModel::Frame& frame)
-{
-  updateCurrentFrame(frame);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -394,19 +374,28 @@ API::MCP::MCPResponse API::MCPHandler::handleResourcesRead(const MCP::MCPRequest
       request.id, MCP::ErrorCode::InvalidParams, QStringLiteral("Missing resource URI"));
   }
 
-  QMutexLocker locker(&m_frameMutex);
-
   QJsonObject content;
   content[QStringLiteral("mimeType")] = QStringLiteral("application/json");
 
   if (uri == QStringLiteral("serialstudio://frame/current")) {
+    const auto& frame  = UI::Dashboard::instance().processedFrame();
+    const bool hasData = !frame.groups.empty();
+
+    auto frameJson                       = DataModel::serialize(frame);
+    frameJson[QStringLiteral("hasData")] = hasData;
+    if (!hasData)
+      frameJson[QStringLiteral("_summary")] = QStringLiteral(
+        "No telemetry frame processed yet. A frame appears once a connected device streams "
+        "data into an active dashboard.");
+
     content[QStringLiteral("uri")] = uri;
-    const auto frameJson           = DataModel::serialize(m_currentFrame);
     content[QStringLiteral("text")] =
       QString::fromUtf8(QJsonDocument(frameJson).toJson(QJsonDocument::Indented));
   } else if (uri == QStringLiteral("serialstudio://frame/history")) {
+    const auto& frame = UI::Dashboard::instance().processedFrame();
+
     QJsonArray history;
-    for (const auto& frame : std::as_const(m_frameHistory))
+    if (!frame.groups.empty())
       history.append(DataModel::serialize(frame));
 
     content[QStringLiteral("uri")] = uri;
@@ -676,8 +665,8 @@ QVector<API::MCP::Resource> API::MCPHandler::generateResources() const
 
   MCP::Resource frameHistory;
   frameHistory.uri         = QStringLiteral("serialstudio://frame/history");
-  frameHistory.name        = QStringLiteral("Frame History");
-  frameHistory.description = QStringLiteral("Last 100 telemetry frames");
+  frameHistory.name        = QStringLiteral("Latest Frame");
+  frameHistory.description = QStringLiteral("The latest telemetry frame, as a JSON array");
   frameHistory.mimeType    = QStringLiteral("application/json");
   resources.append(frameHistory);
 

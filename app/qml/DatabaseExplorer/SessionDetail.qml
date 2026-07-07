@@ -297,16 +297,7 @@ Widgets.Pane {
               if (label.length === 0)
                 return
 
-              Cpp_Sessions_Manager.addTag(label)
-              const tags = Cpp_Sessions_Manager.tagList
-              for (let i = 0; i < tags.length; ++i) {
-                if (tags[i].label.toLowerCase() === label.toLowerCase()) {
-                  Cpp_Sessions_Manager.assignTagToSession(
-                    root.sessionId, tags[i].tag_id)
-                  break
-                }
-              }
-
+              Cpp_Sessions_Manager.addTagAndAssign(root.sessionId, label)
               tagField.text = ""
             }
           }

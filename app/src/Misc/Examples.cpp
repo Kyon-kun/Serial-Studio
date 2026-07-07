@@ -27,7 +27,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
-#include <QRegularExpression>
 #include <QStandardPaths>
 
 #include "Misc/Utilities.h"
@@ -544,13 +543,4 @@ QString Misc::Examples::cachePath() const
 QString Misc::Examples::exampleCachePath(const QString& id) const
 {
   return cachePath() + "/" + id;
-}
-
-/**
- * @brief Removes markdown image tags (![alt](url)) from the given text.
- */
-QString Misc::Examples::stripMarkdownImages(const QString& markdown)
-{
-  static const QRegularExpression re(QStringLiteral("!\\[[^\\]]*\\]\\([^)]*\\)\\s*\\n?"));
-  return QString(markdown).remove(re);
 }

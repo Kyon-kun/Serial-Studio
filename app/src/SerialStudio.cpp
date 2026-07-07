@@ -68,6 +68,59 @@ bool SerialStudio::proWidgetsEnabled()
 }
 
 /**
+ * @brief Reports whether per-dataset X-axis sources (dataset-vs-dataset plots) are licensed. This
+ * is the single Pro gate behind the Time/Samples/Dataset degrade; unlicensed builds fall back to
+ * the free Samples axis.
+ */
+bool SerialStudio::datasetXAxisEnabled()
+{
+#ifdef BUILD_COMMERCIAL
+  const auto& token = Licensing::CommercialToken::current();
+  return token.isValid() && SS_LICENSE_GUARD()
+      && token.featureTier() >= Licensing::FeatureTier::Trial;
+#else
+  return false;
+#endif
+}
+
+/**
+ * @brief Classifies a group's X-axis mode from its front dataset's encoding. Empty groups and the
+ * time sentinel map to Time, the samples sentinel to Samples, any dataset id to Dataset. Callers
+ * apply their own guards on the empty case (Dashboard's !empty guard sends it to the samples path,
+ * ProjectEditor shows "Time"); that asymmetry is intentional and preserved here.
+ */
+SerialStudio::XAxisMode SerialStudio::groupXAxisMode(const DataModel::Group& g)
+{
+  if (g.datasets.empty())
+    return XAxisMode::Time;
+
+  const int frontXAxisId = g.datasets.front().xAxisId;
+  if (frontXAxisId == DataModel::kXAxisSamples)
+    return XAxisMode::Samples;
+
+  if (frontXAxisId == DataModel::kXAxisTime)
+    return XAxisMode::Time;
+
+  return XAxisMode::Dataset;
+}
+
+/**
+ * @brief Resolves a dataset's X-axis policy: Time for the time sentinel, Dataset when a licensed
+ * dataset X source resolves against the live map, else Samples (the unlicensed/unresolved degrade).
+ */
+SerialStudio::XAxisPolicy SerialStudio::resolveXAxisPolicy(
+  const DataModel::Dataset& d, const QMap<int, DataModel::Dataset>& datasets)
+{
+  if (d.xAxisId == DataModel::kXAxisTime)
+    return {XAxisMode::Time, -1};
+
+  if (d.xAxisId >= 0 && datasetXAxisEnabled() && datasets.contains(d.xAxisId))
+    return {XAxisMode::Dataset, d.xAxisId};
+
+  return {XAxisMode::Samples, -1};
+}
+
+/**
  * @brief Returns true if a transform script references the notify() API family.
  */
 static bool transformUsesNotifications(const QString& code)
@@ -830,15 +883,49 @@ QByteArray SerialStudio::hexToBytes(const QString& data)
  */
 QString SerialStudio::resolveEscapeSequences(const QString& str)
 {
-  QString escapedStr = str;
-  escapedStr.replace(QStringLiteral("\\a"), QStringLiteral("\a"));
-  escapedStr.replace(QStringLiteral("\\b"), QStringLiteral("\b"));
-  escapedStr.replace(QStringLiteral("\\f"), QStringLiteral("\f"));
-  escapedStr.replace(QStringLiteral("\\n"), QStringLiteral("\n"));
-  escapedStr.replace(QStringLiteral("\\r"), QStringLiteral("\r"));
-  escapedStr.replace(QStringLiteral("\\t"), QStringLiteral("\t"));
-  escapedStr.replace(QStringLiteral("\\v"), QStringLiteral("\v"));
-  escapedStr.replace(QStringLiteral("\\\\"), QStringLiteral("\\"));
+  QString escapedStr;
+  escapedStr.reserve(str.size());
+
+  for (int i = 0; i < str.size(); ++i) {
+    const QChar current = str.at(i);
+    if (current != u'\\' || i + 1 >= str.size()) {
+      escapedStr.append(current);
+      continue;
+    }
+
+    const QChar next = str.at(i + 1);
+    ++i;
+    switch (next.unicode()) {
+      case u'a':
+        escapedStr.append(QChar(u'\a'));
+        break;
+      case u'b':
+        escapedStr.append(QChar(u'\b'));
+        break;
+      case u'f':
+        escapedStr.append(QChar(u'\f'));
+        break;
+      case u'n':
+        escapedStr.append(QChar(u'\n'));
+        break;
+      case u'r':
+        escapedStr.append(QChar(u'\r'));
+        break;
+      case u't':
+        escapedStr.append(QChar(u'\t'));
+        break;
+      case u'v':
+        escapedStr.append(QChar(u'\v'));
+        break;
+      case u'\\':
+        escapedStr.append(QChar(u'\\'));
+        break;
+      default:
+        escapedStr.append(current).append(next);
+        break;
+    }
+  }
+
   return escapedStr;
 }
 

@@ -161,7 +161,6 @@ class TestChangeDrivenEquivalence:
         _feed(device_simulator, rows)
         return {
             "out_a": _reg(api_client, "out_a"),
-            "chain": _reg(api_client, "out_a"),
             "runs_a": _reg(api_client, "runs_a"),
             "runs_chain": _reg(api_client, "runs_chain"),
         }

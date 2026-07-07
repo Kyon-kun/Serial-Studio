@@ -66,6 +66,7 @@ Item {
         enabled: app.ioEnabled
         opacity: enabled ? 1 : 0.5
         model: Cpp_IO_Bluetooth_LE.deviceNames
+        currentIndex: Cpp_IO_Bluetooth_LE.deviceIndex + 1
         onActivated: (index) => {
           if (index !== Cpp_IO_Bluetooth_LE.deviceIndex + 1)
             Cpp_IO_Bluetooth_LE.selectDevice(index)
@@ -74,6 +75,11 @@ Item {
         Connections {
           target: Cpp_IO_Bluetooth_LE
           function onDevicesChanged() {
+            var idx = Cpp_IO_Bluetooth_LE.deviceIndex + 1
+            if (idx > 0 && idx < _deviceCombo.count)
+              _deviceCombo.currentIndex = idx
+          }
+          function onDeviceIndexChanged() {
             var idx = Cpp_IO_Bluetooth_LE.deviceIndex + 1
             if (idx > 0 && idx < _deviceCombo.count)
               _deviceCombo.currentIndex = idx

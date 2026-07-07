@@ -254,6 +254,10 @@ set(SOURCES
   src/API/Handlers/BluetoothLEHandler.cpp
   src/API/Handlers/CSVExportHandler.cpp
   src/API/Handlers/ProjectHandler.cpp
+  src/API/Handlers/ProjectHandlerFile.cpp
+  src/API/Handlers/ProjectHandlerEntities.cpp
+  src/API/Handlers/ProjectHandlerParser.cpp
+  src/API/Handlers/ProjectHandlerBatch.cpp
   src/API/Handlers/ConsoleHandler.cpp
   src/API/Handlers/ControlScriptHandler.cpp
   src/API/Handlers/CSVPlayerHandler.cpp
@@ -306,7 +310,22 @@ set(SOURCES
   src/DataModel/Editors/CodeFormatter.cpp
   src/DataModel/Editors/OutputCodeEditor.cpp
   src/DataModel/ProjectModel.cpp
+  src/DataModel/Project/ProjectModelPersistence.cpp
+  src/DataModel/Project/ProjectModelLoading.cpp
+  src/DataModel/Project/ProjectModelSources.cpp
+  src/DataModel/Project/ProjectModelCrud.cpp
+  src/DataModel/Project/ProjectModelWorkspaces.cpp
+  src/DataModel/Project/ProjectModelFolders.cpp
+  src/DataModel/Project/ProjectModelTables.cpp
   src/DataModel/ProjectEditor.cpp
+  src/DataModel/Project/ProjectEditorWiring.cpp
+  src/DataModel/Project/ProjectEditorTree.cpp
+  src/DataModel/Project/ProjectEditorMqtt.cpp
+  src/DataModel/Project/ProjectEditorForms.cpp
+  src/DataModel/Project/ProjectEditorCommit.cpp
+  src/DataModel/Project/ProjectEditorMultiSelect.cpp
+  src/DataModel/Project/ProjectEditorSelection.cpp
+  src/DataModel/Project/ProjectEditorSummaries.cpp
   src/DataModel/Importers/ProtoImporter.cpp
   src/DataModel/FrameBuilder.cpp
   src/DataModel/Frame.cpp
@@ -379,6 +398,7 @@ set(HEADERS
   src/API/Handlers/NetworkHandler.h
   src/API/Handlers/BluetoothLEHandler.h
   src/API/Handlers/CSVExportHandler.h
+  src/API/Handlers/ProjectApiSupport.h
   src/API/Handlers/ProjectHandler.h
   src/API/Handlers/ConsoleHandler.h
   src/API/Handlers/ControlScriptHandler.h
@@ -437,7 +457,10 @@ set(HEADERS
   src/DataModel/Editors/CodeFormatter.h
   src/DataModel/Editors/OutputCodeEditor.h
   src/DataModel/ProjectModel.h
+  src/DataModel/Project/ProjectModelShared.h
   src/DataModel/ProjectEditor.h
+  src/DataModel/Project/ProjectEditorItemIds.h
+  src/DataModel/Project/ProjectEditorShared.h
   src/DataModel/Importers/ProtoImporter.h
   src/DataModel/Frame.h
   src/DataModel/FrameBuilder.h

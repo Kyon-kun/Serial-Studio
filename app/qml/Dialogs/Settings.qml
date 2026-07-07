@@ -190,6 +190,13 @@ Widgets.SmartDialog {
             onActivated: {
               Cpp_ThemeManager.theme = currentIndex
             }
+
+            Connections {
+              target: Cpp_ThemeManager
+              function onThemeChanged() {
+                _themeCombo.currentIndex = Cpp_ThemeManager.theme
+              }
+            }
           }
 
           Item {
@@ -345,6 +352,13 @@ Widgets.SmartDialog {
               if (checked !== Cpp_API_Server.enabled)
                 Cpp_API_Server.enabled = checked
             }
+
+            Connections {
+              target: Cpp_API_Server
+              function onEnabledChanged() {
+                _apiServer.checked = Cpp_API_Server.enabled
+              }
+            }
           }
 
           Label {
@@ -353,6 +367,8 @@ Widgets.SmartDialog {
             color: Cpp_ThemeManager.colors["text"]
             text: qsTr("Allow External API Connections")
           } Switch {
+            id: _apiExternal
+
             Layout.rightMargin: -8
             opacity: enabled ? 1 : 0.5
             enabled: _apiServer.checked
@@ -362,6 +378,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_API_Server.externalConnections)
                 Cpp_API_Server.externalConnections = checked
+            }
+
+            Connections {
+              target: Cpp_API_Server
+              function onExternalConnectionsChanged() {
+                _apiExternal.checked = Cpp_API_Server.externalConnections
+              }
             }
           }
 
@@ -523,6 +546,8 @@ Widgets.SmartDialog {
             color: Cpp_ThemeManager.colors["text"]
             text: qsTr("Apply Performance Hints")
           } Switch {
+            id: _performanceMode
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Misc_ModuleManager.performanceMode
@@ -531,12 +556,21 @@ Widgets.SmartDialog {
               if (checked !== Cpp_Misc_ModuleManager.performanceMode)
                 Cpp_Misc_ModuleManager.performanceMode = checked
             }
+
+            Connections {
+              target: Cpp_Misc_ModuleManager
+              function onPerformanceModeChanged() {
+                _performanceMode.checked = Cpp_Misc_ModuleManager.performanceMode
+              }
+            }
           }
 
           Label {
             color: Cpp_ThemeManager.colors["text"]
             text: qsTr("Keep Display Awake")
           } Switch {
+            id: _inhibitIdleSleep
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Misc_ModuleManager.inhibitIdleSleep
@@ -544,6 +578,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_Misc_ModuleManager.inhibitIdleSleep)
                 Cpp_Misc_ModuleManager.inhibitIdleSleep = checked
+            }
+
+            Connections {
+              target: Cpp_Misc_ModuleManager
+              function onInhibitIdleSleepChanged() {
+                _inhibitIdleSleep.checked = Cpp_Misc_ModuleManager.inhibitIdleSleep
+              }
             }
           }
 
@@ -584,6 +625,8 @@ Widgets.SmartDialog {
             color: Cpp_ThemeManager.colors["text"]
             text: qsTr("Automatically Check for Updates")
           } Switch {
+            id: _automaticUpdates
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Misc_ModuleManager.automaticUpdates
@@ -591,6 +634,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_Misc_ModuleManager.automaticUpdates)
                 Cpp_Misc_ModuleManager.automaticUpdates = checked
+            }
+
+            Connections {
+              target: Cpp_Misc_ModuleManager
+              function onAutomaticUpdatesChanged() {
+                _automaticUpdates.checked = Cpp_Misc_ModuleManager.automaticUpdates
+              }
             }
           }
 
@@ -738,6 +788,13 @@ Widgets.SmartDialog {
               if (value !== Cpp_Misc_TimerEvents.fps)
                 Cpp_Misc_TimerEvents.fps = value
             }
+
+            Connections {
+              target: Cpp_Misc_TimerEvents
+              function onFpsChanged() {
+                _refreshRate.value = Cpp_Misc_TimerEvents.fps
+              }
+            }
           }
 
           Item {
@@ -772,6 +829,13 @@ Widgets.SmartDialog {
 
             onActivated: {
               Cpp_Misc_CommonFonts.widgetFontFamily = currentText
+            }
+
+            Connections {
+              target: Cpp_Misc_CommonFonts
+              function onFontsChanged() {
+                _widgetFontFamily.currentIndex = Cpp_Misc_CommonFonts.widgetFontIndex
+              }
             }
           }
 
@@ -831,6 +895,13 @@ Widgets.SmartDialog {
               onValueModified: {
                 Cpp_Misc_CommonFonts.widgetFontScale = value / 100.0
               }
+
+              Connections {
+                target: Cpp_Misc_CommonFonts
+                function onFontsChanged() {
+                  _widgetFontCustom.value = Math.round(Cpp_Misc_CommonFonts.widgetFontScale * 100)
+                }
+              }
             }
           }
 
@@ -883,6 +954,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_UI_Dashboard.autoHideToolbar)
                 Cpp_UI_Dashboard.autoHideToolbar = checked
+            }
+
+            Connections {
+              target: Cpp_UI_Dashboard
+              function onAutoHideToolbarChanged() {
+                _autoHideToolbar.checked = Cpp_UI_Dashboard.autoHideToolbar
+              }
             }
           }
 
@@ -1037,6 +1115,8 @@ Widgets.SmartDialog {
               text: qsTr("Always Show Taskbar Buttons")
               color: Cpp_ThemeManager.colors["text"]
             } Switch {
+              id: _showTaskbarButtons
+
               Layout.rightMargin: -8
               Layout.alignment: Qt.AlignRight
               checked: Cpp_UI_TaskbarSettings.showTaskbarButtons
@@ -1045,6 +1125,13 @@ Widgets.SmartDialog {
                 if (checked !== Cpp_UI_TaskbarSettings.showTaskbarButtons)
                   Cpp_UI_TaskbarSettings.showTaskbarButtons = checked
               }
+
+              Connections {
+                target: Cpp_UI_TaskbarSettings
+                function onShowTaskbarButtonsChanged() {
+                  _showTaskbarButtons.checked = Cpp_UI_TaskbarSettings.showTaskbarButtons
+                }
+              }
             }
 
             Label {
@@ -1052,6 +1139,8 @@ Widgets.SmartDialog {
               text: qsTr("Show Search Field")
               color: Cpp_ThemeManager.colors["text"]
             } Switch {
+              id: _searchEnabled
+
               Layout.rightMargin: -8
               Layout.alignment: Qt.AlignRight
               checked: Cpp_UI_TaskbarSettings.searchEnabled
@@ -1060,6 +1149,13 @@ Widgets.SmartDialog {
                 if (checked !== Cpp_UI_TaskbarSettings.searchEnabled)
                   Cpp_UI_TaskbarSettings.searchEnabled = checked
               }
+
+              Connections {
+                target: Cpp_UI_TaskbarSettings
+                function onSearchEnabledChanged() {
+                  _searchEnabled.checked = Cpp_UI_TaskbarSettings.searchEnabled
+                }
+              }
             }
 
             Label {
@@ -1067,6 +1163,8 @@ Widgets.SmartDialog {
               text: qsTr("Auto-hide Taskbar")
               color: Cpp_ThemeManager.colors["text"]
             } Switch {
+              id: _taskbarAutohide
+
               Layout.rightMargin: -8
               Layout.alignment: Qt.AlignRight
               checked: Cpp_UI_TaskbarSettings.autohide
@@ -1074,6 +1172,13 @@ Widgets.SmartDialog {
               onCheckedChanged: {
                 if (checked !== Cpp_UI_TaskbarSettings.autohide)
                   Cpp_UI_TaskbarSettings.autohide = checked
+              }
+
+              Connections {
+                target: Cpp_UI_TaskbarSettings
+                function onAutohideChanged() {
+                  _taskbarAutohide.checked = Cpp_UI_TaskbarSettings.autohide
+                }
               }
             }
 
@@ -1085,6 +1190,8 @@ Widgets.SmartDialog {
               text: qsTr("Hide Delay (ms)")
               color: Cpp_ThemeManager.colors["text"]
             } SpinBox {
+              id: _autohideDelay
+
               from: 200
               to: 10000
               stepSize: 100
@@ -1096,6 +1203,13 @@ Widgets.SmartDialog {
               onValueModified: {
                 if (value !== Cpp_UI_TaskbarSettings.autohideDelayMs)
                   Cpp_UI_TaskbarSettings.autohideDelayMs = value
+              }
+
+              Connections {
+                target: Cpp_UI_TaskbarSettings
+                function onAutohideDelayMsChanged() {
+                  _autohideDelay.value = Cpp_UI_TaskbarSettings.autohideDelayMs
+                }
               }
             }
           }
@@ -1299,12 +1413,21 @@ Widgets.SmartDialog {
             text: qsTr("Display Mode")
             color: Cpp_ThemeManager.colors["text"]
           } Widgets.Combo {
+            id: _displayMode
+
             Layout.fillWidth: true
             model: Cpp_Console_Handler.displayModes
             currentIndex: Cpp_Console_Handler.displayMode
             onActivated: (index) => {
               if (Cpp_Console_Handler.displayMode !== index)
                 Cpp_Console_Handler.displayMode = index
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onDisplayModeChanged() {
+                _displayMode.currentIndex = Cpp_Console_Handler.displayMode
+              }
             }
           }
 
@@ -1320,6 +1443,13 @@ Widgets.SmartDialog {
 
             onActivated: {
               Cpp_Console_Handler.fontFamily = currentText
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onFontFamilyChanged() {
+                _consoleFontFamily.currentIndex = Cpp_Console_Handler.fontFamilyIndex
+              }
             }
           }
 
@@ -1338,12 +1468,21 @@ Widgets.SmartDialog {
             onValueModified: {
               Cpp_Console_Handler.fontSize = value
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onFontSizeChanged() {
+                _consoleFontSize.value = Cpp_Console_Handler.fontSize
+              }
+            }
           }
 
           Label {
             text: qsTr("Show Timestamps")
             color: Cpp_ThemeManager.colors["text"]
           } Switch {
+            id: _showTimestamp
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Console_Handler.showTimestamp
@@ -1351,6 +1490,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_Console_Handler.showTimestamp)
                 Cpp_Console_Handler.showTimestamp = checked
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onShowTimestampChanged() {
+                _showTimestamp.checked = Cpp_Console_Handler.showTimestamp
+              }
             }
           }
 
@@ -1378,6 +1524,8 @@ Widgets.SmartDialog {
             text: qsTr("Line Ending")
             color: Cpp_ThemeManager.colors["text"]
           } Widgets.Combo {
+            id: _lineEnding
+
             Layout.fillWidth: true
             model: Cpp_Console_Handler.lineEndings
             currentIndex: Cpp_Console_Handler.lineEnding
@@ -1385,12 +1533,21 @@ Widgets.SmartDialog {
               if (Cpp_Console_Handler.lineEnding !== index)
                 Cpp_Console_Handler.lineEnding = index
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onLineEndingChanged() {
+                _lineEnding.currentIndex = Cpp_Console_Handler.lineEnding
+              }
+            }
           }
 
           Label {
             text: qsTr("Input Mode")
             color: Cpp_ThemeManager.colors["text"]
           } Widgets.Combo {
+            id: _dataMode
+
             Layout.fillWidth: true
             model: Cpp_Console_Handler.dataModes
             currentIndex: Cpp_Console_Handler.dataMode
@@ -1398,12 +1555,21 @@ Widgets.SmartDialog {
               if (Cpp_Console_Handler.dataMode !== index)
                 Cpp_Console_Handler.dataMode = index
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onDataModeChanged() {
+                _dataMode.currentIndex = Cpp_Console_Handler.dataMode
+              }
+            }
           }
 
           Label {
             text: qsTr("Text Encoding")
             color: Cpp_ThemeManager.colors["text"]
           } Widgets.Combo {
+            id: _encoding
+
             Layout.fillWidth: true
             model: Cpp_Console_Handler.textEncodings
             currentIndex: Cpp_Console_Handler.encoding
@@ -1411,12 +1577,21 @@ Widgets.SmartDialog {
               if (Cpp_Console_Handler.encoding !== index)
                 Cpp_Console_Handler.encoding = index
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onEncodingChanged() {
+                _encoding.currentIndex = Cpp_Console_Handler.encoding
+              }
+            }
           }
 
           Label {
             text: qsTr("Checksum")
             color: Cpp_ThemeManager.colors["text"]
           } Widgets.Combo {
+            id: _checksumMethod
+
             Layout.fillWidth: true
             model: Cpp_Console_Handler.checksumMethods
             currentIndex: Cpp_Console_Handler.checksumMethod
@@ -1424,12 +1599,21 @@ Widgets.SmartDialog {
               if (Cpp_Console_Handler.checksumMethod !== index)
                 Cpp_Console_Handler.checksumMethod = index
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onChecksumMethodChanged() {
+                _checksumMethod.currentIndex = Cpp_Console_Handler.checksumMethod
+              }
+            }
           }
 
           Label {
             text: qsTr("Echo Sent Data")
             color: Cpp_ThemeManager.colors["text"]
           } Switch {
+            id: _echo
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Console_Handler.echo
@@ -1437,6 +1621,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_Console_Handler.echo)
                 Cpp_Console_Handler.echo = checked
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onEchoChanged() {
+                _echo.checked = Cpp_Console_Handler.echo
+              }
             }
           }
 
@@ -1477,6 +1668,13 @@ Widgets.SmartDialog {
               if (checked !== Cpp_Console_Handler.vt100Emulation)
                 Cpp_Console_Handler.vt100Emulation = checked
             }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onVt100EmulationChanged() {
+                _vt100Emulation.checked = Cpp_Console_Handler.vt100Emulation
+              }
+            }
           }
 
           Label {
@@ -1485,6 +1683,8 @@ Widgets.SmartDialog {
             color: Cpp_ThemeManager.colors["text"]
             opacity: Cpp_Console_Handler.imageWidgetActive ? 0.8 : (enabled ? 1 : 0.5)
           } Switch {
+            id: _ansiColors
+
             Layout.rightMargin: -8
             Layout.alignment: Qt.AlignRight
             checked: Cpp_Console_Handler.ansiColors
@@ -1494,6 +1694,13 @@ Widgets.SmartDialog {
             onCheckedChanged: {
               if (checked !== Cpp_Console_Handler.ansiColors)
                 Cpp_Console_Handler.ansiColors = checked
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onAnsiColorsChanged() {
+                _ansiColors.checked = Cpp_Console_Handler.ansiColors
+              }
             }
           }
 

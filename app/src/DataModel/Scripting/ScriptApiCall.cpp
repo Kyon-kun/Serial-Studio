@@ -436,8 +436,17 @@ static API::CommandResponse dispatchApiCall(const QString& method, const QJsonOb
  * @brief Constructs the JS-side apiCall bridge owned by @p parent.
  */
 DataModel::ScriptApiCallBridge::ScriptApiCallBridge(int sourceId, QObject* parent)
-  : QObject(parent), m_sourceId(sourceId)
+  : QObject(parent), m_ownSourceId(sourceId), m_sourceId(&m_ownSourceId)
 {}
+
+/**
+ * @brief Rebinds the bridge to read a live source id, or the captured value when @p sourceId is
+ * null.
+ */
+void DataModel::ScriptApiCallBridge::bindSourceId(const int* sourceId)
+{
+  m_sourceId = sourceId ? sourceId : &m_ownSourceId;
+}
 
 /**
  * @brief Implements apiCall(method, params?) for the JS scripting engine.
@@ -500,7 +509,8 @@ QVariantMap DataModel::ScriptApiCallBridge::call(const QJSValue& methodVal,
     }
   }
 
-  if (!consumeRateToken(m_sourceId)) {
+  const int sourceId = *m_sourceId;
+  if (!consumeRateToken(sourceId)) {
     out.insert(QStringLiteral("ok"), false);
     out.insert(QStringLiteral("error"),
                QStringLiteral("apiCall: rate-limited or concurrency cap reached for source"));
@@ -511,17 +521,17 @@ QVariantMap DataModel::ScriptApiCallBridge::call(const QJSValue& methodVal,
   try {
     response = dispatchApiCall(method, params);
   } catch (const std::exception& e) {
-    releaseConcurrency(m_sourceId);
+    releaseConcurrency(sourceId);
     out.insert(QStringLiteral("ok"), false);
     out.insert(QStringLiteral("error"), QString::fromUtf8(e.what()));
     return out;
   } catch (...) {
-    releaseConcurrency(m_sourceId);
+    releaseConcurrency(sourceId);
     out.insert(QStringLiteral("ok"), false);
     out.insert(QStringLiteral("error"), QStringLiteral("apiCall: unknown exception"));
     return out;
   }
-  releaseConcurrency(m_sourceId);
+  releaseConcurrency(sourceId);
 
   if (response.success && approxJsonSize(response.result) > kMaxBodyBytes) {
     out.insert(QStringLiteral("ok"), false);
@@ -762,6 +772,23 @@ void DataModel::ScriptApiCall::installJS(QJSEngine* js, int sourceId)
   static const QByteArray sdk = loadSdk(QStringLiteral(":/api/SerialStudio.js"));
   if (!sdk.isEmpty())
     js->evaluate(QString::fromUtf8(sdk));
+}
+
+/**
+ * @brief Points the installed JS apiCall bridge at a live source id owned by the engine, so a
+ *        parser engine reassigning its source after construction attributes calls to the right one.
+ */
+void DataModel::ScriptApiCall::bindSourceIdJS(QJSEngine* js, const int* sourceId)
+{
+  Q_ASSERT(js);
+
+  auto global    = js->globalObject();
+  auto bridgeVal = global.property(QStringLiteral("__ss_bridge"));
+  if (!bridgeVal.isQObject())
+    return;
+
+  if (auto* bridge = qobject_cast<DataModel::ScriptApiCallBridge*>(bridgeVal.toQObject()))
+    bridge->bindSourceId(sourceId);
 }
 
 /**

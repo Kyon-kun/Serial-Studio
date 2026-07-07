@@ -247,10 +247,32 @@ public:
 
   typedef QMap<int, QPair<SerialStudio::DashboardWidget, int>> WidgetMap;
 
+  /**
+   * @brief Render mode for a plot's X-axis.
+   */
+  enum class XAxisMode : quint8 {
+    Time    = 0,  ///< Plot against the source time base
+    Samples = 1,  ///< Plot against the running sample index (free)
+    Dataset = 2,  ///< Plot against another dataset's value (Pro)
+  };
+
+  /**
+   * @brief Resolved X-axis policy: the render mode plus the X source dataset id (Dataset mode).
+   */
+  struct XAxisPolicy {
+    XAxisMode mode = XAxisMode::Time;  ///< Resolved render mode
+    int xDatasetId = -1;               ///< X source dataset uniqueId (Dataset mode; -1 otherwise)
+  };
+
   Q_INVOKABLE [[nodiscard]] static bool activated();
   Q_INVOKABLE [[nodiscard]] static bool proWidgetsEnabled();
   Q_INVOKABLE [[nodiscard]] static bool commercialCfg(const QVector<DataModel::Group>& g);
   Q_INVOKABLE [[nodiscard]] static bool commercialCfg(const std::vector<DataModel::Group>& g);
+
+  [[nodiscard]] static bool datasetXAxisEnabled();
+  [[nodiscard]] static XAxisMode groupXAxisMode(const DataModel::Group& g);
+  [[nodiscard]] static XAxisPolicy resolveXAxisPolicy(
+    const DataModel::Dataset& d, const QMap<int, DataModel::Dataset>& datasets);
 
   // clang-format off
   Q_INVOKABLE [[nodiscard]] static bool isGroupWidget(const SerialStudio::DashboardWidget widget);

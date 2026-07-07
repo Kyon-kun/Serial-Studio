@@ -162,6 +162,11 @@ private slots:
 #endif
 
 private:
+#ifdef BUILD_COMMERCIAL
+  void refreshTemplateFrame();
+#endif
+
+private:
   QSettings m_settings;
   std::atomic<bool> m_isOpen;
   std::atomic<bool> m_exportEnabled;

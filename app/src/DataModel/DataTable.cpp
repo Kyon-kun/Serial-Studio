@@ -433,7 +433,8 @@ bool DataModel::DataTableStore::setByHandle(qint64 handle, const RegisterValue& 
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Writes raw (pre-transform) values for a dataset.
+ * @brief Writes raw (pre-transform) values for a dataset; an identical value is a no-op that
+ *        leaves the slot version untouched, matching the computed-register write paths.
  */
 void DataModel::DataTableStore::setDatasetRaw(int uniqueId,
                                               double numeric,
@@ -446,7 +447,10 @@ void DataModel::DataTableStore::setDatasetRaw(int uniqueId,
   if (it == m_datasetIndex.constEnd()) [[unlikely]]
     return;
 
-  auto& rv                                  = m_storage[static_cast<size_t>(it->first)];
+  auto& rv = m_storage[static_cast<size_t>(it->first)];
+  if (rv.isNumeric == isNum && (isNum ? rv.numericValue == numeric : rv.stringValue == str))
+    return;
+
   rv.numericValue                           = numeric;
   rv.stringValue                            = str;
   rv.isNumeric                              = isNum;
@@ -454,7 +458,8 @@ void DataModel::DataTableStore::setDatasetRaw(int uniqueId,
 }
 
 /**
- * @brief Writes final (post-transform) values for a dataset.
+ * @brief Writes final (post-transform) values for a dataset; an identical value is a no-op that
+ *        leaves the slot version untouched, matching the computed-register write paths.
  */
 void DataModel::DataTableStore::setDatasetFinal(int uniqueId,
                                                 double numeric,
@@ -467,7 +472,10 @@ void DataModel::DataTableStore::setDatasetFinal(int uniqueId,
   if (it == m_datasetIndex.constEnd()) [[unlikely]]
     return;
 
-  auto& rv                                   = m_storage[static_cast<size_t>(it->second)];
+  auto& rv = m_storage[static_cast<size_t>(it->second)];
+  if (rv.isNumeric == isNum && (isNum ? rv.numericValue == numeric : rv.stringValue == str))
+    return;
+
   rv.numericValue                            = numeric;
   rv.stringValue                             = str;
   rv.isNumeric                               = isNum;

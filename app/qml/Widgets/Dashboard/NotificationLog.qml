@@ -31,12 +31,6 @@ Item {
   property string widgetId
 
   //
-  // Blink state: armed for kBlinkMs whenever a non-Info event arrives
-  //
-  property bool blinking: false
-  readonly property int kBlinkMs: 10000
-
-  //
   // Level -> icon path mapping. Icons live in app/icons/notifications/.
   //
   function iconForLevel(level) {
@@ -80,17 +74,6 @@ Item {
   }
 
   //
-  // Timer for blink effect
-  //
-  Timer {
-    id: blinkTimer
-
-    repeat: false
-    interval: root.kBlinkMs
-    onTriggered: root.blinking = false
-  }
-
-  //
   // Notifications model
   //
   ListModel {
@@ -116,18 +99,10 @@ Item {
       // Auto-scroll only if the user hadn't scrolled up
       if (wasAtTail)
         Qt.callLater(listView.positionAtTail)
-
-      // Arm the border blink for Warning/Critical events
-      if (event.level > 0) {
-        root.blinking = true
-        blinkTimer.restart()
-      }
     }
 
     function onHistoryCleared() {
       notifications.clear()
-      root.blinking = false
-      blinkTimer.stop()
     }
 
     function onChannelCleared(channel) {

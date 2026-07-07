@@ -122,9 +122,8 @@ Item {
       origin.y: _scaleContainer.height / 2
       xScale: _mouseArea.pressed ? 0.95 : 1.0
       yScale: _mouseArea.pressed ? 0.95 : 1.0
-    }
-    Behavior on transform {
-      NumberAnimation { properties: "xScale,yScale"; duration: 100; easing.type: Easing.OutQuad }
+      Behavior on xScale { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
+      Behavior on yScale { NumberAnimation { duration: 100; easing.type: Easing.OutQuad } }
     }
 
     GridLayout {

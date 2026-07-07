@@ -281,7 +281,12 @@ Popup {
         anchors.fill: parent
         enabled: !isSeparator && !isHeader
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onContainsMouseChanged: if (containsMouse && isFolder) root.openFolder(modelData)
+        onContainsMouseChanged: {
+          if (containsMouse && isFolder)
+            root.openFolder(modelData)
+          else if (containsMouse && root.childPopup)
+            root.childPopup.close()
+        }
         onClicked: (mouse) => {
           if (isFolder) {
             root.openFolder(modelData)

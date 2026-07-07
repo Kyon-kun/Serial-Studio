@@ -58,6 +58,7 @@ private:
   void sendBlock0();
   void sendEndOfBatch();
   void sendDataBlock();
+  void handleTimeout() override;
   bool handleDataAckByte(quint8 ch);
   void handleBlock0AckByte(quint8 ch);
   void handleSecondEotAckByte(quint8 ch);

@@ -262,7 +262,7 @@ function parse(frame) {
 
   if (temp > 80 && !hot) {
     hot = true;
-    actionFire("cooling_on");        // reuse an Action defined in the UI
+    actionFire(7);                    // reuse an Action defined in the UI (its actionId)
     notifyCritical("Thermal", "Over-temp: " + temp.toFixed(1) + " C");
   } else if (temp < 70 && hot) {
     hot = false;

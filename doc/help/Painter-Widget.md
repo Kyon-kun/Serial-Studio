@@ -151,7 +151,7 @@ actionFire(actionId)             // -> { ok: true } | { ok: false, error: "..." 
 
 Both are synchronous, fire-and-forget, and never throw. `deviceWrite` defaults `sourceId` to the painter's group `sourceId`; pass an explicit one to target a different source.
 
-**Important:** `paint()` runs on every dashboard tick (60 Hz by default). Calling `deviceWrite` or `actionFire` from `paint()` will saturate the link. `onFrame()` runs at the same cadence (once per dashboard tick, with frames batched at high rates), so move the calls there and guard them on a state transition or a `frame.number` change:
+**Important:** `paint()` runs on every dashboard tick (60 Hz by default). Calling `deviceWrite` or `actionFire` from `paint()` will saturate the link. `onFrame()` runs at most once per data-bearing tick (frames batched at high rates), never on UI-refresh ticks with no new data, so move the calls there and guard them on a state transition or a `frame.number` change:
 
 ```javascript
 var alarmRaised = false;

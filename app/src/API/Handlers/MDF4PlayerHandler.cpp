@@ -200,9 +200,17 @@ API::CommandResponse API::Handlers::MDF4PlayerHandler::step(const QString& id,
     return CommandResponse::makeSuccess(id, result);
   }
 
-  const int absDelta = std::abs(delta);
-  const bool forward = delta > 0;
-  for (int i = 0; i < absDelta; ++i)
+  const long long maxSteps = player.frameCount() > 0 ? player.frameCount() : 0;
+  const bool forward       = delta > 0;
+
+  long long steps = static_cast<long long>(delta);
+  if (steps < 0)
+    steps = -steps;
+
+  if (steps > maxSteps)
+    steps = maxSteps;
+
+  for (long long i = 0; i < steps; ++i)
     if (forward)
       player.nextFrame();
     else

@@ -51,7 +51,7 @@ Widgets.SmartDialog {
   //
   // Track fetch state
   //
-  property bool fetchingData: Cpp_Examples.count === 0 && Cpp_Examples.searchFilter === ""
+  property bool fetchingData: Cpp_Examples.loading && Cpp_Examples.count === 0
 
   //
   // Fetch manifest when dialog opens

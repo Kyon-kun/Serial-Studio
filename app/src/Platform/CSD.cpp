@@ -1190,6 +1190,7 @@ void Window::setupContentContainer()
 
   m_contentContainer->setParentItem(root);
   m_contentContainer->setZ(0);
+  root->installEventFilter(this);
 
   connect(quickWindow, &QQuickWindow::widthChanged, this, &Window::updateContentContainerGeometry);
   connect(quickWindow, &QQuickWindow::heightChanged, this, &Window::updateContentContainerGeometry);

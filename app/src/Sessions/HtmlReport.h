@@ -116,7 +116,6 @@ private:
   QString m_htmlCache;
   QString m_pdfPath;
   QString m_htmlPath;
-  bool m_htmlWritten;
 
 #  ifdef SERIAL_STUDIO_WITH_WEBENGINE
   QWebEnginePage* m_page;

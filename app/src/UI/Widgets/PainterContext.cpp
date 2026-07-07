@@ -375,6 +375,7 @@ void Widgets::PainterContext::endFrame()
   m_painter = nullptr;
   m_width   = 0.0;
   m_height  = 0.0;
+  m_stateStack.clear();
 }
 
 /**
@@ -782,7 +783,7 @@ void Widgets::PainterContext::setImageSmoothingQuality(const QString& quality)
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Pushes the current QPainter state onto its stack.
+ * @brief Pushes the full drawing state (painter + Canvas2D style) onto the stack.
  */
 void Widgets::PainterContext::save()
 {
@@ -790,17 +791,27 @@ void Widgets::PainterContext::save()
     return;
 
   m_painter->save();
+  m_stateStack.push_back(m_state);
 }
 
 /**
- * @brief Pops the QPainter state stack.
+ * @brief Pops the full drawing state, reverting both painter and Canvas2D style.
  */
 void Widgets::PainterContext::restore()
 {
-  if (!active())
+  if (!active() || m_stateStack.empty())
     return;
 
   m_painter->restore();
+  m_state = m_stateStack.back();
+  m_stateStack.pop_back();
+
+  m_painter->setRenderHint(QPainter::SmoothPixmapTransform, m_state.imageSmoothing);
+  m_painter->setBrush(m_state.fillBrush);
+  m_painter->setPen(m_state.strokePen);
+  m_painter->setFont(m_state.font);
+  m_painter->setOpacity(m_state.globalAlpha);
+  m_painter->setCompositionMode(m_state.compositionMode);
 }
 
 /**

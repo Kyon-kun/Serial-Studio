@@ -976,8 +976,19 @@ QString Console::Handler::appendToDevice(int deviceId, const QString& str, bool 
   data = data.replace(QStringLiteral("\r"), QStringLiteral("\n"));
 
   QString timestamp;
-  if (addTimestamp)
-    timestamp = cachedTimestampStr();
+  if (addTimestamp) {
+    const QString& timeStr = cachedTimestampStr();
+
+    if (ansiColorsEnabled()) {
+      const QString ansiCyan  = QStringLiteral("\033[36m");
+      const QString ansiReset = QStringLiteral("\033[0m");
+      timestamp               = QStringLiteral("%1%2%3").arg(ansiCyan, timeStr, ansiReset);
+    }
+
+    else {
+      timestamp = timeStr;
+    }
+  }
 
   QString processedString;
   processedString.reserve(data.length() + timestamp.length() * 4);

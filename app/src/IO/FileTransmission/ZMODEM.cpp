@@ -480,8 +480,11 @@ void IO::Protocols::ZMODEM::sendNextDataChunk()
   for (int i = 0; i < kChunksPerYield && !m_file.atEnd(); ++i) {
     QByteArray chunk = m_file.read(m_blockSize);
     if (chunk.isEmpty()) {
-      qWarning() << "[ZMODEM] File read returned empty data at offset" << m_bytesSent;
-      break;
+      const QString reason = m_file.errorString();
+      m_state              = State::Idle;
+      m_file.close();
+      Q_EMIT finished(false, tr("File read error: %1").arg(reason));
+      return;
     }
 
     if (chunk.size() > m_blockSize) [[unlikely]] {

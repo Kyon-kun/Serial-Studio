@@ -175,6 +175,11 @@ API::CommandResponse API::Handlers::ProcessHandler::setWorkingDir(const QString&
   }
 
   const QString dir = params.value(QStringLiteral("workingDir")).toString();
+
+  if (!API::isPathAllowed(dir, true))
+    return CommandResponse::makeError(
+      id, ErrorCode::InvalidParam, QStringLiteral("Path is not allowed: ") + dir);
+
   IO::ConnectionManager::instance().process()->setWorkingDir(dir);
 
   QJsonObject result;
@@ -194,6 +199,11 @@ API::CommandResponse API::Handlers::ProcessHandler::setPipePath(const QString& i
   }
 
   const QString path = params.value(QStringLiteral("pipePath")).toString();
+
+  if (!API::isPathAllowed(path, true))
+    return CommandResponse::makeError(
+      id, ErrorCode::InvalidParam, QStringLiteral("Path is not allowed: ") + path);
+
   IO::ConnectionManager::instance().process()->setPipePath(path);
 
   QJsonObject result;

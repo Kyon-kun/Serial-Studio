@@ -32,16 +32,25 @@
 #include "Misc/WorkspaceManager.h"
 
 /**
- * @brief Escapes a CSV field per RFC 4180, quoting only when special characters require it.
+ * @brief Escapes a CSV field per RFC 4180 and neutralizes leading formula-injection chars.
  */
 static QString escapeCsvField(const QString& s)
 {
-  const bool needs = s.contains(QChar(',')) || s.contains(QChar('"')) || s.contains(QChar('\n'))
-                  || s.contains(QChar('\r')) || s.contains(QChar('\t'));
-  if (!needs)
-    return s;
-
   QString out = s;
+  if (!out.isEmpty()) {
+    const QChar c     = out.at(0);
+    const bool danger = c == QChar('=') || c == QChar('+') || c == QChar('-') || c == QChar('@')
+                     || c == QChar('\t') || c == QChar('\r');
+    if (danger)
+      out.prepend(QChar('\''));
+  }
+
+  const bool needs = out.contains(QChar(',')) || out.contains(QChar('"'))
+                  || out.contains(QChar('\n')) || out.contains(QChar('\r'))
+                  || out.contains(QChar('\t'));
+  if (!needs)
+    return out;
+
   out.replace(QChar('"'), QStringLiteral("\"\""));
   return QStringLiteral("\"%1\"").arg(out);
 }

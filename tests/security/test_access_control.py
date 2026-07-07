@@ -23,6 +23,8 @@ import uuid
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from utils.api_client import SerialStudioClient, APIError
 
@@ -108,6 +110,7 @@ def test_network_binding(tester):
             print("    Accessible from 127.0.0.1 (localhost)")
 
         # Try to connect from 0.0.0.0 (would work if bound to all interfaces)
+        exposed = False
         try:
             with SerialStudioClient("0.0.0.0", 7777) as client:
                 client.command("api.getCommands")
@@ -116,8 +119,12 @@ def test_network_binding(tester):
                     "Network Exposure",
                     "API accessible from all network interfaces (0.0.0.0)",
                 )
+                exposed = True
         except:
             print("    Not accessible from 0.0.0.0 (GOOD)")
+
+        if exposed:
+            pytest.fail("API accessible from all network interfaces (0.0.0.0)")
 
     except Exception as e:
         print(f"    Error: {e}")
@@ -231,6 +238,7 @@ def test_data_injection(tester):
                     "Unauthenticated raw data injection to device",
                 )
                 print("    Successfully injected raw data")
+                pytest.fail("Unauthenticated raw data injection to device succeeded")
 
     except Exception as e:
         print(f"    Data injection blocked or failed: {e}")
@@ -267,6 +275,10 @@ def test_configuration_tampering(tester):
                 # Restore original
                 client.set_dashboard_fps(original_fps)
 
+                pytest.fail(
+                    "Unauthenticated modification of dashboard settings succeeded"
+                )
+
     except Exception as e:
         print(f"    Configuration tampering blocked: {e}")
 
@@ -286,6 +298,9 @@ def test_configuration_tampering(tester):
                 "Unauthenticated modification of frame parser settings",
             )
             print("    Successfully modified frame parser")
+            pytest.fail(
+                "Unauthenticated modification of frame parser settings succeeded"
+            )
 
     except Exception as e:
         print(f"    Frame parser modification blocked: {e}")
@@ -315,6 +330,7 @@ def test_project_manipulation(tester):
                         "Path Traversal",
                         f"Successfully loaded file: {path}",
                     )
+                    pytest.fail(f"Successfully loaded file outside project dir: {path}")
                 except APIError as e:
                     # Good - should be blocked
                     pass
@@ -373,6 +389,9 @@ def test_information_disclosure(tester):
                     "Information Disclosure",
                     f"Status command leaks {len(leaked_info)} potentially sensitive fields",
                 )
+                pytest.fail(
+                    f"Status command leaks potentially sensitive fields: {leaked_info}"
+                )
 
     except Exception as e:
         print(f"    Status query error: {e}")
@@ -396,6 +415,9 @@ def test_information_disclosure(tester):
                         "LOW",
                         "Information Disclosure",
                         f"Error messages leak internal details: {e.message[:100]}",
+                    )
+                    pytest.fail(
+                        f"Error message leaks internal details: {e.message[:100]}"
                     )
 
     except Exception as e:
@@ -435,6 +457,9 @@ def test_cross_client_interference(tester):
 
         client1.disconnect()
         client2.disconnect()
+
+        if fps == 10:
+            pytest.fail("No client isolation - shared global state")
 
     except Exception as e:
         print(f"    Client isolation test error: {e}")

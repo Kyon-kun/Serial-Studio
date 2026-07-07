@@ -204,21 +204,6 @@ void AppState::onProjectLoaded()
   Q_EMIT frameConfigChanged(m_frameConfig);
 }
 
-/**
- * @brief Clears the stored project file path and notifies listeners.
- */
-void AppState::onProjectFileCleared()
-{
-  if (m_projectFilePath.isEmpty())
-    return;
-
-  m_projectFilePath.clear();
-  if (!m_ephemeralSession)
-    m_settings.remove("project_file_path");
-
-  Q_EMIT projectFileChanged();
-}
-
 //--------------------------------------------------------------------------------------------------
 // Private helpers
 //--------------------------------------------------------------------------------------------------

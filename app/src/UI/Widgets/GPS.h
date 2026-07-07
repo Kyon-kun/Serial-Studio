@@ -74,6 +74,7 @@ signals:
 
 public:
   GPS(const int index = -1, QQuickItem* parent = nullptr);
+  ~GPS() override;
   void paint(QPainter* painter) override;
 
   [[nodiscard]] double altitude() const;
@@ -189,6 +190,7 @@ private:
 
   QNetworkAccessManager m_network;
 
+  static QList<GPS*> s_instances;
   static QCache<QString, QImage> s_tileCache;
   static QHash<QString, QNetworkReply*> s_pending;
   static bool s_cacheInitialized;
