@@ -591,7 +591,9 @@ void Widgets::Plot::clampToVisibleX(double& lo, double& hi) const
 }
 
 /**
- * @brief Rebuilds the render data for ZOH or stem interpolation modes.
+ * @brief Rebuilds the render data for ZOH or stem interpolation modes. Stems anchor at
+ *        the same zero-clamped baseline as the area fill, so a one-signed signal never
+ *        drops its stems across the zero line.
  */
 void Widgets::Plot::updateInterpolatedData()
 {
@@ -619,7 +621,10 @@ void Widgets::Plot::updateInterpolatedData()
 
   if (m_interpolationMode == SerialStudio::InterpolationStem) {
     constexpr double kNan = std::numeric_limits<double>::quiet_NaN();
-    const double base     = dataBipolar() ? 0.0 : m_minY;
+
+    double base = 0.0;
+    if (!dataBipolar())
+      base = m_dataMaxY <= 0.0 ? qMin(m_maxY, 0.0) : qMax(m_minY, 0.0);
 
     m_renderData.resize(3 * n);
     QPointF* out      = m_renderData.data();
@@ -822,11 +827,13 @@ void Widgets::Plot::padDerivedRange(double& min, double& max, const bool addPadd
 }
 
 /**
- * @brief Selects the padding strategy for a [min, max] pair before rounding.
+ * @brief Selects the padding strategy for a [min, max] pair before rounding. An empty
+ *        scan leaves the min > max sentinels (all samples non-finite), which would
+ *        otherwise overflow the padding into an infinite axis range.
  */
 void Widgets::Plot::applyAxisPadding(double& min, double& max, const bool addPadding)
 {
-  if (!std::isfinite(min) || !std::isfinite(max)) {
+  if (!std::isfinite(min) || !std::isfinite(max) || min > max) {
     min = 0;
     max = 1;
     return;
