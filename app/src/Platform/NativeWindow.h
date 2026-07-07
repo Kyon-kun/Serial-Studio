@@ -39,34 +39,26 @@ class NativeWindow : public QObject {
              READ csdEnabled
              WRITE setCsdEnabled
              NOTIFY csdEnabledChanged)
-  Q_PROPERTY(bool csdShadowEnabled
-             READ csdShadowEnabled
-             WRITE setCsdShadowEnabled
-             NOTIFY csdShadowEnabledChanged)
   // clang-format on
 
 signals:
   void quitRequested();
   void csdEnabledChanged();
-  void csdShadowEnabledChanged();
 
 public:
   explicit NativeWindow(QObject* parent = nullptr);
 
   void installMacOSQuitInterceptor();
   [[nodiscard]] Q_INVOKABLE int titlebarHeight(QObject* window);
-  [[nodiscard]] Q_INVOKABLE int frameMargin(QObject* window);
   [[nodiscard]] Q_INVOKABLE int frameTopInset(QObject* window);
 
   [[nodiscard]] bool csdAvailable() const;
   [[nodiscard]] bool csdEnabled() const;
-  [[nodiscard]] bool csdShadowEnabled() const;
 
 public slots:
   void removeWindow(QObject* window);
   void addWindow(QObject* window, const QString& color = "");
   void setCsdEnabled(bool enabled);
-  void setCsdShadowEnabled(bool enabled);
 
 private slots:
   void onThemeChanged();
@@ -77,6 +69,5 @@ private:
   QMap<QWindow*, QString> m_colors;
   QList<QWindow*> m_windows;
   QSettings m_settings;
-  bool m_csdShadowEnabled;
   bool m_csdEnabled;
 };

@@ -22,7 +22,6 @@
 #pragma once
 
 #include <QHash>
-#include <QImage>
 #include <QObject>
 #include <QPointer>
 #include <QQuickItem>
@@ -32,7 +31,6 @@
 
 namespace CSD {
 // Chrome dimensions shared between CSD.cpp and NativeWindow_CSD.cpp (pre-show fallback).
-inline constexpr int ShadowRadius            = 24;
 inline constexpr int TitleBarHeight          = 32;
 inline constexpr int TitleBarHeightMaximized = 28;
 
@@ -128,16 +126,12 @@ class Window : public QObject {
   Q_OBJECT
 
 public:
-  explicit Window(QWindow* window,
-                  const QString& color = QString(),
-                  bool shadow          = true,
-                  QObject* parent      = nullptr);
+  explicit Window(QWindow* window, const QString& color = QString(), QObject* parent = nullptr);
   ~Window() override;
 
   [[nodiscard]] QWindow* window() const;
   [[nodiscard]] Titlebar* titleBar() const;
 
-  [[nodiscard]] int shadowMargin() const;
   [[nodiscard]] int titleBarHeight() const;
 
 public slots:
@@ -145,11 +139,9 @@ public slots:
   void setColor(const QString& color);
 
 private slots:
-  void setupFrame();
   void setupBorder();
   void setupTitleBar();
   void updateMinimumSize();
-  void updateFrameGeometry();
   void updateBorderGeometry();
   void onMinimumSizeChanged();
   void setupContentContainer();
@@ -185,8 +177,6 @@ protected:
 
 private:
   bool m_resizing;
-  bool m_shadowEnabled;
-  QQuickItem* m_frame;
   QQuickItem* m_border;
   QString m_color;
   Titlebar* m_titleBar;

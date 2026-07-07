@@ -29,9 +29,7 @@
 #include <QPainterPath>
 #include <QQmlComponent>
 #include <QQmlEngine>
-#include <QQuickImageProvider>
 #include <QQuickWindow>
-#include <QSurfaceFormat>
 #include <QSvgRenderer>
 #include <QTimer>
 #include <QtMath>
@@ -45,25 +43,23 @@ namespace CSD {
 // Platform-specific constants
 //--------------------------------------------------------------------------------------------------
 
-// ShadowRadius / TitleBarHeight / TitleBarHeightMaximized live in CSD.h for pre-show fallback use.
+// TitleBarHeight / TitleBarHeightMaximized live in CSD.h for pre-show fallback use.
 #if defined(Q_OS_WIN)
-constexpr int IconSize        = 16;
-constexpr int IconMargin      = 8;
-constexpr int ButtonSize      = 28;
-constexpr int ButtonWidth     = 46;
-constexpr int ResizeMargin    = 8;
-constexpr int ButtonMargin    = 8;
-constexpr int ButtonSpacing   = 18;
-constexpr qreal ShadowOpacity = 0.10;
+constexpr int IconSize      = 16;
+constexpr int IconMargin    = 8;
+constexpr int ButtonSize    = 28;
+constexpr int ButtonWidth   = 46;
+constexpr int ResizeMargin  = 8;
+constexpr int ButtonMargin  = 8;
+constexpr int ButtonSpacing = 18;
 #else
-constexpr int IconSize        = 16;
-constexpr int IconMargin      = 10;
-constexpr int ButtonSize      = 28;
-constexpr int ButtonWidth     = 32;
-constexpr int ResizeMargin    = 8;
-constexpr int ButtonMargin    = 12;
-constexpr int ButtonSpacing   = 0;
-constexpr qreal ShadowOpacity = 0.10;
+constexpr int IconSize      = 16;
+constexpr int IconMargin    = 10;
+constexpr int ButtonSize    = 28;
+constexpr int ButtonWidth   = 32;
+constexpr int ResizeMargin  = 8;
+constexpr int ButtonMargin  = 12;
+constexpr int ButtonSpacing = 0;
 #endif
 
 /**
@@ -85,118 +81,6 @@ static bool isFixedSizeWindow(const QWindow* window)
 
   return minSize == maxSize;
 }
-
-//--------------------------------------------------------------------------------------------------
-// Shadow atlas (shared 9-slice texture, replaces the per-window full-window shadow backing)
-//--------------------------------------------------------------------------------------------------
-
-namespace detail {
-
-/**
- * @brief Generates a square shadow corner tile fading from opaque (inner) to transparent (outer).
- */
-QImage generateShadowCorner(int size)
-{
-  QImage tile(size, size, QImage::Format_ARGB32_Premultiplied);
-  tile.fill(Qt::transparent);
-
-  const qreal invSize = size > 0 ? 1.0 / static_cast<qreal>(size) : 0.0;
-  for (int y = 0; y < size; ++y) {
-    for (int x = 0; x < size; ++x) {
-      const qreal dx   = static_cast<qreal>(size - x - 1);
-      const qreal dy   = static_cast<qreal>(size - y - 1);
-      const qreal dist = qSqrt(dx * dx + dy * dy);
-
-      qreal alpha  = 1.0 - qMin(dist * invSize, 1.0);
-      alpha        = alpha * alpha * (3.0 - 2.0 * alpha);
-      alpha       *= CSD::ShadowOpacity;
-      tile.setPixelColor(x, y, QColor(0, 0, 0, qRound(alpha * 255)));
-    }
-  }
-
-  return tile;
-}
-
-/**
- * @brief Builds the (2r+1)^2 9-slice atlas: corner tiles + 1px edge gradients + transparent center.
- */
-QImage buildShadowAtlas(int radius)
-{
-  const int n = 2 * radius + 1;
-  QImage atlas(n, n, QImage::Format_ARGB32_Premultiplied);
-  atlas.fill(Qt::transparent);
-
-  const QImage corner = generateShadowCorner(radius);
-  const qreal inv     = radius > 0 ? 1.0 / radius : 0.0;
-
-  QImage hEdge(1, radius, QImage::Format_ARGB32_Premultiplied);
-  hEdge.fill(Qt::transparent);
-  for (int y = 0; y < radius; ++y) {
-    qreal a = 1.0 - static_cast<qreal>(radius - y - 1) * inv;
-    a       = a * a * (3.0 - 2.0 * a) * CSD::ShadowOpacity;
-    hEdge.setPixelColor(0, y, QColor(0, 0, 0, qRound(a * 255)));
-  }
-
-  QImage vEdge(radius, 1, QImage::Format_ARGB32_Premultiplied);
-  vEdge.fill(Qt::transparent);
-  for (int x = 0; x < radius; ++x) {
-    qreal a = 1.0 - static_cast<qreal>(x) * inv;
-    a       = a * a * (3.0 - 2.0 * a) * CSD::ShadowOpacity;
-    vEdge.setPixelColor(x, 0, QColor(0, 0, 0, qRound(a * 255)));
-  }
-
-  QPainter p(&atlas);
-  p.setCompositionMode(QPainter::CompositionMode_Source);
-  p.drawImage(0, 0, corner);
-  p.drawImage(radius + 1, 0, corner.flipped(Qt::Horizontal));
-  p.drawImage(0, radius + 1, corner.flipped(Qt::Vertical));
-  p.drawImage(radius + 1, radius + 1, corner.flipped(Qt::Horizontal | Qt::Vertical));
-  p.drawImage(radius, 0, hEdge);
-  p.drawImage(radius, radius + 1, hEdge.flipped(Qt::Vertical));
-  p.drawImage(0, radius, vEdge.flipped(Qt::Horizontal));
-  p.drawImage(radius + 1, radius, vEdge);
-  p.end();
-
-  return atlas;
-}
-
-/**
- * @brief Serves the shadow 9-slice atlas to BorderImage; "image://csdshadow/<radius>".
- */
-class ShadowImageProvider : public QQuickImageProvider {
-public:
-  /**
-   * @brief Constructs the provider in QImage mode.
-   */
-  ShadowImageProvider() : QQuickImageProvider(QQuickImageProvider::Image) {}
-
-  /**
-   * @brief Returns the shadow atlas for the radius encoded in @p id; transparent 1x1 on failure.
-   */
-  QImage requestImage(const QString& id, QSize* size, const QSize& requestedSize) override
-  {
-    Q_UNUSED(requestedSize);
-
-    bool ok          = false;
-    const int radius = id.toInt(&ok);
-    if (!ok || radius <= 0) {
-      QImage fallback(1, 1, QImage::Format_ARGB32_Premultiplied);
-      fallback.fill(Qt::transparent);
-      if (size)
-        *size = fallback.size();
-
-      return fallback;
-    }
-
-    const QImage atlas = buildShadowAtlas(radius);
-    if (size)
-      *size = atlas.size();
-
-    return atlas;
-  }
-};
-
-}  // namespace detail
 
 //--------------------------------------------------------------------------------------------------
 // Titlebar
@@ -768,11 +652,9 @@ void Titlebar::hoverLeaveEvent(QHoverEvent* event)
 /**
  * @brief Constructs a Window decorator.
  */
-Window::Window(QWindow* window, const QString& color, bool shadow, QObject* parent)
+Window::Window(QWindow* window, const QString& color, QObject* parent)
   : QObject(parent)
   , m_resizing(false)
-  , m_shadowEnabled(shadow)
-  , m_frame(nullptr)
   , m_border(nullptr)
   , m_color(color)
   , m_titleBar(nullptr)
@@ -788,7 +670,6 @@ Window::Window(QWindow* window, const QString& color, bool shadow, QObject* pare
   m_window->setFlags(m_window->flags() | Qt::FramelessWindowHint);
   m_window->installEventFilter(this);
 
-  setupFrame();
   setupContentContainer();
   setupTitleBar();
   setupBorder();
@@ -800,13 +681,9 @@ Window::Window(QWindow* window, const QString& color, bool shadow, QObject* pare
     const auto state      = m_window->windowStates();
     const bool fillScreen = state & (Qt::WindowMaximized | Qt::WindowFullScreen);
 
-    if (m_frame)
-      m_frame->setVisible(!fillScreen);
-
     if (m_border)
       m_border->setVisible(!fillScreen);
 
-    updateFrameGeometry();
     updateBorderGeometry();
     updateContentContainerGeometry();
     updateTitleBarGeometry();
@@ -863,9 +740,6 @@ Window::~Window()
 
     if (m_border)
       m_border->deleteLater();
-
-    if (m_frame)
-      m_frame->deleteLater();
   }
 }
 
@@ -883,24 +757,6 @@ QWindow* Window::window() const
 Titlebar* Window::titleBar() const
 {
   return m_titleBar;
-}
-
-/**
- * @brief Returns the current shadow margin in pixels.
- */
-int Window::shadowMargin() const
-{
-  if (!m_window)
-    return 0;
-
-  if (!m_shadowEnabled)
-    return 0;
-
-  const auto state = m_window->windowStates();
-  if (state & (Qt::WindowMaximized | Qt::WindowFullScreen))
-    return 0;
-
-  return CSD::ShadowRadius;
 }
 
 /**
@@ -931,66 +787,6 @@ void Window::setColor(const QString& color)
 
   m_color = color;
   updateTheme();
-}
-
-/**
- * @brief Creates the drop-shadow as a BorderImage over a shared 9-slice atlas (no per-window
- *        full-window backing); enables the window alpha channel the shadow needs. Skipped
- *        entirely when the shadow is disabled, leaving an opaque frameless window.
- */
-void Window::setupFrame()
-{
-  if (!m_shadowEnabled)
-    return;
-
-  auto* quickWindow = qobject_cast<QQuickWindow*>(m_window.data());
-  if (!quickWindow)
-    return;
-
-  QSurfaceFormat format = quickWindow->format();
-  if (format.alphaBufferSize() < 8) {
-    format.setAlphaBufferSize(8);
-    quickWindow->setFormat(format);
-  }
-
-  quickWindow->setColor(Qt::transparent);
-
-  QQmlEngine* engine = qmlEngine(quickWindow);
-  if (!engine)
-    return;
-
-  if (!engine->imageProvider(QStringLiteral("csdshadow")))
-    engine->addImageProvider(QStringLiteral("csdshadow"), new detail::ShadowImageProvider);
-
-  const QString qml = QStringLiteral("import QtQuick\n"
-                                     "BorderImage {\n"
-                                     "  source: \"image://csdshadow/%1\"\n"
-                                     "  border { left: %1; right: %1; top: %1; bottom: %1 }\n"
-                                     "  horizontalTileMode: BorderImage.Stretch\n"
-                                     "  verticalTileMode: BorderImage.Stretch\n"
-                                     "}\n")
-                        .arg(CSD::ShadowRadius);
-
-  QQmlComponent component(engine);
-  component.setData(qml.toUtf8(), QUrl());
-  if (component.isError()) {
-    for (const auto& error : component.errors())
-      qWarning() << "CSD frame QML error:" << error.toString();
-
-    return;
-  }
-
-  m_frame = qobject_cast<QQuickItem*>(component.create());
-  if (!m_frame)
-    return;
-
-  m_frame->setParentItem(quickWindow->contentItem());
-  m_frame->setZ(-1);
-
-  connect(quickWindow, &QQuickWindow::widthChanged, this, &Window::updateFrameGeometry);
-  connect(quickWindow, &QQuickWindow::heightChanged, this, &Window::updateFrameGeometry);
-
-  updateFrameGeometry();
 }
 
 /**
@@ -1091,27 +887,13 @@ void Window::updateMinimumSize()
     return;
 
   m_minSize                  = preferredSize();
-  const int margin           = shadowMargin();
   const int tbHeight         = titleBarHeight();
-  const int minWidth         = qMax(0, m_minSize.width()) + 2 * margin;
-  const int minHeight        = qMax(0, m_minSize.height()) + 2 * margin + tbHeight;
+  const int minWidth         = qMax(0, m_minSize.width());
+  const int minHeight        = qMax(0, m_minSize.height()) + tbHeight;
   const int minTitleBarWidth = 3 * (CSD::ButtonSize + CSD::ButtonSpacing) + 2 * CSD::ButtonMargin
                              + CSD::IconSize + 2 * CSD::IconMargin;
 
-  m_window->setMinimumSize(
-    QSize(qMax(minWidth, minTitleBarWidth + 2 * margin), qMax(minHeight, tbHeight + 2 * margin)));
-}
-
-/**
- * @brief Updates the frame position and size to fill the window.
- */
-void Window::updateFrameGeometry()
-{
-  if (!m_frame || !m_window)
-    return;
-
-  m_frame->setPosition(QPointF(0, 0));
-  m_frame->setSize(QSizeF(m_window->width(), m_window->height()));
+  m_window->setMinimumSize(QSize(qMax(minWidth, minTitleBarWidth), qMax(minHeight, tbHeight)));
 }
 
 /**
@@ -1122,9 +904,8 @@ void Window::updateBorderGeometry()
   if (!m_border || !m_window)
     return;
 
-  const int margin = shadowMargin();
-  m_border->setPosition(QPointF(margin, margin));
-  m_border->setSize(QSizeF(m_window->width() - 2 * margin, m_window->height() - 2 * margin));
+  m_border->setPosition(QPointF(0, 0));
+  m_border->setSize(QSizeF(m_window->width(), m_window->height()));
 }
 
 /**
@@ -1133,18 +914,18 @@ void Window::updateBorderGeometry()
 void Window::onMinimumSizeChanged()
 {
   const auto size = preferredSize();
-  const int expW  = m_minSize.width() + 2 * shadowMargin();
-  const int expH  = m_minSize.height() + 2 * shadowMargin() + titleBarHeight();
+  const int expW  = m_minSize.width();
+  const int expH  = m_minSize.height() + titleBarHeight();
 
   bool changed = false;
   if (size.width() != expW) {
     changed = true;
-    m_minSize.setWidth(size.width() - 2 * shadowMargin());
+    m_minSize.setWidth(size.width());
   }
 
   if (size.height() != expH) {
     changed = true;
-    m_minSize.setHeight(size.height() - 2 * shadowMargin() - titleBarHeight());
+    m_minSize.setHeight(size.height() - titleBarHeight());
   }
 
   if (changed)
@@ -1210,11 +991,8 @@ void Window::updateTitleBarGeometry()
   if (!m_titleBar || !m_window)
     return;
 
-  const int margin = shadowMargin();
-  const qreal w    = m_window->width() - 2 * margin;
-
-  m_titleBar->setPosition(QPointF(margin, margin));
-  m_titleBar->setSize(QSizeF(w, titleBarHeight()));
+  m_titleBar->setPosition(QPointF(0, 0));
+  m_titleBar->setSize(QSizeF(m_window->width(), titleBarHeight()));
 }
 
 /**
@@ -1225,12 +1003,11 @@ void Window::updateContentContainerGeometry()
   if (!m_contentContainer || !m_window)
     return;
 
-  const int margin   = shadowMargin();
   const int tbHeight = titleBarHeight();
-  const qreal w      = m_window->width() - 2 * margin;
-  const qreal h      = m_window->height() - 2 * margin - tbHeight;
+  const qreal w      = m_window->width();
+  const qreal h      = m_window->height() - tbHeight;
 
-  m_contentContainer->setPosition(QPointF(margin, margin + tbHeight));
+  m_contentContainer->setPosition(QPointF(0, tbHeight));
   m_contentContainer->setSize(QSizeF(w, h));
 
   const auto children = m_contentContainer->childItems();
@@ -1289,7 +1066,7 @@ void Window::reparentChildToContainer(QQuickItem* child)
   if (!child || !m_contentContainer)
     return;
 
-  if (child == m_frame || child == m_border || child == m_titleBar || child == m_contentContainer)
+  if (child == m_border || child == m_titleBar || child == m_contentContainer)
     return;
 
   if (child->parentItem() == m_contentContainer)
@@ -1311,10 +1088,9 @@ Window::ResizeEdge Window::edgeAt(const QPointF& pos) const
   if (isFixedSizeWindow(m_window))
     return ResizeEdge::None;
 
-  const int margin = shadowMargin();
-  const int w      = m_window->width();
-  const int h      = m_window->height();
-  const int area   = margin + CSD::ResizeMargin;
+  const int w    = m_window->width();
+  const int h    = m_window->height();
+  const int area = CSD::ResizeMargin;
 
   int edge = static_cast<int>(ResizeEdge::None);
 

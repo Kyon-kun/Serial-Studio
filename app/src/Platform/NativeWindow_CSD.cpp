@@ -24,6 +24,11 @@
 
 #if defined(Q_OS_WIN)
 #  include <dwmapi.h>
+#  include <windows.h>
+
+#  include <QAbstractNativeEventFilter>
+#  include <QGuiApplication>
+#  include <QSet>
 #endif
 
 #include "CSD.h"
@@ -35,6 +40,10 @@
 //--------------------------------------------------------------------------------------------------
 
 static QHash<QWindow*, CSD::Window*> s_decorators;
+
+#if defined(Q_OS_WIN)
+static QSet<QWindow*> s_shadowWindows;
+#endif
 
 //--------------------------------------------------------------------------------------------------
 // Helper function to detect Windows 11
@@ -54,6 +63,107 @@ static bool isWindows11()
 }
 
 //--------------------------------------------------------------------------------------------------
+// Windows 10 native shadow (DWM-drawn; only the Win32 frame visuals get removed)
+//--------------------------------------------------------------------------------------------------
+
+#if defined(Q_OS_WIN)
+
+/**
+ * @brief Answers WM_NCCALCSIZE for tracked CSD windows with the full window rect (inset by the
+ *        system frame when maximized), so the restored WS_THICKFRAME never draws a native frame
+ *        while DWM keeps rendering the drop shadow.
+ */
+class CsdNativeShadowFilter : public QAbstractNativeEventFilter {
+public:
+  /**
+   * @brief Filters Windows messages for the tracked windows; consumes only WM_NCCALCSIZE.
+   *        Matching resolves each window's live handle, so a destroyed or recreated platform
+   *        window can never be confused with a recycled HWND value.
+   */
+  bool nativeEventFilter(const QByteArray& eventType, void* message, qintptr* result) override
+  {
+    Q_ASSERT(message != nullptr);
+    Q_ASSERT(result != nullptr);
+
+    if (eventType != "windows_generic_MSG")
+      return false;
+
+    auto* msg = static_cast<MSG*>(message);
+    if (msg->message != WM_NCCALCSIZE || msg->wParam != TRUE)
+      return false;
+
+    bool tracked = false;
+    for (auto it = s_shadowWindows.cbegin(); it != s_shadowWindows.cend() && !tracked; ++it)
+      tracked = ((*it)->handle() != nullptr && reinterpret_cast<HWND>((*it)->winId()) == msg->hwnd);
+
+    if (!tracked)
+      return false;
+
+    if (IsZoomed(msg->hwnd)) {
+      const UINT dpi          = GetDpiForWindow(msg->hwnd);
+      const int pad           = GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
+      const int fx            = GetSystemMetricsForDpi(SM_CXSIZEFRAME, dpi) + pad;
+      const int fy            = GetSystemMetricsForDpi(SM_CYSIZEFRAME, dpi) + pad;
+      auto* params            = reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
+      params->rgrc[0].left   += fx;
+      params->rgrc[0].top    += fy;
+      params->rgrc[0].right  -= fx;
+      params->rgrc[0].bottom -= fy;
+    }
+
+    *result = 0;
+    return true;
+  }
+};
+
+/**
+ * @brief Restores the resizable Win32 frame styles on a frameless CSD window and registers it
+ *        with the NCCALCSIZE filter (installed once), so DWM draws the native drop shadow and
+ *        aero-snap keeps working. winId() force-creates the platform window, which is safe
+ *        because every caller runs while the window is being shown.
+ */
+static void enableNativeShadow(QWindow* window)
+{
+  Q_ASSERT(window != nullptr);
+  if (!window)
+    return;
+
+  static CsdNativeShadowFilter s_filter;
+  static bool s_filterInstalled = false;
+  if (!s_filterInstalled) {
+    qGuiApp->installNativeEventFilter(&s_filter);
+    s_filterInstalled = true;
+  }
+
+  auto* hwnd = reinterpret_cast<HWND>(window->winId());
+  Q_ASSERT(hwnd != nullptr);
+  if (!hwnd)
+    return;
+
+  const LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+  if (style == 0)
+    return;
+
+  s_shadowWindows.insert(window);
+
+  (void)SetWindowLongPtr(
+    hwnd, GWL_STYLE, style | WS_THICKFRAME | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+
+  const MARGINS margins = {0, 0, 1, 0};
+  (void)DwmExtendFrameIntoClientArea(hwnd, &margins);
+
+  (void)SetWindowPos(hwnd,
+                     nullptr,
+                     0,
+                     0,
+                     0,
+                     0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+}
+
+#endif
+
+//--------------------------------------------------------------------------------------------------
 // Constructor & initialization
 //--------------------------------------------------------------------------------------------------
 
@@ -61,9 +171,7 @@ static bool isWindows11()
  * @brief Constructs NativeWindow.
  */
 NativeWindow::NativeWindow(QObject* parent)
-  : QObject(parent)
-  , m_csdShadowEnabled(m_settings.value("Window/CSDShadowEnabled", true).toBool())
-  , m_csdEnabled(m_settings.value("Window/CSDEnabled", true).toBool())
+  : QObject(parent), m_csdEnabled(m_settings.value("Window/CSDEnabled", true).toBool())
 {
   connect(&Misc::ThemeManager::instance(),
           &Misc::ThemeManager::themeChanged,
@@ -88,14 +196,6 @@ bool NativeWindow::csdEnabled() const
 }
 
 /**
- * @brief Returns whether the CSD drop-shadow is enabled.
- */
-bool NativeWindow::csdShadowEnabled() const
-{
-  return m_csdShadowEnabled;
-}
-
-/**
  * @brief Persists the CSD decoration preference; applied to windows created afterwards.
  */
 void NativeWindow::setCsdEnabled(bool enabled)
@@ -106,19 +206,6 @@ void NativeWindow::setCsdEnabled(bool enabled)
   m_csdEnabled = enabled;
   m_settings.setValue("Window/CSDEnabled", m_csdEnabled);
   Q_EMIT csdEnabledChanged();
-}
-
-/**
- * @brief Persists the CSD shadow preference; applied to windows created afterwards.
- */
-void NativeWindow::setCsdShadowEnabled(bool enabled)
-{
-  if (m_csdShadowEnabled == enabled)
-    return;
-
-  m_csdShadowEnabled = enabled;
-  m_settings.setValue("Window/CSDShadowEnabled", m_csdShadowEnabled);
-  Q_EMIT csdShadowEnabledChanged();
 }
 
 /**
@@ -140,25 +227,7 @@ int NativeWindow::titlebarHeight(QObject* window)
 }
 
 /**
- * @brief Returns the horizontal/bottom shadow margin reserved by CSD around the content area.
- */
-int NativeWindow::frameMargin(QObject* window)
-{
-  auto* w = qobject_cast<QWindow*>(window);
-  if (!w)
-    return 0;
-
-  if (isWindows11() || !m_csdEnabled)
-    return 0;
-
-  if (auto* decorator = s_decorators.value(w, nullptr))
-    return decorator->shadowMargin();
-
-  return m_csdShadowEnabled ? CSD::ShadowRadius : 0;
-}
-
-/**
- * @brief Returns the total top inset (shadow + CSD titlebar) reserved above the content area.
+ * @brief Returns the CSD titlebar height reserved above the content area.
  */
 int NativeWindow::frameTopInset(QObject* window)
 {
@@ -170,9 +239,9 @@ int NativeWindow::frameTopInset(QObject* window)
     return 0;
 
   if (auto* decorator = s_decorators.value(w, nullptr))
-    return decorator->shadowMargin() + decorator->titleBarHeight();
+    return decorator->titleBarHeight();
 
-  return (m_csdShadowEnabled ? CSD::ShadowRadius : 0) + CSD::TitleBarHeight;
+  return CSD::TitleBarHeight;
 }
 
 /**
@@ -192,6 +261,10 @@ void NativeWindow::removeWindow(QObject* window)
   m_colors.remove(w);
 
   disconnect(w, nullptr, this, nullptr);
+
+#if defined(Q_OS_WIN)
+  s_shadowWindows.remove(w);
+#endif
 
   auto* decorator = s_decorators.value(w, nullptr);
   if (decorator) {
@@ -240,12 +313,21 @@ void NativeWindow::addWindow(QObject* window, const QString& color)
   }
 
   else if (m_csdEnabled) {
-    auto* decorator = new CSD::Window(w, color, m_csdShadowEnabled, this);
+    auto* decorator = new CSD::Window(w, color, this);
     s_decorators.insert(w, decorator);
+
+#if defined(Q_OS_WIN)
+    enableNativeShadow(w);
+#endif
+
     connect(w, &QObject::destroyed, this, [this, w]() {
       auto* dec = s_decorators.value(w, nullptr);
       s_decorators.remove(w);
       delete dec;
+
+#if defined(Q_OS_WIN)
+      s_shadowWindows.remove(w);
+#endif
 
       auto index = m_windows.indexOf(w);
       if (index != -1 && index >= 0) {

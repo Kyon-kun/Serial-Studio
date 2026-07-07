@@ -154,6 +154,9 @@ static void MessageHandler(QtMsgType type, const QMessageLogContext& context, co
     if (msg.contains("setGeometry"))
       return;
 
+    if (msg.contains("Retrying to obtain clipboard."))
+      return;
+
     if (msg.contains("The following paths were searched for Qt WebEngine locales"))
       return;
 

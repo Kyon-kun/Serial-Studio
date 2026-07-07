@@ -58,7 +58,6 @@ static NSApplicationTerminateReply swizzled_applicationShouldTerminate(id self, 
  */
 NativeWindow::NativeWindow(QObject *parent)
   : QObject(parent)
-  , m_csdShadowEnabled(m_settings.value("Window/CSDShadowEnabled", true).toBool())
   , m_csdEnabled(m_settings.value("Window/CSDEnabled", true).toBool())
 {
   connect(&Misc::ThemeManager::instance(), &Misc::ThemeManager::themeChanged,
@@ -82,14 +81,6 @@ bool NativeWindow::csdEnabled() const
 }
 
 /**
- * @brief Returns whether the CSD drop-shadow is enabled.
- */
-bool NativeWindow::csdShadowEnabled() const
-{
-  return m_csdShadowEnabled;
-}
-
-/**
  * @brief Persists the CSD decoration preference (inert on macOS).
  */
 void NativeWindow::setCsdEnabled(bool enabled)
@@ -100,19 +91,6 @@ void NativeWindow::setCsdEnabled(bool enabled)
   m_csdEnabled = enabled;
   m_settings.setValue("Window/CSDEnabled", m_csdEnabled);
   Q_EMIT csdEnabledChanged();
-}
-
-/**
- * @brief Persists the CSD shadow preference (inert on macOS).
- */
-void NativeWindow::setCsdShadowEnabled(bool enabled)
-{
-  if (m_csdShadowEnabled == enabled)
-    return;
-
-  m_csdShadowEnabled = enabled;
-  m_settings.setValue("Window/CSDShadowEnabled", m_csdShadowEnabled);
-  Q_EMIT csdShadowEnabledChanged();
 }
 
 /**
@@ -162,15 +140,6 @@ int NativeWindow::titlebarHeight(QObject *window)
 
   else
     return 32;
-}
-
-/**
- * @brief No-op on macOS; native frames have no extra horizontal/bottom inset.
- */
-int NativeWindow::frameMargin(QObject *window)
-{
-  Q_UNUSED(window)
-  return 0;
 }
 
 /**

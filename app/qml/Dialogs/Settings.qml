@@ -240,26 +240,6 @@ Widgets.SmartDialog {
           }
 
           Label {
-            opacity: enabled ? 1 : 0.5
-            text: qsTr("Window Shadow")
-            enabled: Cpp_NativeWindow.csdEnabled
-            visible: Cpp_NativeWindow.csdAvailable
-            color: Cpp_ThemeManager.colors["text"]
-          } Switch {
-            Layout.rightMargin: -8
-            opacity: enabled ? 1 : 0.5
-            Layout.alignment: Qt.AlignRight
-            enabled: Cpp_NativeWindow.csdEnabled
-            visible: Cpp_NativeWindow.csdAvailable
-            checked: Cpp_NativeWindow.csdShadowEnabled
-            palette.highlight: Cpp_ThemeManager.colors["switch_highlight"]
-            onCheckedChanged: {
-              if (checked !== Cpp_NativeWindow.csdShadowEnabled)
-                Cpp_NativeWindow.csdShadowEnabled = checked
-            }
-          }
-
-          Label {
             Layout.columnSpan: 2
             Layout.fillWidth: true
             Layout.topMargin: -2

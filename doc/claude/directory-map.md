@@ -28,7 +28,8 @@ app/src/
 ├── Sessions/  (Pro) DatabaseManager + Sessions::Export + Sessions::Player
 ├── MQTT/            Publisher (FrameConsumer-based, threaded, rate-limited 1-30 Hz)
 ├── Licensing/       LemonSqueezy, Trial, MachineID, CommercialToken (FeatureTier)
-├── Platform/        CSD, NativeWindow
+├── Platform/        CSD, NativeWindow (true-size CSD windows: no painted shadow; Win10 gets a
+│                    DWM-drawn shadow via WM_NCCALCSIZE filter, Linux the 1px border)
 ├── Misc/            JsonValidator, ThemeManager, ModuleManager
 ├── AppState.h       Singleton: OperationMode, projectFilePath, FrameConfig
 ├── SerialStudio.h   Central enums (BusType, OperationMode, FrameDetection)

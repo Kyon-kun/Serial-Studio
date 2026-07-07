@@ -30,7 +30,6 @@ Window {
   // Custom properties
   //
   property int titlebarHeight: 0
-  property int frameMargin: 0
   property int frameTopInset: 0
   property bool staysOnTop: false
   property bool fixedSize: true
@@ -49,12 +48,12 @@ Window {
   //
   // Window sizing: internal padding + titlebar/CSD frame wrap the preferred size
   //
-  width: preferredWidth + 2 * contentPadding + 2 * frameMargin
-  minimumWidth: preferredWidth + 2 * contentPadding + 2 * frameMargin
-  maximumWidth: fixedSize ? preferredWidth + 2 * contentPadding + 2 * frameMargin : 16777215
-  height: preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset + frameMargin
-  minimumHeight: preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset + frameMargin
-  maximumHeight: fixedSize ? preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset + frameMargin : 16777215
+  width: preferredWidth + 2 * contentPadding
+  minimumWidth: preferredWidth + 2 * contentPadding
+  maximumWidth: fixedSize ? preferredWidth + 2 * contentPadding : 16777215
+  height: preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset
+  minimumHeight: preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset
+  maximumHeight: fixedSize ? preferredHeight + contentPadding * 1.50 + titlebarHeight + frameTopInset : 16777215
 
   //
   // Configure window flags and seed CSD chrome insets before first show
@@ -72,7 +71,6 @@ Window {
 
     if (root.nativeWindow) {
       root.titlebarHeight = Cpp_NativeWindow.titlebarHeight(root)
-      root.frameMargin = Cpp_NativeWindow.frameMargin(root)
       root.frameTopInset = Cpp_NativeWindow.frameTopInset(root)
     }
   }
@@ -90,7 +88,6 @@ Window {
       Cpp_NativeWindow.removeWindow(root)
 
     root.titlebarHeight = Cpp_NativeWindow.titlebarHeight(root)
-    root.frameMargin = Cpp_NativeWindow.frameMargin(root)
     root.frameTopInset = Cpp_NativeWindow.frameTopInset(root)
   }
 
