@@ -163,6 +163,7 @@ private:
   struct EndpointInfo {
     uint8_t address;
     uint8_t attributes;
+    uint8_t altSetting;
     uint16_t maxPacketSize;
     int interfaceNumber;
     QString label;
@@ -171,7 +172,10 @@ private:
   void buildEndpointLists();
   void clearEndpointLists();
   void allocateIsoTransfers();
-  void collectEndpoint(const libusb_endpoint_descriptor& ep, int ifNum, bool wantIso);
+  void collectEndpoint(const libusb_endpoint_descriptor& ep,
+                       int ifNum,
+                       uint8_t altSetting,
+                       bool wantIso);
   void eventLoop();
 
   void stopReadThread();
@@ -180,12 +184,13 @@ private:
   void freeTransfers();
 
   [[nodiscard]] QString endpointErrorMessage() const;
+  [[nodiscard]] bool activateSelectedEndpoints();
 
   void readLoop();
   void isoReadLoop();
 
   bool claimInterface(int ifaceNum);
-  void releaseInterface();
+  void releaseInterfaces();
 
   [[nodiscard]] bool deviceSerialMatches(libusb_device* device,
                                          const libusb_device_descriptor& desc,
@@ -212,7 +217,6 @@ private:
   int m_deviceIndex;
   int m_inEndpointIndex;
   int m_outEndpointIndex;
-  int m_claimedInterface;
   int m_isoPacketSize;
 
   TransferMode m_transferMode;
@@ -229,6 +233,7 @@ private:
   QStringList m_deviceLabels;
   QList<libusb_device*> m_devicePtrs;
 
+  QList<int> m_claimedInterfaces;
   QList<EndpointInfo> m_inEndpoints;
   QList<EndpointInfo> m_outEndpoints;
   QStringList m_inEndpointLabels;
@@ -236,6 +241,8 @@ private:
 
   uint8_t m_activeInEp;
   uint8_t m_activeOutEp;
+  uint8_t m_activeInEpType;
+  uint8_t m_activeOutEpType;
 
   QList<libusb_transfer*> m_isoTransfers;
 };

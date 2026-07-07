@@ -86,7 +86,7 @@ Item {
       opacity: enabled ? 1 : 0.5
       enabled: deviceCombo.currentIndex > 0 && app.ioEnabled
       model: [
-        qsTr("Bulk Stream"),
+        qsTr("Bulk/Interrupt Stream"),
         qsTr("Advanced (Bulk + Control)"),
         qsTr("Isochronous")
       ]
@@ -102,6 +102,109 @@ Item {
         function onTransferModeChanged() {
           if (modeCombo.currentIndex !== Cpp_IO_USB.transferMode)
             modeCombo.currentIndex = Cpp_IO_USB.transferMode
+        }
+      }
+    }
+
+    //
+    // IN endpoint (populated at device selection; locked while connected)
+    //
+    Label {
+      opacity: enabled ? 1 : 0.5
+      text: qsTr("IN Endpoint") + ":"
+      visible: deviceCombo.currentIndex > 0
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+    } Widgets.Combo {
+      id: inEndpointCombo
+
+      Layout.fillWidth: true
+      opacity: enabled ? 1 : 0.5
+      model: Cpp_IO_USB.inEndpointList
+      visible: deviceCombo.currentIndex > 0
+      currentIndex: Cpp_IO_USB.inEndpointIndex
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+
+      onActivated: (index) => {
+        if (enabled && index !== Cpp_IO_USB.inEndpointIndex)
+          Cpp_IO_USB.inEndpointIndex = index
+      }
+
+      Connections {
+        target: Cpp_IO_USB
+        function onInEndpointIndexChanged() {
+          if (inEndpointCombo.currentIndex !== Cpp_IO_USB.inEndpointIndex)
+            inEndpointCombo.currentIndex = Cpp_IO_USB.inEndpointIndex
+        }
+        function onEndpointListChanged() {
+          inEndpointCombo.model = Cpp_IO_USB.inEndpointList
+          inEndpointCombo.currentIndex = Cpp_IO_USB.inEndpointIndex
+        }
+      }
+    }
+
+    //
+    // OUT endpoint (populated at device selection; locked while connected)
+    //
+    Label {
+      opacity: enabled ? 1 : 0.5
+      text: qsTr("OUT Endpoint") + ":"
+      visible: deviceCombo.currentIndex > 0
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+    } Widgets.Combo {
+      id: outEndpointCombo
+
+      Layout.fillWidth: true
+      opacity: enabled ? 1 : 0.5
+      model: Cpp_IO_USB.outEndpointList
+      visible: deviceCombo.currentIndex > 0
+      currentIndex: Cpp_IO_USB.outEndpointIndex
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+
+      onActivated: (index) => {
+        if (enabled && index !== Cpp_IO_USB.outEndpointIndex)
+          Cpp_IO_USB.outEndpointIndex = index
+      }
+
+      Connections {
+        target: Cpp_IO_USB
+        function onOutEndpointIndexChanged() {
+          if (outEndpointCombo.currentIndex !== Cpp_IO_USB.outEndpointIndex)
+            outEndpointCombo.currentIndex = Cpp_IO_USB.outEndpointIndex
+        }
+        function onEndpointListChanged() {
+          outEndpointCombo.model = Cpp_IO_USB.outEndpointList
+          outEndpointCombo.currentIndex = Cpp_IO_USB.outEndpointIndex
+        }
+      }
+    }
+
+    //
+    // ISO packet size (only shown in Isochronous mode; locked while connected)
+    //
+    Label {
+      opacity: enabled ? 1 : 0.5
+      text: qsTr("Max Packet Size") + ":"
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+      visible: Cpp_IO_USB.isoModeEnabled && deviceCombo.currentIndex > 0
+    } SpinBox {
+      id: isoPacketSpin
+
+      from: 1
+      to: 49152
+      stepSize: 64
+      Layout.fillWidth: true
+      opacity: enabled ? 1 : 0.5
+      value: Cpp_IO_USB.isoPacketSize
+      enabled: app.ioEnabled && !Cpp_IO_Manager.isConnected
+      visible: Cpp_IO_USB.isoModeEnabled && deviceCombo.currentIndex > 0
+
+      onValueModified: Cpp_IO_USB.isoPacketSize = value
+
+      Connections {
+        target: Cpp_IO_USB
+        function onIsoPacketSizeChanged() {
+          if (isoPacketSpin.value !== Cpp_IO_USB.isoPacketSize)
+            isoPacketSpin.value = Cpp_IO_USB.isoPacketSize
         }
       }
     }
@@ -162,105 +265,31 @@ Item {
     }
 
     //
-    // IN endpoint (only shown while connected; populated after open())
+    // No usable endpoints warning
     //
-    Label {
-      opacity: enabled ? 1 : 0.5
-      text: qsTr("IN Endpoint") + ":"
-      visible: Cpp_IO_Manager.isConnected
-      enabled: Cpp_IO_Manager.isConnected
-    } Widgets.Combo {
-      id: inEndpointCombo
-
+    RowLayout {
+      spacing: 8
+      Layout.columnSpan: 2
       Layout.fillWidth: true
-      opacity: enabled ? 1 : 0.5
-      model: Cpp_IO_USB.inEndpointList
-      visible: Cpp_IO_Manager.isConnected
-      enabled: Cpp_IO_Manager.isConnected
-      currentIndex: Cpp_IO_USB.inEndpointIndex
+      visible: deviceCombo.currentIndex > 0 && Cpp_IO_USB.inEndpointList.length <= 1
 
-      onActivated: (index) => {
-        if (enabled && index !== Cpp_IO_USB.inEndpointIndex)
-          Cpp_IO_USB.inEndpointIndex = index
+      Image {
+        sourceSize.width: 20
+        sourceSize.height: 20
+        Layout.alignment: Qt.AlignTop
+        source: "qrc:/icons/panes/important.svg"
       }
 
-      Connections {
-        target: Cpp_IO_USB
-        function onInEndpointIndexChanged() {
-          if (inEndpointCombo.currentIndex !== Cpp_IO_USB.inEndpointIndex)
-            inEndpointCombo.currentIndex = Cpp_IO_USB.inEndpointIndex
-        }
-        function onEndpointListChanged() {
-          inEndpointCombo.model = Cpp_IO_USB.inEndpointList
-          inEndpointCombo.currentIndex = Cpp_IO_USB.inEndpointIndex
-        }
-      }
-    }
-
-    //
-    // OUT endpoint (only shown while connected)
-    //
-    Label {
-      opacity: enabled ? 1 : 0.5
-      text: qsTr("OUT Endpoint") + ":"
-      visible: Cpp_IO_Manager.isConnected
-      enabled: Cpp_IO_Manager.isConnected
-    } Widgets.Combo {
-      id: outEndpointCombo
-
-      Layout.fillWidth: true
-      opacity: enabled ? 1 : 0.5
-      model: Cpp_IO_USB.outEndpointList
-      visible: Cpp_IO_Manager.isConnected
-      enabled: Cpp_IO_Manager.isConnected
-      currentIndex: Cpp_IO_USB.outEndpointIndex
-
-      onActivated: (index) => {
-        if (enabled && index !== Cpp_IO_USB.outEndpointIndex)
-          Cpp_IO_USB.outEndpointIndex = index
-      }
-
-      Connections {
-        target: Cpp_IO_USB
-        function onOutEndpointIndexChanged() {
-          if (outEndpointCombo.currentIndex !== Cpp_IO_USB.outEndpointIndex)
-            outEndpointCombo.currentIndex = Cpp_IO_USB.outEndpointIndex
-        }
-        function onEndpointListChanged() {
-          outEndpointCombo.model = Cpp_IO_USB.outEndpointList
-          outEndpointCombo.currentIndex = Cpp_IO_USB.outEndpointIndex
-        }
-      }
-    }
-
-    //
-    // ISO packet size (only shown while connected in Isochronous mode)
-    //
-    Label {
-      opacity: enabled ? 1 : 0.5
-      text: qsTr("Max Packet Size") + ":"
-      visible: Cpp_IO_Manager.isConnected && Cpp_IO_USB.isoModeEnabled
-      enabled: Cpp_IO_Manager.isConnected
-    } SpinBox {
-      id: isoPacketSpin
-
-      from: 1
-      to: 49152
-      stepSize: 64
-      Layout.fillWidth: true
-      opacity: enabled ? 1 : 0.5
-      value: Cpp_IO_USB.isoPacketSize
-      enabled: Cpp_IO_Manager.isConnected
-      visible: Cpp_IO_Manager.isConnected && Cpp_IO_USB.isoModeEnabled
-
-      onValueModified: Cpp_IO_USB.isoPacketSize = value
-
-      Connections {
-        target: Cpp_IO_USB
-        function onIsoPacketSizeChanged() {
-          if (isoPacketSpin.value !== Cpp_IO_USB.isoPacketSize)
-            isoPacketSpin.value = Cpp_IO_USB.isoPacketSize
-        }
+      Label {
+        opacity: 0.85
+        Layout.fillWidth: true
+        wrapMode: Label.WordWrap
+        Layout.alignment: Qt.AlignVCenter
+        font: Cpp_Misc_CommonFonts.customUiFont(0.9, false)
+        text: qsTr("No compatible data endpoints were found for this transfer "
+                 + "mode. Try another transfer mode. Devices that speak a "
+                 + "dedicated protocol (e.g. CAN or Modbus adapters) should be "
+                 + "connected through their own driver instead.")
       }
     }
 
@@ -269,10 +298,10 @@ Item {
     //
     Item {
       implicitHeight: 4
-      visible: Cpp_IO_USB.advancedModeEnabled || (Cpp_IO_Manager.isConnected && Cpp_IO_USB.isoModeEnabled)
+      visible: Cpp_IO_USB.advancedModeEnabled || (Cpp_IO_USB.isoModeEnabled && deviceCombo.currentIndex > 0)
     } Item {
       implicitHeight: 4
-      visible: Cpp_IO_USB.advancedModeEnabled || (Cpp_IO_Manager.isConnected && Cpp_IO_USB.isoModeEnabled)
+      visible: Cpp_IO_USB.advancedModeEnabled || (Cpp_IO_USB.isoModeEnabled && deviceCombo.currentIndex > 0)
     }
 
     //
@@ -327,13 +356,13 @@ Item {
     }
 
     //
-    // Isochronous info notice (only shown post-connect when controls are visible)
+    // Isochronous info notice (shown whenever the packet-size control is visible)
     //
     RowLayout {
       spacing: 8
       Layout.columnSpan: 2
       Layout.fillWidth: true
-      visible: Cpp_IO_Manager.isConnected && Cpp_IO_USB.isoModeEnabled
+      visible: Cpp_IO_USB.isoModeEnabled && deviceCombo.currentIndex > 0
 
       Image {
         sourceSize.width: 20

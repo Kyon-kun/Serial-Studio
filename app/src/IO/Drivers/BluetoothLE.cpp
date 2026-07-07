@@ -451,6 +451,10 @@ IO::Drivers::BluetoothLE::BluetoothLE()
           &IO::Drivers::BluetoothLE::characteristicIndexChanged,
           this,
           &IO::Drivers::BluetoothLE::configurationChanged);
+  connect(this,
+          &IO::Drivers::BluetoothLE::adapterAvailabilityChanged,
+          this,
+          &IO::Drivers::BluetoothLE::configurationChanged);
 
   connect(this, &IO::Drivers::BluetoothLE::error, this, [=](const QString& message) {
     Misc::Utilities::showMessageBox(tr("BLE I/O Module Error"), message, QMessageBox::Critical);
@@ -890,14 +894,25 @@ void IO::Drivers::BluetoothLE::startDiscovery()
 }
 
 /**
- * @brief Changes the index of the device selected by the user.
+ * @brief Changes the index of the device selected by the user. Selecting the placeholder entry
+ * (index 0) clears the selection so the connect button reflects the real configuration state.
  */
 void IO::Drivers::BluetoothLE::selectDevice(const int index)
 {
   if (!operatingSystemSupported())
     return;
 
-  if (index <= 0 && (m_deviceConnected || m_deviceIndex >= 0))
+  if (index <= 0) {
+    if (m_deviceIndex < 0 && !m_deviceConnected)
+      return;
+
+    close();
+    m_deviceIndex = -1;
+    Q_EMIT deviceIndexChanged();
+    return;
+  }
+
+  if (index - 1 >= s_devices.count())
     return;
 
   close();
@@ -1356,6 +1371,7 @@ void IO::Drivers::BluetoothLE::onHostModeStateChanged(QBluetoothLocalDevice::Hos
       inst->close();
       inst->m_deviceIndex = -1;
       Q_EMIT inst->devicesChanged();
+      Q_EMIT inst->deviceIndexChanged();
     }
   }
 }

@@ -61,7 +61,6 @@ IO::Drivers::USB::USB()
   , m_deviceIndex(0)
   , m_inEndpointIndex(0)
   , m_outEndpointIndex(0)
-  , m_claimedInterface(-1)
   , m_isoPacketSize(kDefaultIsoPacketSize)
   , m_transferMode(TransferMode::BulkStream)
   , m_running(false)
@@ -69,6 +68,8 @@ IO::Drivers::USB::USB()
   , m_isoInFlight(0)
   , m_activeInEp(0)
   , m_activeOutEp(0)
+  , m_activeInEpType(0)
+  , m_activeOutEpType(0)
 {
   if (libusb_init(&m_ctx) < 0)
     m_ctx = nullptr;
@@ -128,7 +129,7 @@ IO::Drivers::USB::~USB()
     libusb_unref_device(dev);
 
   if (m_handle) {
-    releaseInterface();
+    releaseInterfaces();
     libusb_close(m_handle);
     m_handle = nullptr;
   }
@@ -200,24 +201,10 @@ bool IO::Drivers::USB::open(const QIODevice::OpenMode mode)
     return false;
   }
 
-  const EndpointInfo& inEp = m_inEndpoints.at(m_inEndpointIndex - 1);
-  m_activeInEp             = inEp.address;
-
-  if (m_outEndpointIndex > 0 && (m_outEndpointIndex - 1) < m_outEndpoints.size())
-    m_activeOutEp = m_outEndpoints.at(m_outEndpointIndex - 1).address;
-  else
-    m_activeOutEp = 0;
-
-  if (!claimInterface(inEp.interfaceNumber)) {
+  if (!activateSelectedEndpoints()) {
+    releaseInterfaces();
     libusb_close(m_handle);
     m_handle = nullptr;
-    Misc::Utilities::showMessageBox(tr("USB Device Error"),
-                                    tr("Could not claim interface %1 on the USB device.\n\n"
-                                       "Another driver or application may already have it open. "
-                                       "On Linux, try unloading the kernel driver (e.g. cdc_acm) "
-                                       "or adding a udev rule.")
-                                      .arg(inEp.interfaceNumber),
-                                    QMessageBox::Critical);
     return false;
   }
 
@@ -254,13 +241,15 @@ void IO::Drivers::USB::close()
   disconnect(&m_readThread, &QThread::started, this, &USB::isoReadLoop);
 
   if (m_handle) {
-    releaseInterface();
+    releaseInterfaces();
     libusb_close(m_handle);
     m_handle = nullptr;
   }
 
-  m_activeInEp  = 0;
-  m_activeOutEp = 0;
+  m_activeInEp      = 0;
+  m_activeOutEp     = 0;
+  m_activeInEpType  = 0;
+  m_activeOutEpType = 0;
 
   Q_EMIT configurationChanged();
 }
@@ -290,16 +279,17 @@ bool IO::Drivers::USB::isWritable() const noexcept
 }
 
 /**
- * @brief Returns true when a device is selected and the connect button should be enabled.
+ * @brief Returns true when a device and a usable IN endpoint are selected, enabling connect.
  */
 bool IO::Drivers::USB::configurationOk() const noexcept
 {
-  return m_deviceIndex > 0 && (m_deviceIndex - 1) < m_devicePtrs.size();
+  return m_deviceIndex > 0 && (m_deviceIndex - 1) < m_devicePtrs.size() && m_inEndpointIndex > 0
+      && (m_inEndpointIndex - 1) < m_inEndpoints.size();
 }
 
 /**
- * @brief Sends @p data to the device via a synchronous bulk OUT transfer. A mutable copy of
- * @p data is required because libusb takes a non-const buffer and may write into it.
+ * @brief Sends @p data to the device via a synchronous bulk or interrupt OUT transfer. A mutable
+ * copy of @p data is required because libusb takes a non-const buffer and may write into it.
  */
 qint64 IO::Drivers::USB::write(const QByteArray& data)
 {
@@ -311,10 +301,16 @@ qint64 IO::Drivers::USB::write(const QByteArray& data)
 
   int transferred = 0;
   QByteArray mutableData(data);
-  auto* buf = reinterpret_cast<unsigned char*>(mutableData.data());
+  auto* buf      = reinterpret_cast<unsigned char*>(mutableData.data());
+  const int size = static_cast<int>(data.size());
 
-  const int rc = libusb_bulk_transfer(
-    m_handle, m_activeOutEp, buf, static_cast<int>(data.size()), &transferred, kBulkWriteTimeout);
+  int rc;
+  if (m_activeOutEpType == LIBUSB_TRANSFER_TYPE_INTERRUPT)
+    rc = libusb_interrupt_transfer(
+      m_handle, m_activeOutEp, buf, size, &transferred, kBulkWriteTimeout);
+  else
+    rc = libusb_bulk_transfer(m_handle, m_activeOutEp, buf, size, &transferred, kBulkWriteTimeout);
+
   if (rc < 0)
     return -1;
 
@@ -375,8 +371,14 @@ int IO::Drivers::USB::deviceIndex() const
  */
 QStringList IO::Drivers::USB::inEndpointList() const
 {
+  const bool deviceSelected = m_deviceIndex > 0 && (m_deviceIndex - 1) < m_devicePtrs.size();
+
   QStringList list;
-  list.append(tr("Select IN Endpoint"));
+  if (deviceSelected && m_inEndpointLabels.isEmpty())
+    list.append(tr("No Usable IN Endpoints"));
+  else
+    list.append(tr("Select IN Endpoint"));
+
   list.append(m_inEndpointLabels);
   return list;
 }
@@ -421,7 +423,8 @@ int IO::Drivers::USB::isoPacketSize() const
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Selects a device by combo index and resets cached endpoint data.
+ * @brief Selects a device by combo index and rebuilds the endpoint lists so the user can pick
+ * IN/OUT endpoints before connecting (descriptors are readable without opening the device).
  */
 void IO::Drivers::USB::setDeviceIndex(const int index)
 {
@@ -438,11 +441,11 @@ void IO::Drivers::USB::setDeviceIndex(const int index)
   m_inEndpointIndex  = 0;
   m_outEndpointIndex = 0;
 
-  clearEndpointLists();
+  buildEndpointLists();
 
   m_settings.setValue("USB/deviceIndex", index);
-  m_settings.setValue("USB/inEndpointIndex", 0);
-  m_settings.setValue("USB/outEndpointIndex", 0);
+  m_settings.setValue("USB/inEndpointIndex", m_inEndpointIndex);
+  m_settings.setValue("USB/outEndpointIndex", m_outEndpointIndex);
 
   Q_EMIT deviceIndexChanged();
   Q_EMIT endpointListChanged();
@@ -476,12 +479,15 @@ void IO::Drivers::USB::setTransferMode(const int mode)
     }
   }
 
-  m_transferMode = requested;
-  m_settings.setValue("USB/transferMode", mode);
-
-  clearEndpointLists();
+  m_transferMode     = requested;
   m_inEndpointIndex  = 0;
   m_outEndpointIndex = 0;
+
+  buildEndpointLists();
+
+  m_settings.setValue("USB/transferMode", mode);
+  m_settings.setValue("USB/inEndpointIndex", m_inEndpointIndex);
+  m_settings.setValue("USB/outEndpointIndex", m_outEndpointIndex);
 
   Q_EMIT endpointListChanged();
   Q_EMIT inEndpointIndexChanged();
@@ -491,15 +497,25 @@ void IO::Drivers::USB::setTransferMode(const int mode)
 }
 
 /**
- * @brief Sets the active IN endpoint by combo index.
+ * @brief Sets the active IN endpoint by combo index; in iso mode the packet size follows the
+ * selected endpoint's effective max transfer size.
  */
 void IO::Drivers::USB::setInEndpointIndex(const int index)
 {
-  if (m_inEndpointIndex == index)
+  if (m_inEndpointIndex == index || index < 0 || index > m_inEndpoints.size())
     return;
 
   m_inEndpointIndex = index;
   m_settings.setValue("USB/inEndpointIndex", index);
+
+  if (m_transferMode == TransferMode::Isochronous && index > 0) {
+    const int suggested = m_inEndpoints.at(index - 1).maxPacketSize;
+    if (suggested > 0 && suggested != m_isoPacketSize) {
+      m_isoPacketSize = suggested;
+      m_settings.setValue("USB/isoPacketSize", suggested);
+      Q_EMIT isoPacketSizeChanged();
+    }
+  }
 
   Q_EMIT inEndpointIndexChanged();
   Q_EMIT configurationChanged();
@@ -510,7 +526,7 @@ void IO::Drivers::USB::setInEndpointIndex(const int index)
  */
 void IO::Drivers::USB::setOutEndpointIndex(const int index)
 {
-  if (m_outEndpointIndex == index)
+  if (m_outEndpointIndex == index || index < 0 || index > m_outEndpoints.size())
     return;
 
   m_outEndpointIndex = index;
@@ -575,14 +591,17 @@ void IO::Drivers::USB::onReadError()
 }
 
 /**
- * @brief Scans the USB bus and rebuilds the device list.
+ * @brief Scans the USB bus and rebuilds the device list, re-anchoring the current selection by
+ * label so a hotplug event cannot silently retarget it to a different device.
  */
 void IO::Drivers::USB::enumerateDevices()
 {
   if (!m_ctx)
     return;
 
-  const QStringList previous = m_deviceLabels;
+  const QStringList previous  = m_deviceLabels;
+  const QString selectedLabel = m_deviceIndex > 0 ? previous.value(m_deviceIndex - 1) : QString();
+
   for (auto* dev : std::as_const(m_devicePtrs))
     libusb_unref_device(dev);
 
@@ -647,11 +666,25 @@ void IO::Drivers::USB::enumerateDevices()
 
   libusb_free_device_list(devs, 1);
 
-  if (m_deviceIndex > m_devicePtrs.size())
-    m_deviceIndex = 0;
+  int newIndex = m_deviceIndex;
+  if (!selectedLabel.isEmpty())
+    newIndex = m_deviceLabels.indexOf(selectedLabel) + 1;
+  else if (m_deviceIndex > m_devicePtrs.size())
+    newIndex = 0;
 
-  if (m_deviceLabels != previous) {
+  const bool indexMoved = (newIndex != m_deviceIndex);
+  m_deviceIndex         = newIndex;
+
+  if (m_deviceLabels != previous || indexMoved) {
+    buildEndpointLists();
+
+    if (indexMoved)
+      Q_EMIT deviceIndexChanged();
+
     Q_EMIT deviceListChanged();
+    Q_EMIT endpointListChanged();
+    Q_EMIT inEndpointIndexChanged();
+    Q_EMIT outEndpointIndexChanged();
     Q_EMIT configurationChanged();
   }
 }
@@ -661,13 +694,25 @@ void IO::Drivers::USB::enumerateDevices()
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Returns true if the alt-setting exposes at least one endpoint of @p targetType.
+ * @brief Returns true when @p type is streamable in the current transfer mode (iso mode wants
+ * isochronous endpoints; every other mode streams bulk and interrupt endpoints).
  */
-static bool altSettingHasTransferType(const libusb_interface_descriptor& alt, uint8_t targetType)
+static bool typeUsableInMode(uint8_t type, bool wantIso)
+{
+  if (wantIso)
+    return type == LIBUSB_TRANSFER_TYPE_ISOCHRONOUS;
+
+  return type == LIBUSB_TRANSFER_TYPE_BULK || type == LIBUSB_TRANSFER_TYPE_INTERRUPT;
+}
+
+/**
+ * @brief Returns true if the alt-setting exposes at least one endpoint usable in the other mode.
+ */
+static bool altSettingHasOtherMode(const libusb_interface_descriptor& alt, bool wantIso)
 {
   for (int e = 0; e < alt.bNumEndpoints; ++e) {
     const uint8_t type = alt.endpoint[e].bmAttributes & LIBUSB_TRANSFER_TYPE_MASK;
-    if (type == targetType)
+    if (typeUsableInMode(type, !wantIso))
       return true;
   }
 
@@ -675,19 +720,34 @@ static bool altSettingHasTransferType(const libusb_interface_descriptor& alt, ui
 }
 
 /**
- * @brief Returns true if the device's active configuration exposes at least one endpoint of @p
- * targetType.
+ * @brief Returns true if the configuration exposes at least one endpoint usable in the other mode.
  */
-static bool configHasTransferType(const libusb_config_descriptor* cfg, uint8_t targetType)
+static bool configHasOtherMode(const libusb_config_descriptor* cfg, bool wantIso)
 {
   for (int i = 0; i < cfg->bNumInterfaces; ++i) {
     const libusb_interface& iface = cfg->interface[i];
     for (int a = 0; a < iface.num_altsetting; ++a)
-      if (altSettingHasTransferType(iface.altsetting[a], targetType))
+      if (altSettingHasOtherMode(iface.altsetting[a], wantIso))
         return true;
   }
 
   return false;
+}
+
+/**
+ * @brief Reads the config descriptor of @p dev without opening it, falling back to configuration
+ * 0 when no active configuration is reported (common for unconfigured devices).
+ */
+static libusb_config_descriptor* readConfigDescriptor(libusb_device* dev)
+{
+  libusb_config_descriptor* config = nullptr;
+  if (libusb_get_active_config_descriptor(dev, &config) == 0)
+    return config;
+
+  if (libusb_get_config_descriptor(dev, 0, &config) == 0)
+    return config;
+
+  return nullptr;
 }
 
 /**
@@ -698,88 +758,123 @@ QString IO::Drivers::USB::endpointErrorMessage() const
   const bool wantIso = (m_transferMode == TransferMode::Isochronous);
   bool hasOtherType  = false;
 
-  libusb_config_descriptor* cfg = nullptr;
-  if (libusb_get_active_config_descriptor(m_devicePtrs.at(m_deviceIndex - 1), &cfg) == 0) {
-    const uint8_t otherType =
-      wantIso ? LIBUSB_TRANSFER_TYPE_BULK : LIBUSB_TRANSFER_TYPE_ISOCHRONOUS;
-    hasOtherType = configHasTransferType(cfg, otherType);
+  libusb_config_descriptor* cfg = readConfigDescriptor(m_devicePtrs.at(m_deviceIndex - 1));
+  if (cfg) {
+    hasOtherType = configHasOtherMode(cfg, wantIso);
     libusb_free_config_descriptor(cfg);
   }
 
   if (hasOtherType && wantIso)
-    return tr("No isochronous IN endpoint was found on this device, but bulk "
-              "endpoints are available.\n\n"
-              "Switch the Transfer Mode to \"Bulk Stream\" and try again.");
+    return tr("No isochronous IN endpoint was found on this device, but bulk or "
+              "interrupt endpoints are available.\n\n"
+              "Switch the Transfer Mode to \"Bulk/Interrupt Stream\" and try again.");
 
   if (hasOtherType && !wantIso)
-    return tr("No bulk IN endpoint was found on this device, but isochronous "
-              "endpoints are available.\n\n"
+    return tr("No bulk or interrupt IN endpoint was found on this device, but "
+              "isochronous endpoints are available.\n\n"
               "Switch the Transfer Mode to \"Isochronous\" and try again.");
 
   return tr("No usable IN endpoint was found on this device.\n\n"
-            "The device may not expose data endpoints in its active "
-            "configuration, or it may require a specific driver.");
+            "The device may not expose data endpoints in its active configuration, "
+            "or it may speak a dedicated protocol. Protocol adapters (e.g. CAN or "
+            "Modbus interfaces) should be connected through their own driver.");
 }
 
 /**
  * @brief Inspects a single endpoint descriptor and appends it to the IN or OUT list if it matches
- * the mode.
+ * the mode; skips zero-bandwidth endpoints and duplicates repeated across alt-settings.
  */
 void IO::Drivers::USB::collectEndpoint(const libusb_endpoint_descriptor& ep,
                                        int ifNum,
+                                       uint8_t altSetting,
                                        bool wantIso)
 {
   const uint8_t type = ep.bmAttributes & LIBUSB_TRANSFER_TYPE_MASK;
-  const bool isBulk  = (type == LIBUSB_TRANSFER_TYPE_BULK);
-  const bool isIso   = (type == LIBUSB_TRANSFER_TYPE_ISOCHRONOUS);
-
-  if (wantIso && !isIso)
+  if (!typeUsableInMode(type, wantIso))
     return;
 
-  if (!wantIso && !isBulk)
+  const int basePacketSize = ep.wMaxPacketSize & 0x07FF;
+  const int transactions   = 1 + ((ep.wMaxPacketSize >> 11) & 0x03);
+  const int effectiveSize  = basePacketSize * transactions;
+  if (effectiveSize <= 0)
     return;
 
-  const bool isIn       = (ep.bEndpointAddress & LIBUSB_ENDPOINT_IN) != 0;
-  const QString typeStr = isIso ? QStringLiteral("Iso") : QStringLiteral("Bulk");
-  const QString dirStr  = isIn ? QStringLiteral("IN") : QStringLiteral("OUT");
+  const bool isIn                = (ep.bEndpointAddress & LIBUSB_ENDPOINT_IN) != 0;
+  QList<EndpointInfo>& endpoints = isIn ? m_inEndpoints : m_outEndpoints;
+  QStringList& labels            = isIn ? m_inEndpointLabels : m_outEndpointLabels;
+
+  for (const auto& existing : std::as_const(endpoints))
+    if (existing.address == ep.bEndpointAddress && (!wantIso || existing.altSetting == altSetting))
+      return;
+
+  QString typeStr = QStringLiteral("Bulk");
+  if (type == LIBUSB_TRANSFER_TYPE_ISOCHRONOUS)
+    typeStr = QStringLiteral("Iso");
+  else if (type == LIBUSB_TRANSFER_TYPE_INTERRUPT)
+    typeStr = QStringLiteral("Int");
 
   EndpointInfo info;
   info.address         = ep.bEndpointAddress;
   info.attributes      = ep.bmAttributes;
-  info.maxPacketSize   = ep.wMaxPacketSize;
+  info.altSetting      = altSetting;
+  info.maxPacketSize   = static_cast<uint16_t>(effectiveSize);
   info.interfaceNumber = ifNum;
+
+  const QString dirStr = isIn ? QStringLiteral("IN") : QStringLiteral("OUT");
   const QString epHex  = QString::number(ep.bEndpointAddress, 16).toUpper().rightJustified(2, '0');
+  QString ifStr        = QStringLiteral("IF%1").arg(ifNum);
+  if (altSetting > 0)
+    ifStr += QStringLiteral(" ALT%1").arg(altSetting);
+
   // code-verify off
-  info.label           = QStringLiteral("EP 0x%1 – %2 %3  (IF%4, max %5 B)")
-                 .arg(epHex, typeStr, dirStr)
-                 .arg(ifNum)
-                 .arg(ep.wMaxPacketSize);
+  info.label = QStringLiteral("EP 0x%1 – %2 %3  (%4, max %5 B)")
+                 .arg(epHex, typeStr, dirStr, ifStr)
+                 .arg(effectiveSize);
   // code-verify on
 
-  if (isIn) {
-    m_inEndpoints.append(info);
-    m_inEndpointLabels.append(info.label);
-  } else {
-    m_outEndpoints.append(info);
-    m_outEndpointLabels.append(info.label);
-  }
+  endpoints.append(info);
+  labels.append(info.label);
 }
 
 /**
- * @brief Scans all interfaces and endpoints of the selected device and populates the IN/OUT lists.
+ * @brief Scans all interfaces and endpoints of the selected device and populates the IN/OUT
+ * lists. Runs on cached descriptors (no open handle needed), preserves the current selection by
+ * endpoint address across rebuilds, and auto-selects the first entry as a default.
  */
 void IO::Drivers::USB::buildEndpointLists()
 {
+  const auto selectedAddress = [](const QList<EndpointInfo>& list, int index) -> uint8_t {
+    if (index > 0 && (index - 1) < list.size())
+      return list.at(index - 1).address;
+
+    return 0;
+  };
+
+  const auto matchAddress = [](const QList<EndpointInfo>& list, uint8_t address) -> int {
+    for (int i = 0; i < list.size(); ++i)
+      if (list.at(i).address == address)
+        return i + 1;
+
+    return 0;
+  };
+
+  const uint8_t prevIn  = selectedAddress(m_inEndpoints, m_inEndpointIndex);
+  const uint8_t prevOut = selectedAddress(m_outEndpoints, m_outEndpointIndex);
+
   clearEndpointLists();
 
-  if (m_deviceIndex <= 0 || (m_deviceIndex - 1) >= m_devicePtrs.size())
+  if (m_deviceIndex <= 0 || (m_deviceIndex - 1) >= m_devicePtrs.size()) {
+    m_inEndpointIndex  = 0;
+    m_outEndpointIndex = 0;
     return;
+  }
 
-  libusb_device* dev               = m_devicePtrs.at(m_deviceIndex - 1);
-  libusb_config_descriptor* config = nullptr;
-
-  if (libusb_get_active_config_descriptor(dev, &config) < 0)
+  libusb_config_descriptor* config = readConfigDescriptor(m_devicePtrs.at(m_deviceIndex - 1));
+  if (!config) {
+    m_inEndpointIndex  = 0;
+    m_outEndpointIndex = 0;
     return;
+  }
 
   const bool wantIso = (m_transferMode == TransferMode::Isochronous);
 
@@ -790,16 +885,20 @@ void IO::Drivers::USB::buildEndpointLists()
       const libusb_interface_descriptor& alt = iface.altsetting[a];
 
       for (int e = 0; e < alt.bNumEndpoints; ++e)
-        collectEndpoint(alt.endpoint[e], alt.bInterfaceNumber, wantIso);
+        collectEndpoint(alt.endpoint[e], alt.bInterfaceNumber, alt.bAlternateSetting, wantIso);
     }
   }
 
   libusb_free_config_descriptor(config);
 
-  if (m_inEndpointIndex > m_inEndpoints.size())
+  if (prevIn != 0)
+    m_inEndpointIndex = matchAddress(m_inEndpoints, prevIn);
+  else if (m_inEndpointIndex > m_inEndpoints.size())
     m_inEndpointIndex = 0;
 
-  if (m_outEndpointIndex > m_outEndpoints.size())
+  if (prevOut != 0)
+    m_outEndpointIndex = matchAddress(m_outEndpoints, prevOut);
+  else if (m_outEndpointIndex > m_outEndpoints.size())
     m_outEndpointIndex = 0;
 
   if (m_inEndpointIndex == 0 && !m_inEndpoints.isEmpty())
@@ -913,39 +1012,117 @@ void IO::Drivers::USB::clearEndpointLists()
 }
 
 /**
- * @brief Claims @p ifaceNum on the open device handle.
+ * @brief Claims @p ifaceNum on the open device handle (no-op when already claimed).
  */
 bool IO::Drivers::USB::claimInterface(int ifaceNum)
 {
+  Q_ASSERT(m_handle != nullptr);
+
+  if (m_claimedInterfaces.contains(ifaceNum))
+    return true;
+
   if (libusb_claim_interface(m_handle, ifaceNum) < 0)
     return false;
 
-  m_claimedInterface = ifaceNum;
+  m_claimedInterfaces.append(ifaceNum);
   return true;
 }
 
 /**
- * @brief Releases the currently claimed interface.
+ * @brief Releases every claimed interface.
  */
-void IO::Drivers::USB::releaseInterface()
+void IO::Drivers::USB::releaseInterfaces()
 {
-  if (m_handle && m_claimedInterface >= 0) {
-    libusb_release_interface(m_handle, m_claimedInterface);
-    m_claimedInterface = -1;
-  }
+  if (m_handle)
+    for (const int iface : std::as_const(m_claimedInterfaces))
+      libusb_release_interface(m_handle, iface);
+
+  m_claimedInterfaces.clear();
 }
 
 /**
- * @brief Synchronous bulk read loop for BulkStream and AdvancedControl modes.
+ * @brief Claims the interfaces of the selected IN/OUT endpoints and activates their alt-settings
+ * (isochronous endpoints live in non-zero alt-settings; alt 0 is typically zero-bandwidth). A
+ * failing OUT endpoint degrades to read-only with a warning instead of aborting the connection.
+ */
+bool IO::Drivers::USB::activateSelectedEndpoints()
+{
+  Q_ASSERT(m_handle != nullptr);
+  Q_ASSERT(m_inEndpointIndex > 0 && (m_inEndpointIndex - 1) < m_inEndpoints.size());
+
+  const EndpointInfo in = m_inEndpoints.at(m_inEndpointIndex - 1);
+  if (!claimInterface(in.interfaceNumber)) {
+    Misc::Utilities::showMessageBox(tr("USB Device Error"),
+                                    tr("Could not claim interface %1 on the USB device.\n\n"
+                                       "Another driver or application may already have it open. "
+                                       "On Linux, try unloading the kernel driver (e.g. cdc_acm) "
+                                       "or adding a udev rule.")
+                                      .arg(in.interfaceNumber),
+                                    QMessageBox::Critical);
+    return false;
+  }
+
+  if (in.altSetting != 0
+      && libusb_set_interface_alt_setting(m_handle, in.interfaceNumber, in.altSetting) < 0) {
+    Misc::Utilities::showMessageBox(tr("USB Device Error"),
+                                    tr("Could not activate alternate setting %1 on interface %2. "
+                                       "The selected endpoint is not reachable.")
+                                      .arg(in.altSetting)
+                                      .arg(in.interfaceNumber),
+                                    QMessageBox::Critical);
+    return false;
+  }
+
+  m_activeInEp      = in.address;
+  m_activeInEpType  = in.attributes & LIBUSB_TRANSFER_TYPE_MASK;
+  m_activeOutEp     = 0;
+  m_activeOutEpType = 0;
+
+  if (m_outEndpointIndex <= 0 || (m_outEndpointIndex - 1) >= m_outEndpoints.size())
+    return true;
+
+  const EndpointInfo out = m_outEndpoints.at(m_outEndpointIndex - 1);
+  bool outOk             = true;
+
+  if (out.interfaceNumber == in.interfaceNumber)
+    outOk = (out.altSetting == in.altSetting);
+  else {
+    outOk = claimInterface(out.interfaceNumber);
+    if (outOk && out.altSetting != 0)
+      outOk = libusb_set_interface_alt_setting(m_handle, out.interfaceNumber, out.altSetting) >= 0;
+  }
+
+  if (outOk) {
+    m_activeOutEp     = out.address;
+    m_activeOutEpType = out.attributes & LIBUSB_TRANSFER_TYPE_MASK;
+  } else {
+    Misc::Utilities::showMessageBox(tr("USB Device Warning"),
+                                    tr("The selected OUT endpoint could not be activated. "
+                                       "Continuing in read-only mode."),
+                                    QMessageBox::Warning);
+  }
+
+  return true;
+}
+
+/**
+ * @brief Synchronous read loop for BulkStream and AdvancedControl modes; dispatches bulk or
+ * interrupt transfers based on the active IN endpoint's transfer type.
  */
 void IO::Drivers::USB::readLoop()
 {
   unsigned char buf[kBulkReadBufSize];
+  const bool interruptEp = (m_activeInEpType == LIBUSB_TRANSFER_TYPE_INTERRUPT);
 
   while (m_running.load(std::memory_order_relaxed)) {
     int transferred = 0;
-    const int rc    = libusb_bulk_transfer(
-      m_handle, m_activeInEp, buf, kBulkReadBufSize, &transferred, kBulkReadTimeout);
+    int rc;
+    if (interruptEp)
+      rc = libusb_interrupt_transfer(
+        m_handle, m_activeInEp, buf, kBulkReadBufSize, &transferred, kBulkReadTimeout);
+    else
+      rc = libusb_bulk_transfer(
+        m_handle, m_activeInEp, buf, kBulkReadBufSize, &transferred, kBulkReadTimeout);
 
     if (rc == LIBUSB_ERROR_TIMEOUT)
       continue;
@@ -1219,7 +1396,7 @@ QList<IO::DriverProperty> IO::Drivers::USB::driverProperties() const
   mode.label   = tr("Transfer Mode");
   mode.type    = IO::DriverProperty::ComboBox;
   mode.value   = static_cast<int>(m_transferMode);
-  mode.options = {tr("Bulk Stream"), tr("Advanced Control"), tr("Isochronous")};
+  mode.options = {tr("Bulk/Interrupt Stream"), tr("Advanced Control"), tr("Isochronous")};
   props.append(mode);
 
   IO::DriverProperty inEp;
