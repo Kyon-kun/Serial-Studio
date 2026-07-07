@@ -60,6 +60,7 @@ Item {
   readonly property bool bipolarRange: root.model && root.model.dataBipolar
   readonly property bool areaFillVisible: root.showAreaUnderPlot
        && !(root.model && root.model.xyPlot)
+       && !(root.model && root.model.dataFlatZero)
        && root.interpolationMode !== SerialStudio.InterpolationNone
        && root.interpolationMode !== SerialStudio.InterpolationStem
   readonly property real areaFillBaseline: {

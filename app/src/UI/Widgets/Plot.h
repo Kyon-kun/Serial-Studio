@@ -69,6 +69,9 @@ class Plot : public QQuickItem {
   Q_PROPERTY(double dataMaxY
              READ dataMaxY
              NOTIFY rangeChanged)
+  Q_PROPERTY(bool dataFlatZero
+             READ dataFlatZero
+             NOTIFY rangeChanged)
   Q_PROPERTY(QString yLabel
              READ yLabel
              CONSTANT)
@@ -131,6 +134,7 @@ public:
   [[nodiscard]] double maxY() const noexcept;
   [[nodiscard]] bool dataBipolar() const noexcept;
   [[nodiscard]] double dataMaxY() const noexcept;
+  [[nodiscard]] bool dataFlatZero() const noexcept;
   [[nodiscard]] bool running() const noexcept;
   [[nodiscard]] SerialStudio::InterpolationMode interpolationMode() const noexcept;
   [[nodiscard]] const QString& yLabel() const noexcept;

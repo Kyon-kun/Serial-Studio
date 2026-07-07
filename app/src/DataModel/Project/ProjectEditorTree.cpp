@@ -362,6 +362,7 @@ void DataModel::ProjectEditor::appendOutputWidgetChildren(QStandardItem* groupIt
     owItem->setData(ow.sourceId, TreeViewSourceId);
     owItem->setData(QString(), TreeViewSourceName);
     owItem->setData(group.enabled, TreeViewEnabled);
+    owItem->setData(group.enabled, TreeViewSelfEnabled);
     owItem->setData(KindOutputWidget, TreeItemKind);
     owItem->setData(ow.widgetId, TreeItemId);
     owItem->setData(group.groupId, TreeItemParentId);
@@ -496,6 +497,7 @@ QHash<int, QStandardItem*> DataModel::ProjectEditor::appendGroupFolderItems(
     item->setData(f.folderId, TreeItemId);
     item->setData(f.parentFolderId, TreeItemParentId);
     item->setData(folderEnabled, TreeViewEnabled);
+    item->setData(folderEnabled, TreeViewSelfEnabled);
 
     const QString fPath = pathPrefix + QStringLiteral("/") + folderDisplayPath(folders, f.folderId);
     restoreExpandedStateMap(item, expandedStates, fPath);
@@ -934,6 +936,8 @@ void DataModel::ProjectEditor::restoreTreeSelection()
 }
 
 //--------------------------------------------------------------------------------------------------
+// Expansion state maps
+//--------------------------------------------------------------------------------------------------
 
 /**
  * @brief Records TreeViewExpanded state of the subtree into a path-keyed map.
@@ -971,6 +975,8 @@ void DataModel::ProjectEditor::restoreExpandedStateMap(QStandardItem* item,
     item->setData(defaultExpanded, TreeViewExpanded);
 }
 
+//--------------------------------------------------------------------------------------------------
+// Expansion snapshot persistence
 //--------------------------------------------------------------------------------------------------
 
 /**

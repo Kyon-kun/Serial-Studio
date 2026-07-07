@@ -178,6 +178,16 @@ double Widgets::Plot::dataMaxY() const noexcept
   return m_dataMaxY;
 }
 
+/**
+ * @brief Reports whether the samples carry no signal at all (every finite sample is
+ *        exactly zero, or none exist), so the area fill hides instead of hanging a
+ *        gradient from the range top.
+ */
+bool Widgets::Plot::dataFlatZero() const noexcept
+{
+  return m_dataMinY == 0.0 && m_dataMaxY == 0.0;
+}
+
 //--------------------------------------------------------------------------------------------------
 // State queries
 //--------------------------------------------------------------------------------------------------
@@ -712,20 +722,22 @@ static bool signClampedRange(const DataModel::Dataset& dataset)
 }
 
 /**
- * @brief Refreshes the finite Y extremes that drive the area fill's bipolarity from
- *        real data. A sign-clamped configured range short-circuits the per-frame scan;
- *        otherwise the current samples are swept. Returns true when the bipolar or
- *        all-negative verdict flips, so the caller refreshes the baseline binding.
+ * @brief Refreshes the finite Y extremes that drive the area fill from real data; a
+ *        sign-clamped configured range short-circuits the per-frame scan. Returns true
+ *        when the bipolar, flat-zero or all-negative verdict flips, so the caller
+ *        refreshes the baseline and fill-visibility bindings.
  */
 bool Widgets::Plot::updateDataExtremes(const DataModel::Dataset& dataset)
 {
   const bool wasBipolar     = dataBipolar();
+  const bool wasFlatZero    = dataFlatZero();
   const bool wasAllNegative = m_dataMaxY <= 0.0;
 
   if (signClampedRange(dataset)) {
     m_dataMinY = qMin(dataset.pltMin, dataset.pltMax);
     m_dataMaxY = qMax(dataset.pltMin, dataset.pltMax);
-    return wasBipolar != dataBipolar() || wasAllNegative != (m_dataMaxY <= 0.0);
+    return wasBipolar != dataBipolar() || wasFlatZero != dataFlatZero()
+        || wasAllNegative != (m_dataMaxY <= 0.0);
   }
 
   double dataMin = std::numeric_limits<double>::max();
@@ -746,7 +758,8 @@ bool Widgets::Plot::updateDataExtremes(const DataModel::Dataset& dataset)
     m_dataMaxY = dataMax;
   }
 
-  return wasBipolar != dataBipolar() || wasAllNegative != (m_dataMaxY <= 0.0);
+  return wasBipolar != dataBipolar() || wasFlatZero != dataFlatZero()
+      || wasAllNegative != (m_dataMaxY <= 0.0);
 }
 
 /**
