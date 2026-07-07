@@ -127,6 +127,8 @@ The `frame` parameter type depends on the Decoder Method selected in the Project
 > }
 > ```
 
+> **Validation probe:** when a parser is saved, the editor test-runs `parse()` with tiny sample inputs before accepting it (`"0"` and `""` in Lua; `"0"`, a one-byte array, and `""` in JavaScript). A function that reads fixed offsets without checking the frame length fails every probe with a runtime error such as `index out of range`, and the editor rejects it with a *"parse function contains an error"* message even though the code is fine for full-size frames. The length guards in the examples above are what make them pass: return an empty table/array when the frame is too short. The same guard matters on a live link, where a truncated frame will eventually arrive.
+
 ### Return Value
 
 Must return a table (Lua) or array (JavaScript). The index maps to the dataset Frame Index in your project definition.
