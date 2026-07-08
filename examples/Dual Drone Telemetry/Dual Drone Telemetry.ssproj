@@ -1,6 +1,7 @@
 {
     "actions": [
     ],
+    "changeDrivenTransforms": false,
     "controlScriptCode": "/**\n * Dual Drone Telemetry - Control Loop\n *\n * Launches the bundled Python data generator (dual_drone_telemetry.py) automatically just before\n * the connection opens (via onConnect), so the example works without running anything by\n * hand. The helper process is stopped by Serial Studio when the device is\n * disconnected, when the project changes, or when the app quits.\n *\n * The interpreter is resolved cross-platform: \"python3\" is tried first\n * (Linux/macOS), falling back to \"python\" (typical on Windows).\n */\n\nvar helperPid = -1;\n\nfunction startHelper() {\n  var dir = system.projectDir();\n  if (!dir.ok)\n    return;\n\n  var script = dir.result.directory + \"/dual_drone_telemetry.py\";\n\n  var r = system.exec(\"python3\", { args: [\"-u\", script], workingDir: dir.result.directory });\n  if (!r.ok)\n    r = system.exec(\"python\", { args: [\"-u\", script], workingDir: dir.result.directory });\n\n  if (r.ok)\n    helperPid = r.result.processId;\n}\n\nfunction onConnect() {\n  startHelper();\n}\n\nfunction setup() {}\n\nfunction loop() {\n  delay(1000);\n}\n",
     "customizeWorkspaces": true,
     "groups": [
@@ -2332,28 +2333,104 @@
         "layout:5000": {
             "data": {
                 "autoLayout": true,
+                "canvasHeight": 511,
+                "canvasWidth": 1053,
                 "geometries": [
                     {
-                        "height": 493,
-                        "id": 10,
+                        "height": 256,
+                        "id": 9,
+                        "relativeIndex": 0,
                         "state": "normal",
-                        "width": 509,
-                        "x": 4,
-                        "y": 4
+                        "widgetType": 18,
+                        "width": 351,
+                        "x": 0,
+                        "y": 0
                     },
                     {
-                        "height": 493,
-                        "id": 11,
+                        "height": 256,
+                        "id": 5,
+                        "relativeIndex": 0,
                         "state": "normal",
-                        "width": 509,
-                        "x": 512,
-                        "y": 4
+                        "widgetType": 5,
+                        "width": 351,
+                        "x": 350,
+                        "y": 0
+                    },
+                    {
+                        "height": 256,
+                        "id": 14,
+                        "relativeIndex": 0,
+                        "state": "normal",
+                        "widgetType": 22,
+                        "width": 351,
+                        "x": 700,
+                        "y": 0
+                    },
+                    {
+                        "height": 256,
+                        "id": 10,
+                        "relativeIndex": 1,
+                        "state": "normal",
+                        "widgetType": 18,
+                        "width": 351,
+                        "x": 0,
+                        "y": 255
+                    },
+                    {
+                        "height": 256,
+                        "id": 6,
+                        "relativeIndex": 1,
+                        "state": "normal",
+                        "widgetType": 5,
+                        "width": 351,
+                        "x": 350,
+                        "y": 255
+                    },
+                    {
+                        "height": 256,
+                        "id": 15,
+                        "relativeIndex": 1,
+                        "state": "normal",
+                        "widgetType": 22,
+                        "width": 351,
+                        "x": 700,
+                        "y": 255
                     }
                 ],
-                "userReordered": false,
+                "userReordered": true,
                 "windowOrder": [
+                    9,
+                    5,
+                    14,
                     10,
-                    11
+                    6,
+                    15
+                ],
+                "windowOrderTyped": [
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 18
+                    },
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 5
+                    },
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 22
+                    },
+                    {
+                        "relativeIndex": 1,
+                        "widgetType": 18
+                    },
+                    {
+                        "relativeIndex": 1,
+                        "widgetType": 5
+                    },
+                    {
+                        "relativeIndex": 1,
+                        "widgetType": 22
+                    }
                 ]
             }
         },
@@ -2403,7 +2480,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1000
+            "workspaceId": 5000
         },
         {
             "icon": "qrc:/icons/panes/dashboard.svg",
@@ -2580,7 +2657,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1001
+            "workspaceId": 5001
         },
         {
             "title": "Alpha Camera",
@@ -2591,7 +2668,7 @@
                     "widgetType": 18
                 }
             ],
-            "workspaceId": 1002
+            "workspaceId": 5002
         },
         {
             "title": "Alpha Navigation",
@@ -2602,7 +2679,7 @@
                     "widgetType": 5
                 }
             ],
-            "workspaceId": 1003
+            "workspaceId": 5003
         },
         {
             "title": "Alpha Heading",
@@ -2613,7 +2690,7 @@
                     "widgetType": 12
                 }
             ],
-            "workspaceId": 1004
+            "workspaceId": 5004
         },
         {
             "title": "Alpha Attitude",
@@ -2624,7 +2701,7 @@
                     "widgetType": 4
                 }
             ],
-            "workspaceId": 1005
+            "workspaceId": 5005
         },
         {
             "title": "Alpha Flight",
@@ -2660,7 +2737,7 @@
                     "widgetType": 9
                 }
             ],
-            "workspaceId": 1006
+            "workspaceId": 5006
         },
         {
             "title": "Alpha Power",
@@ -2691,7 +2768,7 @@
                     "widgetType": 9
                 }
             ],
-            "workspaceId": 1007
+            "workspaceId": 5007
         },
         {
             "title": "Bravo Camera",
@@ -2702,7 +2779,7 @@
                     "widgetType": 18
                 }
             ],
-            "workspaceId": 1008
+            "workspaceId": 5008
         },
         {
             "title": "Bravo Navigation",
@@ -2713,7 +2790,7 @@
                     "widgetType": 5
                 }
             ],
-            "workspaceId": 1009
+            "workspaceId": 5009
         },
         {
             "title": "Bravo Heading",
@@ -2724,7 +2801,7 @@
                     "widgetType": 12
                 }
             ],
-            "workspaceId": 1010
+            "workspaceId": 5010
         },
         {
             "title": "Bravo Attitude",
@@ -2735,7 +2812,7 @@
                     "widgetType": 4
                 }
             ],
-            "workspaceId": 1011
+            "workspaceId": 5011
         },
         {
             "title": "Bravo Flight",
@@ -2771,7 +2848,7 @@
                     "widgetType": 9
                 }
             ],
-            "workspaceId": 1012
+            "workspaceId": 5012
         },
         {
             "title": "Bravo Power",
@@ -2802,7 +2879,7 @@
                     "widgetType": 9
                 }
             ],
-            "workspaceId": 1013
+            "workspaceId": 5013
         },
         {
             "title": "Alpha Controls",
@@ -2813,7 +2890,7 @@
                     "widgetType": 19
                 }
             ],
-            "workspaceId": 1014
+            "workspaceId": 5014
         },
         {
             "title": "Bravo Controls",
@@ -2824,7 +2901,7 @@
                     "widgetType": 19
                 }
             ],
-            "workspaceId": 1015
+            "workspaceId": 5015
         },
         {
             "title": "Alpha State",
@@ -2835,7 +2912,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1016
+            "workspaceId": 5016
         },
         {
             "title": "Bravo State",
@@ -2846,7 +2923,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1017
+            "workspaceId": 5017
         }
     ],
     "writerVersion": "4.0.2",
