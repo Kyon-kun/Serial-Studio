@@ -190,9 +190,10 @@ function parse(frame) {
 
 ## NMEA / hex / domain protocols
 
-For NMEA, AT-commands, hex-encoded, base64, COBS, TLV, see
-`scripts.list{kind: "frame_parser_js"}`: the codebase includes ~10
-reference parsers for these patterns. Adapt the closest match.
+For NMEA, AT-commands, hex-encoded, base64, COBS, TLV, MAVLink, UBX,
+MessagePack, and more, see `scripts.list{kind: "frame_parser_js"}`: the
+codebase ships 28 reference parsers per language for these patterns.
+Adapt the closest match.
 
 ## Gotchas
 

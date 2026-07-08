@@ -68,7 +68,7 @@ Reference: `app/src/IO/Drivers/BluetoothLE.h`. Order: `Q_OBJECT` → `Q_PROPERTY
 - Never `disconnect(nullptr)` as the slot — capture the `QMetaObject::Connection` and
   disconnect that.
 - Never call `parseFunction.call()` directly on a `QJSEngine` parser — always
-  `IScriptEngine::guardedCall()`.
+  `JsScriptEngine::guardedCall()`.
 
 ### Comments & Doxygen
 
@@ -162,7 +162,7 @@ Mission-critical telemetry. Hotpath violations are blockers.
    only for true file-locals.
 7. **Check return values at system boundaries** (driver/file/network/API). `[[nodiscard]]`
    everywhere. `try_enqueue()` failures must be logged. JS calls go through
-   `IScriptEngine::guardedCall()`, never direct.
+   `JsScriptEngine::guardedCall()`, never direct.
 8. **Minimal preprocessor.** Only `#include`, `#pragma once`, `#ifdef BUILD_COMMERCIAL` /
    `ENABLE_GRPC`, platform guards. No token pasting, no variadic macros.
 9. **No `reinterpret_cast`** except byte-level access (`const uint8_t*`). Prefer

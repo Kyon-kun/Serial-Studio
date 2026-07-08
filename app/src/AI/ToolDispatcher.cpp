@@ -2040,7 +2040,7 @@ static const QHash<QString, QString>& scopeDescriptions()
      QStringLiteral("MDF4 export to file (Pro).")},
     {QStringLiteral("mdf4Player"),
      QStringLiteral("MDF4 file replay (Pro).")},
-    {QStringLiteral("controlscript"),
+    {QStringLiteral("controlScript"),
      QStringLiteral("Project control script (setup/loop automation): get/set code, "
                     "dry-run, runtime status.")},
     {QStringLiteral("scripts"),

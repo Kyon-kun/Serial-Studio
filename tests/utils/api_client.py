@@ -231,7 +231,8 @@ class SerialStudioClient:
         Set the bus type.
 
         Args:
-            bus_type: "uart", "network", "ble", "audio", "modbus", or "canbus"
+            bus_type: "uart", "network", "ble", "audio", "modbus", "canbus",
+                "usb", "hid", "process", or "mqtt"
         """
         bus_map = {
             "uart": 0,
@@ -245,6 +246,7 @@ class SerialStudioClient:
             "hid": 7,
             "hiddevice": 7,
             "process": 8,
+            "mqtt": 9,
         }
 
         if bus_type.lower() not in bus_map:

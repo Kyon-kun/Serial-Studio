@@ -104,7 +104,7 @@ workspace:
 project.workspace.setCustomizeMode{enabled: true}
 project.workspace.addWidget{workspaceId, widgetType: "output-panel",
                             groupId}
-// integer form (back-compat): widgetType: 18
+// integer form (back-compat): widgetType: 19
 // relativeIndex defaults to next free slot when omitted
 ```
 

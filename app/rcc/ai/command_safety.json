@@ -1,5 +1,5 @@
 {
-  "_comment": "AI safety tags for the in-process tool dispatcher. Names mirror API::CommandRegistry. 'safe' auto-executes, 'blocked' is denied outright (licensing mutations), 'deviceGated' is Blocked unless the user enables the 'Allow device control' toggle, in which case it resolves to AlwaysConfirm (driver settings, connection state, and any command that writes bytes to the device), 'alwaysConfirm' requires user click EVEN when autoApproveEdits is on (destructive families: delete / clear / new / open-replace / install / uninstall, plus credential/TLS config and control-script installs), 'confirm' runs silently only when autoApproveEdits is on (reversible project/app mutations). Every registered command must be listed in exactly one tier; an unlisted name still falls through to Confirm, but treat that as a registration bug, not a feature.",
+  "_comment": "AI safety tags for the in-process tool dispatcher. Names mirror API::CommandRegistry. 'safe' auto-executes, 'blocked' is denied outright (licensing mutations, plus the control-script-only process launcher system.exec/kill -- the assistant authors a control script instead, keeping the human in the loop), 'deviceGated' is Blocked unless the user enables the 'Allow device control' toggle, in which case it resolves to AlwaysConfirm (driver settings, connection state, and any command that writes bytes to the device), 'alwaysConfirm' requires user click EVEN when autoApproveEdits is on (destructive families: delete / clear / new / open-replace / install / uninstall, plus credential/TLS config and control-script installs), 'confirm' runs silently only when autoApproveEdits is on (reversible project/app mutations). Every registered command must be listed in exactly one tier; an unlisted name still falls through to Confirm, but treat that as a registration bug, not a feature.",
   "safe": [
     "api.getCommands",
     "assistant.checkpoint",
@@ -84,6 +84,8 @@
     "project.dashboard.getTimeRange",
     "project.dataTable.get",
     "project.dataTable.getValue",
+    "project.dataTable.getValueH",
+    "project.dataTable.handle",
     "project.dataTable.list",
     "project.dataset.list",
     "project.dataset.getAlarmBands",
@@ -129,6 +131,8 @@
     "sessions.getStatus",
     "sessions.list",
     "sessions.listTags",
+    "system.projectDir",
+    "system.runningProcesses",
     "ui.window.getLayout",
     "ui.window.getStatus",
     "ui.window.getWidgetSettings",
@@ -162,6 +166,7 @@
     "dashboard.setFps",
     "dashboard.setOperationMode",
     "dashboard.setTimeRange",
+    "dashboard.tick",
     "extensions.loadState",
     "extensions.refresh",
     "extensions.saveState",
@@ -185,6 +190,7 @@
     "project.dataTable.addRegister",
     "project.dataTable.rename",
     "project.dataTable.setValue",
+    "project.dataTable.setValueH",
     "project.dataTable.updateRegister",
     "project.dataset.add",
     "project.dataset.addMany",
@@ -245,10 +251,13 @@
   ],
   "blocked": [
     "licensing.activate",
+    "licensing.activateOffline",
     "licensing.deactivate",
     "licensing.enableTrial",
     "licensing.setLicense",
-    "licensing.validate"
+    "licensing.validate",
+    "system.exec",
+    "system.kill"
   ],
   "deviceGated": [
     "console.send",
@@ -343,6 +352,7 @@
     "project.workspace.delete",
     "sessions.delete",
     "sessions.deleteTag",
-    "sessions.removeTag"
+    "sessions.removeTag",
+    "system.startDemo"
   ]
 }

@@ -97,7 +97,8 @@ rule text each agent cross-references; `references/qt-deprecated-classes.md` for
 
 **Scope**: `QAbstractItemModel` / `QAbstractListModel` subclasses — signal protocol, roles,
 index validity, proxy correctness. In this repo: `ProjectEditor`'s tree + form models,
-`DataTableStore`, `Dashboard` model exposure, any `Cpp_*` QML-facing model.
+`Dashboard` model exposure, any `Cpp_*` QML-facing model. (`DataTableStore` in `DataTable.h`
+is a plain store, not a QAIM — check the models consuming it, not the store itself.)
 
 **Check for**:
 - `beginInsertRows`/`beginRemoveRows`/`beginMoveRows` not balanced with their `end*` partner
@@ -157,7 +158,7 @@ judging anything on the `Driver -> FrameReader -> FrameBuilder -> Dashboard` pat
 - A **mutex added to `FrameReader` or `CircularBuffer`** — they are main-thread/SPSC; never
   lock. Reconfigure via `resetFrameReader()` / `reconfigure()`.
 - A hotpath signal hop that is **queued instead of `Qt::DirectConnection`** (queued between
-  two main-thread objects fills the 4096-slot queue at 10+ kHz and drops frames). Includes
+  two main-thread objects fills the 65536-slot queue at 10+ kHz and drops frames). Includes
   `DeviceManager` ready-read and `sourceStructureChanged -> rebuildDevices`.
 - **Allocation or a `Frame` copy on the dashboard path** — the Dashboard frame must come from
   `FrameBuilder::acquireFrame()` (slot pool), never a direct `make_shared<TimestampedFrame>`.
@@ -165,7 +166,7 @@ judging anything on the `Driver -> FrameReader -> FrameBuilder -> Dashboard` pat
   a sink being enabled — that is the slow export path, not a finding.)
 - **Re-stamping time** in an export/report worker. Source owns time: stamp at the driver
   boundary; `monotonicFrameNs(...)` is the safety net only.
-- JS frame-parser calls not going through `IScriptEngine::guardedCall()` (raw
+- JS frame-parser calls not going through `JsScriptEngine::guardedCall()` (raw
   `parseFunction.call()`), or `setInterrupted(true)` outside `JsWatchdogThread.cpp`.
 
 **Ref**: `serial-studio-rules.md` § Hotpath, § Threading; `qt-review-checklist.md`
@@ -190,8 +191,8 @@ deprecated classes.
 - `QList<QString>` where `QStringList` is meant.
 - A deprecated class from `qt-deprecated-classes.md`. Note repo reality: this codebase uses
   `std::shared_ptr` (e.g. `TimestampedFramePtr`), not `QSharedPointer` — do not flag the
-  std smart pointers. `Q_FOREACH`/`QScopedPointer` sightings (e.g. in `BluetoothLE.cpp`) are
-  fair findings.
+  std smart pointers. Any `Q_FOREACH`/`QScopedPointer` sighting is a fair finding (the
+  historical ones in `BluetoothLE.cpp` were cleaned up).
 
 **Check for** (Serial Studio style — `code-verify.py` catches most; flag only what it misses):
 - `emit` instead of `Q_EMIT`; `SIGNAL()`/`SLOT()` string-based connects;
@@ -240,7 +241,8 @@ near the hotpath higher.
 - `QRegularExpression` constructed inside a loop (recompiles every iteration).
 - Non-const range-for over a COW `QList`/`QHash` (detach/deep-copy); use `const auto&`.
 - Non-const `operator[]` for *reads* on a shared `QHash`/`QMap` (detach) — use `.value()`.
-  Note the known `FrameBuilder::parseProjectFrame` `m_sourceFrames[sourceId]` silent-insert.
+  The historical `FrameBuilder::parseProjectFrame` `m_sourceFrames[sourceId]` silent-insert
+  was fixed via `ensureSourceFrame()`; flag any reintroduction.
 - Expensive work before a cheap early-exit; magic numbers without named constants.
 - Returning a container by value from a hot, frequently-called method (deep copy each call).
 - Member state appended/capped but never read (dead state burning CPU/memory).

@@ -193,7 +193,7 @@ struct ParsedWidgetId {
         .arg(gid);
 #ifdef BUILD_COMMERCIAL
     case SerialStudio::DashboardWaterfall:
-      return QStringLiteral(" To enable widgetType=17 (Waterfall), set DatasetOption "
+      return QStringLiteral(" To enable widgetType=21 (Waterfall), set DatasetOption "
                             "bit 64 via project.dataset.setOptions{groupId:%1, "
                             "datasetId:<n>, options:<currentBitfield|64>} or "
                             "project.dataset.update{groupId:%1, datasetId:<n>, "
@@ -279,12 +279,12 @@ struct ParsedWidgetId {
                           "project.dataset.setOptions: 1=Plot, 2=FFT, 4=Bar, 8=Gauge, "
                           "16=Compass, 32=LED, 64=Waterfall) with the DashboardWidget enum "
                           "(used here: 9=Plot, 7=FFT, 10=Bar, 11=Gauge, 12=Compass, 8=LED, "
-                          "17=Waterfall, 1=DataGrid, 2=MultiPlot, 5=GPS). The numbers do not "
+                          "21=Waterfall, 1=DataGrid, 2=MultiPlot, 5=GPS). The numbers do not "
                           "line up. Pick a value from the group's compatibleWidgetTypes "
                           "(see project.group.list).");
 
   if (wtype == SerialStudio::DashboardNoWidget)
-    return QStringLiteral("widgetType=13 is DashboardNoWidget (a sentinel value, "
+    return QStringLiteral("widgetType=17 is DashboardNoWidget (a sentinel value, "
                           "not a tile). Pick a real visualization type from the "
                           "group's compatibleWidgetTypes "
                           "(see project.group.list).");

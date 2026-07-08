@@ -79,7 +79,7 @@ tableHandle(tableName, registerName)           // -> handle (number), or -1; res
 tableHandleMany(tableName, registerNames)      // -> array of handles
 tableGetH(handle)                              // read by handle (fast path; no name lookup)
 tableSetH(handle, value)                       // write by handle (computed registers only)
-datasetGetRaw(uniqueId)                        // raw value of any dataset
+datasetGetRaw(uniqueId)                        // raw value; EARLIER dataset = this frame, later = previous frame
 datasetGetFinal(uniqueId)                      // final value of an EARLIER dataset (this frame)
 ```
 
@@ -119,8 +119,8 @@ single pass. A transform can read:
 - raw and final values of **later** datasets: the **previous** frame's
 
 Reading `datasetGetRaw`/`datasetGetFinal` of a dataset processed later
-silently returns the previous frame's (stale) value; the one-shot warning
-fires only for an unknown `uniqueId`. Use
+silently returns the previous frame's (stale) value; an unknown `uniqueId`
+silently returns `undefined` (no warning is emitted in either case). Use
 `project.dataset.getExecutionOrder` to confirm the order of execution
 when peer reads return stale values.
 
@@ -301,5 +301,6 @@ These affect the active dashboard window only. They do NOT modify the project fi
 ## Errors
 
 Returning `NaN` or `Infinity` falls back to the raw value silently. Throwing
-an exception also falls back to the raw value silently (no log); only
-timeouts log. Don't rely on exceptions for control flow.
+an exception also falls back to the raw value, and logs a
+`[FrameBuilder] JS transform call failed` warning with the error text (as do
+timeouts). Don't rely on exceptions for control flow.

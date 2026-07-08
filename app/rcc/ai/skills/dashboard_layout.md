@@ -55,12 +55,13 @@ existing scripts and clients that haven't migrated.
 | `"meter"`           | 13           | Analog half-arc; two-page swipe with digital   |
 | `"clock"`           | 14           | Utility (toggled from Start menu, NOT pinned via addWidget) |
 | `"stopwatch"`       | 15           | Utility (toggled from Start menu, NOT pinned via addWidget) |
-| `"none"`            | 16           | Sentinel; never pin                            |
-| `"imageview"`       | 17           | Pro                                            |
-| `"output-panel"`    | 18           | Pro; ALL output widgets in a group on one tile |
-| `"notification-log"`| 19           | Pro                                            |
-| `"waterfall"`       | 20           | Pro                                            |
-| `"painter"`         | 21           | Pro                                            |
+| `"webview"`         | 16           | Web page tile (group widget; `"web-view"` also accepted) |
+| `"none"`            | 17           | Sentinel; never pin                            |
+| `"imageview"`       | 18           | Pro                                            |
+| `"output-panel"`    | 19           | Pro; ALL output widgets in a group on one tile |
+| `"notification-log"`| 20           | Pro                                            |
+| `"waterfall"`       | 21           | Pro                                            |
+| `"painter"`         | 22           | Pro                                            |
 
 **Clock and Stopwatch are utility widgets, not tiles.** They have
 `DashboardWidget` slots (14, 15) so they can render and live in the
@@ -109,7 +110,7 @@ APIs, which is why slugs exist.)
 | Gauge         | `"gauge"`       | `widget: "gauge"`      | `8`              | `11`             |
 | Compass       | `"compass"`     | `widget: "compass"`    | `16`             | `12`             |
 | LED           | `"led"`         | `led: true`            | `32`             | `8`              |
-| Waterfall     | `"waterfall"`   | `waterfall: true`      | `64`             | `20` (Pro)       |
+| Waterfall     | `"waterfall"`   | `waterfall: true`      | `64`             | `21` (Pro)       |
 | Meter         | `"meter"`       | `widget: "meter"`      | `128`            | `13`             |
 
 Slug usage:
@@ -240,8 +241,9 @@ DIFFERENT enum: `GroupWidget`.
 | `4`             | MultiPlot      | `2`  (DashboardMultiPlot)        |
 | `5`             | NoGroupWidget  | (none; group has no native tile) |
 | `6`             | Plot3D (Pro)   | `6`  (DashboardPlot3D)           |
-| `7`             | ImageView (Pro)| `17` (DashboardImageView)        |
-| `8`             | Painter (Pro)  | `21` (DashboardPainter)          |
+| `7`             | ImageView (Pro)| `18` (DashboardImageView)        |
+| `8`             | Painter (Pro)  | `22` (DashboardPainter)          |
+| `9`             | WebView        | `16` (DashboardWebView)          |
 
 Reading the API:
 - `project.group.add{widgetType: <int>}` is REQUIRED at creation; this
@@ -249,7 +251,7 @@ Reading the API:
 - `project.group.update` accepts `{title, widget, columns, sourceId,
   painterCode}`. **It does NOT accept `widgetType`.** Pass `widget` as
   a STRING ("datagrid", "multiplot", "accelerometer", "gyro", "map",
-  "plot3d", "image", "painter") or `""` to clear. Sending
+  "plot3d", "image", "painter", "webview") or `""` to clear. Sending
   `widgetType: 4` to `update` is silently dropped. You'll see no
   error, and `compatibleWidgetTypes` won't change. If you wrote that
   call and saw nothing happen, that's why.
@@ -489,7 +491,7 @@ When the user asks for "an overview" or "executive dashboard":
    - LED (8) for booleans/alarms: uses `ledHigh` threshold
    - Plot (9) for single time-series: needs `pltMin`/`pltMax`
    - FFT (7) for spectra of audio / vibration / signals: needs `fftMin`/`fftMax` (expected raw input range, used for normalization)
-   - Waterfall (20, Pro) for spectrograms: needs `fftMin`/`fftMax` (same input-normalization range)
+   - Waterfall (21, Pro) for spectrograms: needs `fftMin`/`fftMax` (same input-normalization range)
 4. NEVER widgetType=0 (Terminal).
 5. Show the user the curated list in chat BEFORE pushing. **Include the
    min/max ranges you plan to set per dataset** so they can correct the

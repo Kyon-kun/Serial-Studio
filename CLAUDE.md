@@ -68,7 +68,7 @@ to run from any directory.
 
 | Script | Role |
 |--------|------|
-| `sanitize-commit.py` | Top-level driver: chmod (POSIX) → expand-doxygen → clang-format → code-verify --fix → clang-format → code-verify --check → documentation-verify → search-index rebuild → changed-file summary. Sanitize only — it never commits or pushes. **Run before every commit.** |
+| `sanitize-commit.py` | Top-level driver: chmod (POSIX) → expand-doxygen → clang-format → code-verify --fix → clang-format → code-verify --check → black → documentation-verify → generate-sdk → search-index rebuild → changed-file summary. Sanitize only — it never commits or pushes. **Run before every commit.** |
 | `code-verify.py` | Structural + tone linter for C++/QML/H. `--fix` rewrites in place; `--check` regenerates `.code-report`. Errors block CI; advisories are baseline-debt cleanup. |
 | `documentation-verify.py` | Markdown linter for AI-narration / marketing copy. Read-only; writes `.doc-report`. Targets `README.md`, `AGENTS.md`, `doc/help/**`, `examples/**/README.md` (CLAUDE.md is exempt). |
 | `expand-doxygen.py` | Rewrites single-line `/** text */` into the canonical 3-line block. |
@@ -106,7 +106,7 @@ pytest tests/integration/ -n 4                                        # parallel
 ```
 
 The C++ hotpath has no pytest path — it's gated by the in-binary `--benchmark-hotpath` flag
-(see Threading & Hotpath) that the user runs, plus `test.yml`/`deploy.yml` in CI.
+(see Threading & Hotpath) that the user runs, plus `ci.yml` in CI.
 
 ## Project Overview
 
@@ -133,8 +133,8 @@ not a substitute.
 | [doc/claude/code-style.md](doc/claude/code-style.md) | Full style spec + NASA Power of Ten: formatting, naming, control flow, C++ headers, signals/connections, comments & Doxygen, QML, performance, licensing. The Code Style block below is the inline essentials — read this for the complete rules. |
 | [doc/claude/directory-map.md](doc/claude/directory-map.md) | The `app/src` / `app/qml` / `lib` tree with one-line role notes per subsystem. |
 | [doc/claude/working-relationship.md](doc/claude/working-relationship.md) | How to collaborate here: recommend don't enumerate, push back when a choice will cost, ground truth outranks on-paper reasoning, surface tradeoffs as decisions, engage the "why." Read once per session if you haven't internalized it. |
-| [doc/claude/j-space.md](doc/claude/j-space.md) | The verbalization discipline and its grounding (the Transformer Circuits global-workspace paper): why naming the binding constraints right before an edit works, the five disciplines, and where each is wired into the skills. Read when tuning any AI-facing doc or skill. |
-| [doc/claude/repo-skills.md](doc/claude/repo-skills.md) | The project-scoped `/`-skills catalog (`ss-hotpath`, `ss-new-driver`, `ss-verify`, `qt-cpp-review`, `ss-cpp-modern`, `cpp-compiler-flags`, and the `ss-spec`/`ss-plan`/`ss-tasks`/`ss-implement` workflow) and when each fires. Most auto-activate; this is the lookup when picking one deliberately. |
+| [doc/claude/j-space.md](doc/claude/j-space.md) | The verbalization discipline and its grounding (the Transformer Circuits global-workspace paper): why naming the binding constraints right before an edit works, the six disciplines, and where each is wired into the skills. Read when tuning any AI-facing doc or skill. |
+| [doc/claude/repo-skills.md](doc/claude/repo-skills.md) | The project-scoped `/`-skills catalog (`ss-hotpath`, `ss-new-driver`, `ss-verify`, `qt-cpp-review`, `ss-cpp-modern`, `cpp-compiler-flags`, `ss-docs`, and the `ss-spec`/`ss-plan`/`ss-tasks`/`ss-implement` workflow) and when each fires. Most auto-activate; this is the lookup when picking one deliberately. |
 | [doc/claude/spec-driven.md](doc/claude/spec-driven.md) | Before any non-trivial or multi-file feature: the default workflow. The four gated phases (`/ss-spec` → `/ss-plan` → `/ss-tasks` → `/ss-implement`), where artifacts live (`doc/claude/specs/NNNN-slug/`), the gate discipline, when to skip, and how it composes with the hotpath/verify/trust rules. |
 
 ## J-Space Discipline — Verbalize the Binding Constraints
@@ -154,6 +154,10 @@ work runs on autopilot and bypasses it. The repo's rules only steer an edit if t
 - **Diverge by naming.** For design and review work, distinct named lenses/candidates load
   distinct thinking — sketch named alternatives before recommending (the human still gets
   one recommendation, per working-relationship.md).
+- **Externalize long state.** Multi-step work writes intermediate state into durable
+  artifacts (spec/plan/tasks files, a chat checklist) instead of holding it — written state
+  stops competing for the capacity-limited workspace; re-name only what binds the current
+  edit.
 
 ## Threading & Hotpath — Non-Negotiable
 
@@ -182,14 +186,14 @@ cached flags, benchmark mechanics) in
   "Cached Hotpath Flags" — read it before touching any of them.
 - **Source owns time.** Stamp at the driver boundary; never re-stamp in export/report
   workers (use `monotonicFrameNs(...)` as the safety net only).
-- **JS scripts**: always `IScriptEngine::guardedCall()`, never `parseFunction.call()`.
+- **JS scripts**: always `JsScriptEngine::guardedCall()`, never `parseFunction.call()`.
   `setInterrupted(true)` only in `JsWatchdogThread.cpp`.
 - **256 kHz is a CI gate, not a slogan.** `--benchmark-hotpath` (`Benchmark::HotpathBenchmark`)
   drives the real parse pipeline with nine gates tiered off `--min-fps` (default 256000): seven
   parser gates from data pipeline + Native numeric at 4x (1.024 MHz) down to JS mixed at 64 kHz,
   plus 0.5x floors on the Lua exporter/dashboard reference rows so a consumer-path collapse
-  can't ship silently (full tier table in the `ss-hotpath` skill); `test.yml` runs it per PR,
-  `deploy.yml` gates the shipped PGO binary. Don't regress it.
+  can't ship silently (full tier table in the `ss-hotpath` skill); `ci.yml` (the only
+  workflow) runs it per push/PR as a hard gate on the PGO-optimized binary. Don't regress it.
 - **Hotpath optimization macros live in `app/src/DataModel/HotpathOptimization.h`** (`SS_FORCE_INLINE`,
   `SS_FLATTEN`, `SS_HOT`/`SS_COLD`, `SS_RESTRICT`, `SS_ASSUME`, `SS_NO_UNROLL`, ...): cross-toolchain
   spellings with a `__clang__`-first cascade (clang-cl/IntelLLVM take the GNU branch). Annotate the

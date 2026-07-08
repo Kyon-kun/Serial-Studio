@@ -2092,9 +2092,9 @@ static void appendBasicMetaTools(QJsonArray& out)
       makeMetaTool(QStringLiteral("meta.listCategories"),
                    QStringLiteral("List the top-level command scopes (project, io, console, "
                                   "consoleExport, csvExport, csvPlayer, mdf4Export, mdf4Player, "
-                                  "controlscript, scripts, dashboard, ui, sessions, licensing, "
-                                  "notifications, extensions, assistant, fs, meta) with one-line "
-                                  "descriptions and command counts. "
+                                  "controlScript, scripts, dashboard, ui, sessions, licensing, "
+                                  "notifications, extensions, system, api, assistant, fs, meta) "
+                                  "with one-line descriptions and command counts. "
                                   "Call this FIRST when you need to know what is even possible -- "
                                   "it's much smaller than meta.listCommands and tells you which "
                                   "prefix to drill into next."),

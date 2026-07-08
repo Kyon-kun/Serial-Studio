@@ -18,6 +18,10 @@ else is automatic processing that bypasses the workspace. Key findings that matt
 - **Articulating principles improves adherence.** Their counterfactual-reflection result:
   training a model to state the applicable principle under hypothetical interruption
   measurably improved behavior — internal thoughts and outputs share foundations.
+- **Externalizing steps offloads the workspace.** Writing out intermediate reasoning
+  (chain-of-thought) reduces the model's dependence on the capacity-limited internal
+  workspace — state that lives in a written artifact stops competing for the handful of
+  active slots.
 
 ## Honest limits
 
@@ -28,7 +32,7 @@ how much**. That lever is real: verbalizing a constraint immediately before the 
 it into the workspace where it can steer computation; a rule 200 lines back in context is
 background text that may never make it in.
 
-## The five disciplines
+## The six disciplines
 
 1. **Verbalize to load.** Immediately before a risky edit, name — in chat, in your own
    words — the specific invariants that bind *this* change. Restating adjacent to the action
@@ -48,6 +52,13 @@ background text that may never make it in.
    recommending one (recommend, don't enumerate — the naming is for divergence, the human
    still gets one pick). Reviewing: keep review missions named and disjoint rather than
    "review it thoroughly."
+6. **Externalize to free capacity.** Multi-constraint work that spans many steps should not
+   be held in the head: write intermediate state into durable artifacts (the spec/plan/tasks
+   files, a chat checklist) as it is produced, then re-load only the piece that binds the
+   current action (discipline 1). Externalizing reduces workspace dependence; the workspace
+   slots freed go to the constraints that must steer *now*. This is the mechanism behind the
+   spec-driven artifacts and the live `tasks.md` checklist — they are workspace extensions,
+   not paperwork.
 
 ## Where each discipline is wired in
 
@@ -58,7 +69,9 @@ background text that may never make it in.
 | Break automatic mode | `ss-hotpath` auto-activation paths; ctor-closure rule in CLAUDE.md; spec-driven gates for non-trivial work |
 | Counterfactual self-check | `ss-implement` Definition of Done self-review; CLAUDE.md "self-review before handoff" |
 | Named lenses | `ss-plan` candidate designs; `qt-cpp-review` six named missions |
+| Externalize to free capacity | spec-driven artifacts (`spec.md`/`plan.md`/`tasks.md`); `ss-implement` keeping `tasks.md` a live record; `ss-tasks` naming each task's binding invariant in its Does line |
 
 These disciplines sharpen practices this repo already had ("state the plan", "read before
-writing", named review agents); the paper supplies the mechanism for *why* they work and the
-rule for applying them well: name it, name few, name it late, name it again before handoff.
+writing", named review agents, the spec artifacts); the paper supplies the mechanism for *why*
+they work and the rule for applying them well: name it, name few, name it late, name it again
+before handoff — and write everything else down so it stops competing for the workspace.

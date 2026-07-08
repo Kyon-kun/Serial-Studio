@@ -414,7 +414,7 @@ Studio at save time:
 
 | Key                        | Meaning                                              |
 |----------------------------|------------------------------------------------------|
-| `schemaVersion`            | Project file format version (currently 1)            |
+| `schemaVersion`            | Project file format version (currently 3)            |
 | `writerVersion`            | Serial Studio version that wrote this file           |
 | `writerVersionAtCreation`  | Serial Studio version that originally created it     |
 

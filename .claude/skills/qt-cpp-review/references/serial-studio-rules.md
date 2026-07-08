@@ -16,7 +16,9 @@ sinks`. A violation here causes silent frame drops, not a compile error.
   Reconfigure by recreating via `resetFrameReader()` / `reconfigure()`. A lock here is a
   blocker.
 - **SS-HOT-2**: Hotpath signal hops are `Qt::DirectConnection`. A queued connection between
-  two main-thread objects fills the 4096-slot queue at 10+ kHz and drops frames. Applies to
+  two main-thread objects fills the 65536-slot queue at 10+ kHz and drops frames (that is
+  `FrameReader`'s enqueue queue, `m_queue(65536)`; the 4096 figure is `kCapturedPoolSize`, a
+  different structure). Applies to
   `DeviceManager` ready-read, `ConnectionManager::onFrameReady`, and
   `sourceStructureChanged -> rebuildDevices` (queued there lets a stale `m_devices[0]` survive
   into Connect).
@@ -27,8 +29,9 @@ sinks`. A violation here causes silent frame drops, not a compile error.
   slow-export path and is not a finding.
 - **SS-HOT-4**: Source owns time. Stamp at the driver boundary; never re-stamp in an
   export/report worker. `monotonicFrameNs(...)` is the safety net only.
-- **SS-HOT-5**: JS frame-parser / transform calls go through `IScriptEngine::guardedCall()` —
-  never a raw `parseFunction.call()`. `setInterrupted(true)` only in `JsWatchdogThread.cpp`.
+- **SS-HOT-5**: JS frame-parser / transform calls go through `JsScriptEngine::guardedCall()`
+  (the concrete engine — the `IScriptEngine` interface does not carry it) — never a raw
+  `parseFunction.call()`. `setInterrupted(true)` only in `JsWatchdogThread.cpp`.
 - **SS-HOT-6**: 256 kHz is a CI gate (`--benchmark-hotpath`, `Benchmark::HotpathBenchmark`), not a
   slogan. Any change that adds work per frame on the gated Lua/JS path is a regression risk —
   flag it for benchmarking. Don't regress the parse hotpath.
@@ -96,15 +99,20 @@ or a region is suppressed:
   40-80 lines, hard limit 100.
 - **SS-STY-8**: SPDX banner is the dual-license block
   (`SPDX-License-Identifier: GPL-3.0-only OR LicenseRef-SerialStudio-Commercial`).
-  Commercial-only files (API handlers under `app/src/API/Handlers/`, Pro modules) use
-  `LicenseRef-SerialStudio-Commercial` and are gated behind `#ifdef BUILD_COMMERCIAL`.
+  Commercial-only files (Pro modules and the Pro-feature API handlers, e.g.
+  `CANBusHandler`/`ModbusHandler`/`MDF4ExportHandler`) use
+  `LicenseRef-SerialStudio-Commercial` and are gated behind `#ifdef BUILD_COMMERCIAL`;
+  other API handlers (`NetworkHandler`, `ConsoleHandler`, ...) stay dual-licensed — match
+  the sibling handler, don't assume by directory.
 
 ## Known landmines (verify they are not reintroduced)
 
 These were real bugs; treat a re-sighting as a high-confidence finding:
 
 - `FrameBuilder::parseProjectFrame` — `m_sourceFrames[sourceId]` via `operator[]` silently
-  inserts a default-constructed entry. Use `.value()` / `find()` for reads.
+  inserted a default-constructed entry (since fixed: access goes through
+  `ensureSourceFrame(sourceId)`, which uses `find()` + explicit `insert()`). Flag any
+  reintroduced `m_sourceFrames[...]` operator[] read.
 - `DeviceManager::killFrameReader` — `clear()` before `wait()` was a use-after-free.
 - ProjectEditor disconnect — `disconnect(nullptr)` disconnected ALL slots, not the one lambda.
 - SourceHandler API — a bounds check assumed contiguous IDs after deletes.

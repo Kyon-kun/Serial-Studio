@@ -245,7 +245,7 @@ def harvest_example_readmes():
                 source="example",
                 title=f"{title} README#{i}",
                 body=chunk,
-                doc_id=f"example/{md.relative_to(ROOT)}#{i}",
+                doc_id=f"example/{md.relative_to(ROOT).as_posix()}#{i}",
             )
 
 
@@ -259,7 +259,7 @@ def harvest_examples():
             continue
         title = data.get("title", proj.stem)
         parser = data.get("frameParser", "")
-        body_parts = [f"Example project: {title} ({proj.relative_to(ROOT)})"]
+        body_parts = [f"Example project: {title} ({proj.relative_to(ROOT).as_posix()})"]
         # Group + dataset titles tell the model what shape this project is
         for g in data.get("groups", []):
             gw = g.get("widget", "")
@@ -272,7 +272,7 @@ def harvest_examples():
             source="example",
             title=title,
             body="\n\n".join(body_parts),
-            doc_id=f"example/{proj.relative_to(ROOT)}",
+            doc_id=f"example/{proj.relative_to(ROOT).as_posix()}",
         )
         for i, src in enumerate(data.get("sources", [])):
             src_parser = src.get("frameParserCode", "")
@@ -281,10 +281,10 @@ def harvest_examples():
             add(
                 source="example",
                 title=f"{title} (source {i})",
-                body=f"Example project: {title} ({proj.relative_to(ROOT)}), source {i}\n\n"
+                body=f"Example project: {title} ({proj.relative_to(ROOT).as_posix()}), source {i}\n\n"
                 + "Frame parser:\n"
                 + first_function_or_decl(src_parser),
-                doc_id=f"example/{proj.relative_to(ROOT)}#source{i}",
+                doc_id=f"example/{proj.relative_to(ROOT).as_posix()}#source{i}",
             )
 
 

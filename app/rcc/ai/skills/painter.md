@@ -12,7 +12,7 @@ one would be a large effort for marginal benefit. Don't try to author
 painter code in Lua; it will not compile.
 
 To pin a painter to a workspace, use `widgetType: "painter"`
-(preferred; the back-compat integer enum is `21`) on `addWidget`.
+(preferred; the back-compat integer enum is `22`) on `addWidget`.
 
 ## Decision: when to use a painter
 

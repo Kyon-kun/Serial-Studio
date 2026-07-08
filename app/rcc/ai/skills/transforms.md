@@ -195,7 +195,7 @@ tableHandle(tableName, registerName)           // -> handle (number), or -1; res
 tableHandleMany(tableName, registerNames)      // -> array of handles
 tableGetH(handle)                              // read by handle (fast path; no name lookup)
 tableSetH(handle, value)                       // write by handle (computed registers only)
-datasetGetRaw(uniqueId)                        // any dataset, this frame
+datasetGetRaw(uniqueId)                        // EARLIER dataset = this frame, later = previous frame
 datasetGetFinal(uniqueId)                      // EARLIER datasets only
 ```
 
@@ -220,8 +220,9 @@ transform you can read:
 - final values of **earlier** datasets only
 
 Trying to read `datasetGetFinal` of a dataset processed later returns
-the previous frame's (stale) value — or nil/undefined plus a one-shot
-warning before the first-ever write — never a guaranteed 0.
+the previous frame's (stale) value — or nil/undefined before the
+first-ever write or for an unknown `uniqueId` (silently; no warning is
+emitted) — never a guaranteed 0.
 
 ## When to use what
 

@@ -19,7 +19,9 @@ follows, not one it drifts from (`doc/claude/j-space.md`).
 
 A driver subclasses `IO::HAL_Driver` (`app/src/IO/HAL_Driver.h`) and must implement the pure
 virtuals: `close`, `isOpen`, `isReadable`, `isWritable`, `configurationOk`, `write`, `open`,
-`driverProperties`, and `setDriverProperty`. Received bytes are published via
+`driverProperties`, and `setDriverProperty`. Also consider the non-pure virtuals with default
+bodies — `deviceIdentifier()`, `selectByIdentifier()`, `applyConnectionSettings()` — which
+drive device selection and reconnection. Received bytes are published via
 `publishReceivedData(...)` — **stamp the timestamp at the driver boundary** (source owns time;
 see [ss-hotpath]). Never re-stamp downstream.
 
@@ -28,19 +30,31 @@ see [ss-hotpath]). Never re-stamp downstream.
 1. `app/src/IO/Drivers/<Name>.h` / `.cpp` — the driver class, SPDX header, `.h` ordering rules.
 2. `app/src/SerialStudio.h` — add the value to the `BusType` enum (QML uses `SerialStudio.BusType.*`,
    never integer literals).
-3. `app/src/IO/ConnectionManager.{h,cpp}` — accessor (e.g. `network()` / `uart()` analogue),
-   construction, `setBusType` dispatch, and signal forwarding.
+3. `app/src/IO/ConnectionManager.{h,cpp}` — accessor (e.g. `network()` / `uart()` analogue), a
+   UI-driver member pointer, and **three** `BusType` switches: `activeUiDriver()`,
+   `uiDriverForBusType()`, and `createDriver()` — plus signal forwarding. Update all three.
 4. `app/CMakeLists.txt` — add `src/IO/Drivers/<Name>.cpp` to the `SOURCES` list (sources are
-   listed explicitly, not globbed).
-5. QML configuration UI — add the bus to the device-setup panel that renders `driverProperties()`.
-6. `app/src/API/EnumLabels.cpp` — add the bus to the `busTypeSlug()` and label switches (the API's
-   string names for the bus; commercial buses go inside the `#ifdef BUILD_COMMERCIAL` block).
-7. `app/src/DataModel/ProjectEditor.cpp` — add the bus to the `busTypeIcon()` switch and the
-   `busTypes` combobox list in the source form model.
-8. CLI (optional) — if it should be launchable headless, add options in `app/src/Misc/CLI.{h,cpp}`
+   listed explicitly, not globbed; commercial drivers go in the guarded
+   `set(SOURCES ${SOURCES} ...)` block).
+5. QML configuration UI — the driver panes are bespoke forms (nothing renders
+   `driverProperties()` generically): create
+   `app/qml/MainWindow/Panes/SetupPanes/Drivers/<Name>.qml`, add its `Loader` to the
+   `StackLayout` in `SetupPanes/Hardware.qml` **at the bus's enum position** (the layout
+   indexes by `Cpp_IO_Manager.busType`), and register the new .qml in the `QML_SOURCES` list
+   in `app/CMakeLists.txt`.
+6. `app/src/API/EnumLabels.cpp` — add the bus to the `busTypeSlug()` and `busTypeLabel()`
+   switches (the API's string names for the bus; commercial buses go inside the
+   `#ifdef BUILD_COMMERCIAL` block).
+7. `app/src/DataModel/Project/ProjectEditorShared.h` — add the bus to the `busTypeIcon()`
+   switch, and `app/src/DataModel/Project/ProjectEditorForms.cpp` — add it to the `busTypes`
+   combobox list in the source form model (the old `ProjectEditor.cpp` was split; these live
+   in the per-concern TUs now).
+8. Icon — add the driver SVG under `app/rcc/icons/devices/drivers/` and register it with a
+   `<file>` entry in `app/rcc/rcc.qrc` (`busTypeIcon()` returns its `qrc:/` path).
+9. CLI (optional) — if it should be launchable headless, add options in `app/src/Misc/CLI.{h,cpp}`
    following the existing `setupUartConnection` / `setupTcpConnection` pattern.
-9. `tests/utils/api_client.py` (optional) — add the bus to `bus_map` if integration tests should
-   reach it via `io.setBusType`.
+10. `tests/utils/api_client.py` (optional) — add the bus to `bus_map` if integration tests should
+    reach it via `io.setBusType` (known drift: `mqtt` is missing from it today).
 
 The list above drifts as the app grows. Before declaring done, grep a recently added bus value
 (e.g. `grep -rn "BusType::HidDevice" app/src`) and mirror every switch/list it appears in.

@@ -9,7 +9,8 @@
 - `IScriptEngine` is the abstraction. Three impls:
   - `JsScriptEngine` — `QJSEngine` with `ConsoleExtension + GarbageCollectionExtension`
     only (**not** `AllExtensions`). Watchdog: **always route through
-    `IScriptEngine::guardedCall()`**; never call `parseFunction.call()` directly.
+    `JsScriptEngine::guardedCall()`** (concrete engine — the `IScriptEngine` interface does
+    not carry it); never call `parseFunction.call()` directly.
   - `LuaScriptEngine` — Lua 5.4 (`lib/lua/lua54`), one `lua_State*` per source.
   - `CFrameParser` — native C++ parametrized templates (`SerialStudio::Native = 2`). The
     "script" is a canonical JSON descriptor `{"params": {...}, "template": "<id>"}` built by

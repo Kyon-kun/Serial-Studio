@@ -24,9 +24,12 @@ read them before answering anything flag-related:
 | `cmake/Sanitizers.cmake` | ASan+UBSan (`DEBUG_SANITIZER`) and the separate TSan build (`ENABLE_TSAN`). |
 | `cmake/MiMalloc.cmake` | The process-wide mimalloc allocator override (Windows/MSVC + Linux; macOS opts out). |
 
-Wiring: options are declared in `CMakeLists.txt` (around lines 79-87); the modules are
-`include()`d there (MiMalloc -> Optimization -> Sanitizers, then Hardening). The PGO two-stage
-flow is driven by `.github/workflows/ci.yml`.
+Wiring: the four user-facing options (`DEBUG_SANITIZER`, `PRODUCTION_OPTIMIZATION`,
+`ENABLE_HARDENING`, `ENABLE_PGO`) are declared in `CMakeLists.txt` (around lines 79-87);
+`PGO_STAGE` and the internal `DISABLE_LTO` live in `Optimization.cmake`, `ENABLE_TSAN` in
+`Sanitizers.cmake`. The modules are `include()`d in `CMakeLists.txt` (MiMalloc ->
+Optimization -> Sanitizers, then Hardening, then Signing). The PGO two-stage flow is driven
+by `.github/workflows/ci.yml` (the only workflow file).
 
 ## This skill does NOT build
 
@@ -66,8 +69,9 @@ not an optimization:
   + LTO can drop a personality routine and turn a routine Lua error into `std::terminate`. See
   [[ss-cpp-modern]] and the Lua exception-safety setup. Do not remove these to "shrink" the
   binary.
-- **x86-64-v2 is the conservative baseline (SSE4.2, 2012+ CPUs).** Every x86-64 branch uses
-  `-march=x86-64-v2` / `/clang:-march=x86-64-v2`. Do not bump to `v3`/`v4` or `-march=native`
+- **x86-64-v2 is the conservative baseline (SSE4.2, 2012+ CPUs).** Every non-MSVC x86-64
+  branch uses `-march=x86-64-v2`; clang-cl passes `/clang:-march=x86-64-v2`; cl.exe gets no
+  `-march` (the x64 ABI's SSE2 baseline stands). Do not bump to `v3`/`v4` or `-march=native`
   for shipped binaries -- it would SIGILL on older CPUs. ARM baselines: aarch64 -> `armv8-a`
   (+`-latomic`); armv7l -> `armv7-a -mfpu=neon -mfloat-abi=hard` (hardfloat pinned on purpose).
 - **`-msse4.1` is added for DSP/FFT on non-MSVC x86-64**, separate from the `-march` baseline.

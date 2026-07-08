@@ -51,8 +51,15 @@ Dashboard / CSV / MDF4 / API / Sessions`
   (mechanics in `doc/claude/architecture/dataflow.md` "Cached Hotpath Flags"; see also
   `doc/claude/common-mistakes.md`).
 - **Native + PlainText parses through the span fast lane** (`trySpanLane` → `parseUtf8Spans` →
-  `applyDatasetValuesSpans`): byte views + in-place QString writes (`assign_utf8_in_place`),
-  zero steady-state allocation. Keep anything you add to that lane allocation-free.
+  `applyDatasetValuesSpans`): byte views + in-place QString writes (`assign_utf8_in_place` /
+  `assign_string_in_place`, never implicit-share assignment — a share-assign re-links buffers
+  and degrades back to per-frame mallocs), zero steady-state allocation. Keep anything you add
+  to that lane allocation-free.
+- **Every dashboard publish site stamps `structureGeneration = m_framePoolGeneration`** —
+  pool slot and heap fallback alike. The dashboard skips per-frame `compare_frames()`
+  revalidation when the cached per-source generation matches; a frame left at the default `0`
+  (or stale) makes `Dashboard::hotpathRxFrame` reconfigure every frame or never reconfigure
+  after a real layout change. The generation only advances via `invalidateFramePool()`.
 - **`m_captureLatestFrame`** (control script running or API server on) gates the latest-frame
   capture behind `io.getLatestFrame`: one retained `CapturedDataPtr` per source (the pool probe
   skips pinned slots) plus the channel tokens. Keep it gated and allocation-free.
@@ -117,8 +124,9 @@ Mechanics and readouts:
   wall-clock window (default 10) — each run lasts until both floors are met.
   `--benchmark-output FILE` mirrors the report to a file (default: stdout only).
 
-Source: `app/src/Benchmark/HotpathBenchmark.cpp`. CI runs it on every PR (`test.yml`) and as a
-hard release gate on the shipped PGO binary (`deploy.yml`). The same engine backs the in-app
+Source: `app/src/Benchmark/HotpathBenchmark.cpp`. CI (`ci.yml`, the only workflow) runs it on
+every push/PR as a hard gate on the PGO-optimized binary — the same binary that ships (PGO
+GENERATE → `--min-fps 1` training run → PGO USE → gated `--min-fps 256000`). The same engine backs the in-app
 About → Benchmark dialog (`Benchmark::BenchmarkRunner`, exposed as `Cpp_Benchmark_Runner`).
 **Do not regress the parse hotpath.**
 

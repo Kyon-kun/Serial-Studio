@@ -5,11 +5,14 @@ Serial Studio exposes ~300 commands. Your default tool list contains only
 
 ## Three discovery layers
 
-1. **Categories**: `meta.listCategories()` returns the ~15 top-level
-   scopes (project, io, console, csv, csvPlayer, mqtt, dashboard, ui,
-   sessions, licensing, notifications, extensions, scripts, meta) with
-   one-line descriptions. Call this FIRST when you need to know what's
-   even possible.
+1. **Categories**: `meta.listCategories()` returns the top-level scopes
+   — the first dotted segment of each command name (project, io, console,
+   csvExport, csvPlayer, consoleExport, mdf4Export, mdf4Player, dashboard,
+   ui, sessions, licensing, notifications, extensions, scripts,
+   controlScript, system, api, assistant, fs, meta) with one-line
+   descriptions. MQTT commands live under `project.mqtt.*`, not a
+   top-level scope. Call this FIRST when you need to know what's even
+   possible.
 
 2. **Commands within a scope**: `meta.listCommands{prefix: "io.uart."}`
    returns every command under that prefix with its 1-line description.

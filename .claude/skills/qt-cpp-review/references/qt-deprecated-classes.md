@@ -47,8 +47,9 @@ preferences do NOT apply to an application codebase, and flagging them produces 
 
 ## Genuinely worth flagging in this repo
 
-- `Q_FOREACH` / `foreach` sightings (present in some older drivers, e.g. `BluetoothLE.cpp`) —
-  a fair finding; migrate to range-based `for`.
+- `Q_FOREACH` / `foreach` sightings — a fair finding; migrate to range-based `for`. (The
+  historical ones in older drivers like `BluetoothLE.cpp` have been cleaned up; any sighting
+  today is new.)
 - `QScopedPointer` where a `std::unique_ptr` would match the house style.
 - `qMin`/`qMax` where `(std::min)`/`(std::max)`/`std::clamp` is clearer.
 - `QRegularExpression` built inside a loop, anywhere near the data path.
