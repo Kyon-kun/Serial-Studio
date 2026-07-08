@@ -2,7 +2,9 @@
 
 Project-scoped Agent Skills live in `.claude/skills/` and load automatically for anyone running
 Claude Code in this repo (committed to git, no install step). Invoke with `/<name>` or let them
-auto-trigger. Keep them current when the workflows they encode change.
+auto-trigger. Keep them current when the workflows they encode change. Each skill carries one
+anchored verbalization step from the J-space discipline ([j-space.md](j-space.md)) — when
+editing a skill, keep that step adjacent to the action it guards.
 
 | Skill | Use it when |
 |-------|-------------|

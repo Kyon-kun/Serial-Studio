@@ -968,7 +968,7 @@ def test_tester_runs_pipeline_and_writes_back_to_source():
             text,
         )
         assert body is not None, f"{slot} body must exist"
-        assert "ProjectModel::instance().updateSource(m_sourceId, src);" in body.group(
+        assert "m_projectModel.updateSource(m_sourceId, src);" in body.group(
             0
         ), f"{slot} must persist edits via updateSource"
 

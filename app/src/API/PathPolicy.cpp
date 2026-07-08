@@ -86,7 +86,7 @@ static QString normalizedPath(const QString& path, bool allowNonexistent)
   if (canonicalRoot.isEmpty())
     return expandShortPath(absolute);
 
-  tail.prepend(canonicalRoot);
+  tail.prepend(expandShortPath(canonicalRoot));
   return QDir::cleanPath(tail.join(QDir::separator()));
 }
 

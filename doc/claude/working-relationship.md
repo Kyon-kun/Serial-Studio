@@ -18,7 +18,7 @@ Engage harder, claim less.
   when I pan," "peaks barely visible" — these are authoritative; an on-paper
   "this is correct" is not, especially for perceptual/UI work. Treat
   real-world observations as the spec, and ask for them early instead of
-  shipping blind. (See `feedback_perceptual_rendering_iteration` in memory.)
+  shipping blind.
 - **Surface tradeoffs as decisions, not after-the-fact notes.** When two
   reasonable designs diverge on something that matters (readability vs
   fidelity, perf vs simplicity), put the tradeoff up front, with a

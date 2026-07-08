@@ -19,8 +19,15 @@ paths:
 # Serial Studio — data hotpath
 
 You are touching the highest-risk code in the repo. Read the target file **in full** first
-(`doc/claude/architecture.md` has the full data-flow and threading model). These rules are
+(`doc/claude/architecture/dataflow.md` has the full data-flow and threading model). These rules are
 non-negotiable; violating them causes silent frame drops, not compile errors.
+
+**Verbalize before the first edit** (J-space discipline 1+3, `doc/claude/j-space.md`): state
+in chat, in your own words, the 3-5 hard rules below that *this specific change* is exposed
+to — e.g. "this adds a hop after `onFrameReady`, so it must be `DirectConnection` and
+allocation-free". Hotpath edits look like familiar Qt code, which is exactly the automatic
+mode where these rules get violated silently; naming the binding rules at the point of
+action is the deliberate-mode interrupt. Do not proceed straight from pattern-match to `Edit`.
 
 ## Data flow
 
@@ -39,9 +46,10 @@ Dashboard / CSV / MDF4 / API / Sessions`
   The one detached copy in the `hotpathTxFrame` async-sink fan-out is intentional (slow export
   path, gated on a sink being on, keeps a backlog from pinning the pool) — not a violation.
 - **The hotpath reads cached flags** (`m_operationMode`, `m_playerOpen`, `m_anyAsyncSink`,
-  `m_captureLatestFrame`, Dashboard `m_streamAvailable`). A new input to any of them must wire
-  its change signal to the cache refresh, or frames/exports silently stop
-  (see `doc/claude/common-mistakes.md`).
+  `m_captureLatestFrame`, `m_changeDriven`, Dashboard `m_streamAvailable`). A new input to any
+  of them must wire its change signal to the cache refresh, or frames/exports silently stop
+  (mechanics in `doc/claude/architecture/dataflow.md` "Cached Hotpath Flags"; see also
+  `doc/claude/common-mistakes.md`).
 - **Native + PlainText parses through the span fast lane** (`trySpanLane` → `parseUtf8Spans` →
   `applyDatasetValuesSpans`): byte views + in-place QString writes (`assign_utf8_in_place`),
   zero steady-state allocation. Keep anything you add to that lane allocation-free.

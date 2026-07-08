@@ -35,6 +35,15 @@ and pushing stay with the developer:
 python scripts/sanitize-commit.py
 ```
 
+## Fixing what the linter reports
+
+Mechanical findings (formatting, naming, header order, a missing `[[nodiscard]]`) need no
+ceremony — just fix them. When the fix is anything more — a suppression, a restructure, a
+signature change — first name the rule being violated and its cause in one sentence, then fix
+the cause, not the symptom (`doc/claude/j-space.md`, verbalize-to-load). Pattern-matched
+fixes silence the linter line while leaving the underlying issue (a suppression comment where
+a restructure was due, a renamed symbol that still leaks the design problem).
+
 ## Reminders
 
 - Commit messages are Conventional Commits (`feat|fix|chore|docs|style|refactor|perf|test(scope): …`).

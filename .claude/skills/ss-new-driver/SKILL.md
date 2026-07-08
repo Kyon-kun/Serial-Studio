@@ -12,7 +12,10 @@ argument-hint: "[DriverName]"
 
 **Before writing anything, read `app/src/IO/Drivers/BluetoothLE.h` and `BluetoothLE.cpp` in
 full.** They are the canonical reference for the driver contract — match their structure,
-signal/slot wiring, and `driverProperties()` shape rather than inventing a new layout.
+signal/slot wiring, and `driverProperties()` shape rather than inventing a new layout. After
+the read, restate the driver contract in chat in 2-3 sentences (pure virtuals, publish path,
+timestamp-at-boundary) before scaffolding — a contract you've just named is one the new code
+follows, not one it drifts from (`doc/claude/j-space.md`).
 
 A driver subclasses `IO::HAL_Driver` (`app/src/IO/HAL_Driver.h`) and must implement the pure
 virtuals: `close`, `isOpen`, `isReadable`, `isWritable`, `configurationOk`, `write`, `open`,

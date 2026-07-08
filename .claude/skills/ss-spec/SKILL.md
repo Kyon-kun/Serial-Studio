@@ -31,6 +31,9 @@ for the full workflow and the gate discipline.
 2. **Ground yourself first.** Skim the relevant `doc/claude/` sub-doc(s) for the area so the
    spec's claims about current behavior are true — but keep the spec implementation-free.
    Ground in real behavior (a report, a screenshot, a measured limit), not a hypothesis.
+   Then state the problem and the one deciding constraint in a single chat sentence *before*
+   drafting sections — a problem you can name is one the requirements will actually serve
+   (`doc/claude/j-space.md`, verbalize-to-load).
 
 3. **Create the directory and copy the template:**
 

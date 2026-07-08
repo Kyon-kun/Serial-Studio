@@ -37,6 +37,10 @@ units. Each task is a coherent diff a reviewer could read on its own. See
    - Each task names its **Files**, what it **Does**, how to **Verify** it (usually
      `python scripts/code-verify.py --check <files>` plus a test or read-back), and its
      **Deps**.
+   - A task touching a silent-breakage class (hotpath, ctor closure, signal wiring, cached
+     hotpath flags) names the binding invariant *in its Does line* — so `/ss-implement`
+     re-states it at edit time instead of rediscovering it (`doc/claude/j-space.md`:
+     constraints steer only when named close to the action).
    - Sequence hotpath-sensitive work so `--benchmark-hotpath` can be run at a clean point.
 
 4. **Fill the Definition of Done** — the whole-feature gate (code-verify clean, `qt-cpp-review`

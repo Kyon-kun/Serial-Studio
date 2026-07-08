@@ -128,18 +128,38 @@ not a substitute.
 
 | Document | When to read it |
 |----------|-----------------|
-| [doc/claude/architecture.md](doc/claude/architecture.md) | Before touching any subsystem: full data flow, timestamp ownership, threading rules, AppState, operation modes, IO/driver model, ProjectModel-Editor split, multi-source, JSON `Keys::`, frame parser (JS+Lua), value transforms, data tables, export/Sessions DB, and all plot/time-ring/sweep/waterfall/output-widget internals. |
+| [doc/claude/architecture.md](doc/claude/architecture.md) | Before touching any subsystem: the index into the per-subsystem `doc/claude/architecture/` files — dataflow (hotpath), startup, io, project, scripting, dashboard, export. Read the file(s) for the touched subsystem in full; the index maps what lives where. |
 | [doc/claude/common-mistakes.md](doc/claude/common-mistakes.md) | The silent-breakage lookup table — gotchas the linter can't catch (timestamp capture, queued-vs-direct hotpath, `operator[]` inserts, scope creep, macOS file-dialog reentrancy, etc.). |
 | [doc/claude/code-style.md](doc/claude/code-style.md) | Full style spec + NASA Power of Ten: formatting, naming, control flow, C++ headers, signals/connections, comments & Doxygen, QML, performance, licensing. The Code Style block below is the inline essentials — read this for the complete rules. |
 | [doc/claude/directory-map.md](doc/claude/directory-map.md) | The `app/src` / `app/qml` / `lib` tree with one-line role notes per subsystem. |
 | [doc/claude/working-relationship.md](doc/claude/working-relationship.md) | How to collaborate here: recommend don't enumerate, push back when a choice will cost, ground truth outranks on-paper reasoning, surface tradeoffs as decisions, engage the "why." Read once per session if you haven't internalized it. |
+| [doc/claude/j-space.md](doc/claude/j-space.md) | The verbalization discipline and its grounding (the Transformer Circuits global-workspace paper): why naming the binding constraints right before an edit works, the five disciplines, and where each is wired into the skills. Read when tuning any AI-facing doc or skill. |
 | [doc/claude/repo-skills.md](doc/claude/repo-skills.md) | The project-scoped `/`-skills catalog (`ss-hotpath`, `ss-new-driver`, `ss-verify`, `qt-cpp-review`, `ss-cpp-modern`, `cpp-compiler-flags`, and the `ss-spec`/`ss-plan`/`ss-tasks`/`ss-implement` workflow) and when each fires. Most auto-activate; this is the lookup when picking one deliberately. |
 | [doc/claude/spec-driven.md](doc/claude/spec-driven.md) | Before any non-trivial or multi-file feature: the default workflow. The four gated phases (`/ss-spec` → `/ss-plan` → `/ss-tasks` → `/ss-implement`), where artifacts live (`doc/claude/specs/NNNN-slug/`), the gate discipline, when to skip, and how it composes with the hotpath/verify/trust rules. |
+
+## J-Space Discipline — Verbalize the Binding Constraints
+
+LLM workspace research ([doc/claude/j-space.md](doc/claude/j-space.md)) shows deliberate
+reasoning runs on a small set of concepts the model is poised to verbalize; familiar-shaped
+work runs on autopilot and bypasses it. The repo's rules only steer an edit if they are
+*named at the point of action*, so:
+
+- **Name before acting.** Before any edit on a protected path (hotpath, ctor closure,
+  signal wiring, cmake flag modules), state in chat the 3-5 invariants that bind *this*
+  change — in your own words, not a doc citation. Skills re-state this where it applies.
+- **Few, late, specific.** Select the constraints that bind the change at hand; never recite
+  whole rule files. The sub-doc/skill architecture exists to load rules close to the edit.
+- **Counterfactual check at handoff.** Before claiming done: which rule does this diff most
+  risk violating, and what is the concrete evidence it doesn't? Name both.
+- **Diverge by naming.** For design and review work, distinct named lenses/candidates load
+  distinct thinking — sketch named alternatives before recommending (the human still gets
+  one recommendation, per working-relationship.md).
 
 ## Threading & Hotpath — Non-Negotiable
 
 The rules most likely to cause silent breakage. Full detail (data flow, threading table,
-benchmark mechanics) in [doc/claude/architecture.md](doc/claude/architecture.md); the
+cached flags, benchmark mechanics) in
+[doc/claude/architecture/dataflow.md](doc/claude/architecture/dataflow.md); the
 `ss-hotpath` skill auto-activates on these paths and re-states them.
 
 - **`FrameReader` and `CircularBuffer` are main-thread / SPSC. Never add mutexes.** Recreate
@@ -156,17 +176,10 @@ benchmark mechanics) in [doc/claude/architecture.md](doc/claude/architecture.md)
   (`assign_utf8_in_place`), zero steady-state allocation. The hotpath reads **cached**
   flags (`m_operationMode`, `m_playerOpen`, `m_anyAsyncSink`, `m_captureLatestFrame`,
   `m_changeDriven`, Dashboard `m_streamAvailable`) — a new input to any of them must wire its
-  change signal to the cache refresh or frames/exports silently stop (see common-mistakes.md).
-  `m_changeDriven` (project property `changeDrivenTransforms`, opt-in/off by default) skips a
-  virtual dataset's transform when none of its captured read-set slots changed since its last
-  run (per-slot version vs `DataTableStore::writeClock`); refreshed in `refreshDatasetCaptureFlag`.
-  "Changed" means value change, not write: the store's computed-register write paths treat an
-  identical value as a successful no-op and skip the version bump, so a parser rewriting the same
-  value every frame doesn't defeat the skip.
-  `m_captureLatestFrame` (control script running or API server on) gates the latest-frame
-  capture behind `io.getLatestFrame`: it retains one `CapturedDataPtr` per source (the
-  FrameReader pool probe skips pinned slots) plus the channel tokens — keep it gated and
-  allocation-free.
+  change signal to the cache refresh or frames/exports silently stop. Each flag's mechanics
+  (what `m_changeDriven` skips, what `m_captureLatestFrame` retains) live in
+  [doc/claude/architecture/dataflow.md](doc/claude/architecture/dataflow.md)
+  "Cached Hotpath Flags" — read it before touching any of them.
 - **Source owns time.** Stamp at the driver boundary; never re-stamp in export/report
   workers (use `monotonicFrameNs(...)` as the safety net only).
 - **JS scripts**: always `IScriptEngine::guardedCall()`, never `parseFunction.call()`.
@@ -194,7 +207,7 @@ benchmark mechanics) in [doc/claude/architecture.md](doc/claude/architecture.md)
   `scheduleAutoSave`, the `ControlScript::setCode` chain): it runs before AppState/Dashboard exist.
   Calling `AppState::instance()` / `UI::Dashboard::instance()` there recurses the Meyers guard and
   aborts at startup — this shipped and crashed once (2026-07-07). Gate new code on `m_initialized`
-  (see architecture.md "Composition Root & Construction Order").
+  (see [doc/claude/architecture/startup.md](doc/claude/architecture/startup.md)).
 - **A ctor-edge proof dies when ctor-reachable code changes.** Any edit inside that closure
   re-triggers the check, no matter how unrelated the edit looks.
 

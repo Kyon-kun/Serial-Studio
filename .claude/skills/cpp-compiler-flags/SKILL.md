@@ -104,7 +104,11 @@ CMake links this target with **`lld-link` directly, not through the `clang-cl` d
   concept) distilled from the canonical upstream docs, with per-source accuracy caveats.
 
 Always cross-check the catalog against the repo module before recommending a change: a flag
-being valid is not a reason to add it here (see the IEEE-math invariant).
+being valid is not a reason to add it here (see the IEEE-math invariant). Before proposing
+any flag edit, name in chat which invariant above it sits nearest to and why it is safe
+against it — an invariant named at the point of the proposal is one the proposal respects
+(`doc/claude/j-space.md`); "it doesn't touch any" is an acceptable answer only after
+checking each.
 
 ## Output expectations
 

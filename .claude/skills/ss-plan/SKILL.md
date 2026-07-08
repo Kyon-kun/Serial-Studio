@@ -27,8 +27,9 @@ discipline.
 
 2. **Read the ground truth — do not design from memory.** Read the relevant `doc/claude/`
    sub-doc(s) *and the actual code* for the area:
-   - [architecture.md](../../../doc/claude/architecture.md) — data flow, threading, AppState,
-     operation modes, ProjectModel/Editor split, multi-source, `Keys::`, parsers, export/DB.
+   - [architecture.md](../../../doc/claude/architecture.md) — index into the per-subsystem
+     `doc/claude/architecture/` files (dataflow, startup, io, project, scripting, dashboard,
+     export); read the file(s) for the touched subsystems in full.
    - [common-mistakes.md](../../../doc/claude/common-mistakes.md) — the silent-breakage classes
      this change is exposed to.
    - [code-style.md](../../../doc/claude/code-style.md) and
@@ -48,12 +49,17 @@ discipline.
    explicitly even when the answer is "none". List concrete file paths in **Affected
    subsystems & files**, confirmed by grep, not guessed.
 
-4. **Surface tradeoffs as decisions, up front.** Where two reasonable designs diverge on
+4. **Diverge before you converge.** Before settling on a design, sketch 2-3 *named* candidate
+   approaches in chat (a name plus one line each) — distinct named alternatives load distinct
+   thinking, and a design chosen against real alternatives beats the first plausible one
+   (`doc/claude/j-space.md`, named lenses). Then converge: recommend one with the one-line why.
+
+5. **Surface tradeoffs as decisions, up front.** Where two reasonable designs diverge on
    something that matters (perf vs simplicity, fidelity vs readability, scope), put the choice
    in the Tradeoffs table with a recommendation and the one-line why. Recommend, do not
    enumerate. Pull the deciding constraint out of the spec rather than discovering it later.
 
-5. **Map every acceptance criterion to a check** in the Test & verification plan — `pytest`
+6. **Map every acceptance criterion to a check** in the Test & verification plan — `pytest`
    files, `tests/scripts/` units, `--benchmark-hotpath`, or a maintainer observation.
 
 ## Gate

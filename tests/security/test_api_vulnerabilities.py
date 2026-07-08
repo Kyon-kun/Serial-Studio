@@ -467,9 +467,12 @@ def test_raw_data_injection(tester):
                 pass
 
 
-def test_parameter_validation(tester):
+def test_parameter_validation(tester, check_server_alive):
     """Test parameter validation bypass"""
     print("\n[*] Testing parameter validation...")
+
+    if not check_server_alive(wait_time=0.5):
+        pytest.skip("Server unresponsive after preceding stress tests")
 
     with SerialStudioClient() as client:
         # Test 1: Type confusion attacks

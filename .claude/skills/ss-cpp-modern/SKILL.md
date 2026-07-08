@@ -46,6 +46,11 @@ These override the generic "C++ Pro" advice you may know:
 
 ## When to reach for what
 
+Before writing a type that owns anything, state its ownership story in one chat sentence
+("`X` solely owns the handle; the worker observes via `weak_ptr`") — the shape follows from
+the story, and a story you can't state in one sentence is a design smell
+(`doc/claude/j-space.md`, verbalize-to-load).
+
 ### Smart pointer choice
 - `std::unique_ptr<T>` — sole ownership; the default. `const std::unique_ptr<T>` for a member
   that is created once and lives for the owner's lifetime (scoped, non-reseatable).

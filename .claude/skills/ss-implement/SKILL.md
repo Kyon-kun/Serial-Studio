@@ -27,13 +27,17 @@ For each task in order:
    (`FrameBuilder`, `CircularBuffer`, `FrameReader`, `Dashboard`) and existing signal/slot
    wiring are mandatory full reads (CLAUDE.md). Invoke **`ss-hotpath`** on any hotpath task,
    **`ss-cpp-modern`** when shaping non-trivial new C++.
-2. **Make the change** with targeted `Edit` calls — edit, don't rewrite. Follow
+2. **Name the binding invariants** before the first `Edit`: restate in chat, in your own
+   words, the invariant(s) the task's Does line carries (plus any the read surfaced). A
+   constraint steers the edit only when named at the point of action, not when it sits in a
+   doc you read earlier (`doc/claude/j-space.md`).
+3. **Make the change** with targeted `Edit` calls — edit, don't rewrite. Follow
    [code-style.md](../../../doc/claude/code-style.md): header ordering, `[[nodiscard]]`, no
    in-header init, `Q_EMIT`, no in-body comments, 100-col, ASCII-only in source.
-3. **Verify the task:** `python scripts/code-verify.py --check <changed files>`. Resolve new
+4. **Verify the task:** `python scripts/code-verify.py --check <changed files>`. Resolve new
    errors before moving on (advisories are baseline debt, but new code clears them). Run the
    task's stated check (a `tests/scripts/` JS unit you *can* run, or a read-back).
-4. **Mark it done** — tick the task's box in `tasks.md` so the file stays a live record.
+5. **Mark it done** — tick the task's box in `tasks.md` so the file stays a live record.
 
 Stay strictly inside the plan's file list. If a needed change falls outside it, **stop and name
 it in chat** ("the plan didn't cover X — add it?") rather than widening the diff. Never touch,
@@ -46,8 +50,11 @@ When every task is done, run the Definition of Done in `tasks.md`:
 1. **Static review:** invoke **`qt-cpp-review`** on the C++ diff; address or note findings.
 2. **Hotpath:** if touched, confirm the `--benchmark-hotpath` plan with the maintainer (you
    cannot run it — you don't build the app).
-3. **Self-review the diff:** is this *what was asked, and only that*? If not, say so before
-   claiming completion.
+3. **Self-review the diff, counterfactually:** is this *what was asked, and only that*? Then
+   answer out loud: "which rule does this diff most risk violating, and what is the concrete
+   evidence it doesn't?" Name the rule and the evidence — not a generic pass
+   (`doc/claude/j-space.md`, counterfactual self-check). If either answer is weak, say so
+   before claiming completion.
 4. **Sanitize:** run `python scripts/sanitize-commit.py` (it sanitizes only — never commits).
 5. **Identify the `pytest` targets** from `plan.md` for the maintainer to run (the app must be
    up with the API server enabled).

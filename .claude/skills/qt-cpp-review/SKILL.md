@@ -67,7 +67,10 @@ re-report what it already caught.
 
 Launch the six agents below **in parallel** as read-only general-purpose subagents (one
 `Agent` call per mission, all in one message). Name each so progress is visible
-("Agent 3: Thread Safety & Hotpath"). Pass each agent: (1) the file list in scope, (2) the
+("Agent 3: Thread Safety & Hotpath"). The missions are deliberately **named and disjoint** —
+a named lens loads the analysis it names, where a generic "review thoroughly" pass skims
+(`doc/claude/j-space.md`, named lenses). Keep them that way: don't merge missions to save
+agents, and pass each agent its mission verbatim, not a paraphrased blend. Pass each agent: (1) the file list in scope, (2) the
 Phase 1 lint output, (3) its mission. Each agent reads the in-scope files, greps to trace
 symbols across the repo, and reports in the structured format below. Agents **never** edit or
 write files, and never duplicate a Phase 1 finding.
