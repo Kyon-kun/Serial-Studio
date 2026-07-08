@@ -29,7 +29,7 @@ from utils import APIError
 
 @pytest.fixture
 def pro_only(api_client):
-    """Skip the test when the binary isn't a Pro build."""
+    """Skip the test when session recording isn't usable on this instance."""
     if not api_client.command_exists("sessions.getStatus"):
         pytest.skip("sessions.* API not available — GPL build")
 
@@ -39,6 +39,25 @@ def pro_only(api_client):
         api_client.command("sessions.getStatus")
     except APIError:
         pytest.skip("sessions.* API registered but returning errors")
+
+    # Session recording is license-gated: Sessions::Export::setExportEnabled
+    # requires a live Trial+ token, so on an instance without one (e.g. a CI
+    # license that maps to FeatureTier::None) enabling it silently no-ops and
+    # no DB is ever written. Probe the gate behaviourally and skip rather than
+    # fail when it refuses — mirrors the skip pattern in test_output_widgets.py.
+    try:
+        api_client.command("sessions.setExportEnabled", {"enabled": True})
+        time.sleep(0.1)
+        enabled = api_client.command("sessions.getStatus").get("exportEnabled", False)
+        api_client.command("sessions.setExportEnabled", {"enabled": False})
+        time.sleep(0.1)
+    except APIError:
+        pytest.skip("session recording refused enable (license-gated)")
+
+    if not enabled:
+        pytest.skip(
+            "session recording is license-gated and this instance has no Trial+ token"
+        )
 
 
 # ---------------------------------------------------------------------------

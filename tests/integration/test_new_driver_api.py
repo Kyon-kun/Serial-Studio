@@ -475,7 +475,7 @@ class TestProcessDriver:
         api_client.command("io.setBusType", {"busType": 8})
         time.sleep(0.2)
 
-        test_dir = "/tmp"
+        test_dir = tempfile.gettempdir()
         result = api_client.command(
             "io.process.setWorkingDir", {"workingDir": test_dir}
         )
@@ -504,7 +504,7 @@ class TestProcessDriver:
         api_client.command("io.setBusType", {"busType": 8})
         time.sleep(0.2)
 
-        test_path = "/tmp/test.fifo"
+        test_path = os.path.join(tempfile.gettempdir(), "test.fifo")
         result = api_client.command("io.process.setPipePath", {"pipePath": test_path})
         assert result["pipePath"] == test_path
 
@@ -595,12 +595,13 @@ class TestProcessDriver:
         api_client.command("io.setBusType", {"busType": 8})
         time.sleep(0.2)
 
+        pipe_path = os.path.join(tempfile.gettempdir(), "myapp.fifo")
         api_client.command("io.process.setMode", {"mode": 1})
-        api_client.command("io.process.setPipePath", {"pipePath": "/tmp/myapp.fifo"})
+        api_client.command("io.process.setPipePath", {"pipePath": pipe_path})
 
         config = api_client.command("io.process.getConfig")
         assert config["mode"] == 1
-        assert config["pipePath"] == "/tmp/myapp.fifo"
+        assert config["pipePath"] == pipe_path
 
     @pytest.mark.integration
     def test_process_bus_type_index(self, api_client, clean_state):

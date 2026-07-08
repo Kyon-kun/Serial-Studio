@@ -215,9 +215,11 @@ def test_add_string_register_preserves_type(api_client, clean_state):
 
 
 @pytest.mark.project
-def test_add_register_to_missing_table_is_noop(api_client, clean_state):
-    """Adding to a non-existent table succeeds trivially (no table, no effect)."""
-    _add_register(api_client, "Nope", "r1", value=1.0)
+def test_add_register_to_missing_table_errors(api_client, clean_state):
+    """Adding a register to a non-existent table returns INVALID_PARAM (no side effects)."""
+    with pytest.raises(APIError) as ei:
+        _add_register(api_client, "Nope", "r1", value=1.0)
+    assert ei.value.code == "INVALID_PARAM"
     assert _list_tables(api_client)["count"] == 0
 
 

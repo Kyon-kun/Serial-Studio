@@ -247,7 +247,17 @@ def pytest_collection_modifyitems(config, items):
         # Mark by test function name patterns
         test_name = item.name.lower()
 
-        if any(pattern in test_name for pattern in ["dos", "flood", "exhaust", "bomb"]):
+        if any(
+            pattern in test_name
+            for pattern in [
+                "dos",
+                "flood",
+                "exhaust",
+                "bomb",
+                "slowloris",
+                "amplification",
+            ]
+        ):
             item.add_marker(pytest.mark.dos)
             item.add_marker(pytest.mark.destructive)
 
