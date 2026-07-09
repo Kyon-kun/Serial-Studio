@@ -295,7 +295,8 @@ ColumnLayout {
           Layout.minimumWidth: root.iconWidth
           Layout.maximumWidth: root.iconWidth
           visible: model.parameterIcon !== undefined &&
-                   model.widgetType !== ProjectEditor.SectionHeader
+                   model.widgetType !== ProjectEditor.SectionHeader &&
+                   !item.isNav
 
           Rectangle {
             anchors.fill: parent
@@ -349,12 +350,31 @@ ColumnLayout {
           implicitWidth: 1
           Layout.fillHeight: true
           visible: model.parameterIcon !== undefined &&
-                   model.widgetType !== ProjectEditor.SectionHeader
+                   model.widgetType !== ProjectEditor.SectionHeader &&
+                   !item.isNav
           color: Cpp_ThemeManager.colors["table_separator"]
         } Item {
           implicitWidth: 6
           visible: model.parameterIcon !== undefined &&
-                   model.widgetType !== ProjectEditor.SectionHeader
+                   model.widgetType !== ProjectEditor.SectionHeader &&
+                   !item.isNav
+        }
+
+        //
+        // Navigation row icon (same per-dataset icon as the tree view)
+        //
+        Item {
+          implicitWidth: 6
+          visible: item.isNav
+        } Image {
+          visible: item.isNav
+          sourceSize.width: 18
+          sourceSize.height: 18
+          source: model.parameterIcon || ""
+          Layout.alignment: Qt.AlignVCenter
+        } Item {
+          implicitWidth: 2
+          visible: item.isNav
         }
 
         //
