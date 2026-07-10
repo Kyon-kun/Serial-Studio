@@ -1506,7 +1506,9 @@ void LIBUSB_CALL IO::Drivers::USB::controlTransferCallback(libusb_transfer* tran
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Returns VID, PID, and serial number of the currently selected USB device.
+ * @brief Returns VID, PID, and serial number of the currently selected USB device. The serial is
+ * omitted while m_eventThread pumps libusb_handle_events: the synchronous string-descriptor
+ * transfer deadlocks the macOS backend (same rule as enrichDeviceLabel).
  */
 QJsonObject IO::Drivers::USB::deviceIdentifier() const
 {
@@ -1525,7 +1527,7 @@ QJsonObject IO::Drivers::USB::deviceIdentifier() const
             QString::number(desc.idProduct, 16).rightJustified(4, '0').toUpper());
 
   libusb_device_handle* tmp = nullptr;
-  if (desc.iSerialNumber && libusb_open(dev, &tmp) == 0) {
+  if (desc.iSerialNumber && !m_eventThread.isRunning() && libusb_open(dev, &tmp) == 0) {
     unsigned char buf[256] = {};
     const int rc           = libusb_get_string_descriptor_ascii(
       tmp, desc.iSerialNumber, buf, static_cast<int>(sizeof(buf)));
@@ -1582,12 +1584,17 @@ bool IO::Drivers::USB::selectByIdentifier(const QJsonObject& id)
 
 /**
  * @brief Returns true when the device serial matches savedSer (or savedSer is empty / unreadable).
+ * Falls back to a VID/PID-only match while m_eventThread runs, because the synchronous
+ * string-descriptor read deadlocks the macOS backend (same rule as enrichDeviceLabel).
  */
 bool IO::Drivers::USB::deviceSerialMatches(libusb_device* device,
                                            const libusb_device_descriptor& desc,
                                            const QString& savedSer) const
 {
   if (savedSer.isEmpty() || !desc.iSerialNumber)
+    return true;
+
+  if (m_eventThread.isRunning())
     return true;
 
   libusb_device_handle* tmp = nullptr;

@@ -82,6 +82,7 @@ private:
 
   void logLine(int id, const QString& name, const QString& message);
   void logProcessOutput(int id, const QString& name, const QByteArray& data);
+  void reapAsync(QProcess* process);
 
 private:
   int m_nextId;

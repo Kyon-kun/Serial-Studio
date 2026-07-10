@@ -341,7 +341,10 @@ void Licensing::OfflineLicense::resetActivationState()
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Verifies a certificate and, on success, installs the token and persists it.
+ * @brief Verifies a certificate and, on success, installs the token and persists it. The signal
+ *        only fires when the effective state actually changed: a re-verification of an
+ *        already-active certificate (onOnlineActivationChanged) would otherwise re-emit into
+ *        LemonSqueezy::activatedChanged while the outer emission is still fanning out.
  */
 bool Licensing::OfflineLicense::applyCertificate(const QByteArray& framedCert, bool persist)
 {
@@ -358,6 +361,10 @@ bool Licensing::OfflineLicense::applyCertificate(const QByteArray& framedCert, b
     return false;
   }
 
+  const bool wasActivated   = m_activated;
+  const QString oldVariant  = m_variantName;
+  const QDateTime oldExpiry = m_expiresAt;
+
   m_activated   = true;
   m_lastError   = QString();
   m_variantName = fields.variant;
@@ -372,6 +379,8 @@ bool Licensing::OfflineLicense::applyCertificate(const QByteArray& framedCert, b
   if (persist)
     writeSettings(framedCert);
 
-  Q_EMIT activatedChanged();
+  if (!wasActivated || oldVariant != m_variantName || oldExpiry != m_expiresAt)
+    Q_EMIT activatedChanged();
+
   return true;
 }

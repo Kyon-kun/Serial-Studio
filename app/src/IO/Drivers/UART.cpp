@@ -58,6 +58,7 @@ IO::Drivers::UART::UART()
   : m_port(nullptr)
   , m_dtrEnabled(true)
   , m_autoReconnect(false)
+  , m_pendingReconnect(false)
   , m_usingCustomSerialPort(false)
   , m_lastSerialDeviceIndex(0)
   , m_portIndex(0)
@@ -131,6 +132,7 @@ void IO::Drivers::UART::close()
   }
 
   m_port                  = nullptr;
+  m_pendingReconnect      = false;
   m_usingCustomSerialPort = false;
 
   Q_EMIT portChanged();
@@ -753,8 +755,8 @@ void IO::Drivers::UART::refreshSerialDevices()
 
     static auto& connectionManager = ConnectionManager::instance();
     const bool uart_active         = connectionManager.busType() == SerialStudio::BusType::UART;
-    if (uart_active && autoReconnect() && m_lastSerialDeviceIndex > 0
-        && m_lastSerialDeviceIndex < portList().count()) {
+    if (uart_active && autoReconnect() && m_pendingReconnect && !isOpen()
+        && m_lastSerialDeviceIndex > 0 && m_lastSerialDeviceIndex < portList().count()) {
       setPortIndex(m_lastSerialDeviceIndex);
       connectionManager.connectDevice();
     }
@@ -802,6 +804,9 @@ void IO::Drivers::UART::handleError(QSerialPort::SerialPortError error)
                                       m_errorDescriptions.value(error, tr("Unknown error")),
                                       QMessageBox::Critical);
     }
+
+    else
+      m_pendingReconnect = true;
   }
 }
 

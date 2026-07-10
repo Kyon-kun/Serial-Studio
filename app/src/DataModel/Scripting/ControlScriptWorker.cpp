@@ -57,9 +57,10 @@ static std::atomic<bool> s_shutdownRequested{false};
 DataModel::ControlApiMarshaller::ControlApiMarshaller(QObject* parent) : QObject(parent) {}
 
 /**
- * @brief Runs an apiCall on the GUI thread so handlers never touch GUI objects off-thread.
- *        Fails fast once shutdown is requested: a call drained late in teardown must never
- *        execute a command against modules that are already torn down.
+ * @brief Runs an apiCall on the GUI thread so handlers never touch GUI objects off-thread. Fails
+ *        fast once shutdown is requested. The control script is a first-party privileged surface
+ *        (dashboardTick()/tableSet()/device writes at loop rate), so it is deliberately NOT
+ *        subject to the per-source apiCall allow-list or rate limiter for untrusted scripts.
  */
 QVariantMap DataModel::ControlApiMarshaller::dispatch(const QString& method,
                                                       const QVariantMap& params)

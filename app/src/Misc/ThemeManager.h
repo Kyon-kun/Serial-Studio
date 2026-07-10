@@ -96,6 +96,7 @@ public slots:
   void setSettingsPersistent(bool persistent);
   void onExtensionInstalled(const QString& id);
   void onExtensionUninstalled(const QString& id);
+  void onWorkspacePathChanged();
 
 private slots:
   void loadUserThemes();

@@ -96,12 +96,12 @@ void DataModel::FrameParser::setupExternalConnections()
   connect(&DataModel::ProjectModel::instance(),
           &DataModel::ProjectModel::sourceFrameParserTemplateChanged,
           this,
-          &DataModel::FrameParser::readCode);
+          &DataModel::FrameParser::reloadSourceCode);
 
   connect(&DataModel::ProjectModel::instance(),
           &DataModel::ProjectModel::sourceFrameParserParamsChanged,
           this,
-          &DataModel::FrameParser::readCode);
+          &DataModel::FrameParser::reloadSourceCode);
 
   readCode();
 }
@@ -644,6 +644,45 @@ void DataModel::FrameParser::readCode()
     if (!script.isEmpty())
       (void)loadScript(src.sourceId, script, false);
   }
+
+  Q_EMIT modifiedChanged();
+}
+
+/**
+ * @brief Reloads only @p sourceId's engine after that source's parser template/params change,
+ *        leaving every other source's engine (and its accumulated cross-frame Native/latch state)
+ *        untouched. Tearing down all engines on any single edit discarded live parser state.
+ */
+void DataModel::FrameParser::reloadSourceCode(int sourceId)
+{
+  if (sourceId < 0)
+    return;
+
+  static auto& model  = ProjectModel::instance();
+  const auto& sources = model.sources();
+
+  const DataModel::Source* target = nullptr;
+  for (const auto& src : sources)
+    if (src.sourceId == sourceId) {
+      target = &src;
+      break;
+    }
+
+  if (!target) {
+    const auto it = m_engines.find(sourceId);
+    if (it != m_engines.end()) {
+      m_engines.erase(it);
+      refreshEngineCaches();
+    }
+
+    Q_EMIT modifiedChanged();
+    return;
+  }
+
+  const bool suppress  = m_suppressMessageBoxes || model.suppressMessageBoxes();
+  const QString script = scriptForSource(*target);
+  if (!script.isEmpty())
+    (void)loadScript(sourceId, script, sourceId == 0 && !suppress);
 
   Q_EMIT modifiedChanged();
 }

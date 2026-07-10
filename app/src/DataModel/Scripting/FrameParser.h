@@ -86,6 +86,7 @@ public:
 
 public slots:
   void readCode();
+  void reloadSourceCode(int sourceId);
   void clearContext();
   void collectGarbage();
   void loadTemplateNames();

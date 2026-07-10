@@ -223,14 +223,25 @@ bool DataModel::ProjectEditor::currentGroupIsEditable() const
  */
 bool DataModel::ProjectEditor::currentDatasetIsEditable() const
 {
-  if (m_currentView == DatasetView) {
-    const auto& groups = m_projectModelRef.groups();
-    const auto groupId = m_selectedDataset.groupId;
-    if (groups.size() > static_cast<size_t>(groupId)) {
-      const auto& widget = groups[groupId].widget;
-      if (widget != "" && widget != "multiplot" && widget != "datagrid" && widget != "painter")
-        return false;
-    }
+  if (m_currentView == DatasetView || m_currentView == MultiSelectionView)
+    return datasetWidgetEditable(m_selectedDataset);
+
+  return true;
+}
+
+/**
+ * @brief Returns true when @p dataset's own parent group leaves its widget freely selectable;
+ *        view-independent so the multi-select aggregate form gates each member like the
+ *        single-dataset editor would.
+ */
+bool DataModel::ProjectEditor::datasetWidgetEditable(const DataModel::Dataset& dataset) const
+{
+  const auto& groups = m_projectModelRef.groups();
+  const auto groupId = dataset.groupId;
+  if (groupId >= 0 && static_cast<size_t>(groupId) < groups.size()) {
+    const auto& widget = groups[groupId].widget;
+    if (widget != "" && widget != "multiplot" && widget != "datagrid" && widget != "painter")
+      return false;
   }
 
   return true;

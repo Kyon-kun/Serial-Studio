@@ -51,6 +51,7 @@
 
 #  include "Console/Export.h"
 #  include "CSV/Export.h"
+#  include "Licensing/GuardSelfTest.h"
 #  include "Licensing/LemonSqueezy.h"
 #  include "Licensing/OfflineSelfTest.h"
 #  include "Licensing/Trial.h"
@@ -120,6 +121,7 @@ void CLI::registerOptions()
   m_parser.addOption(m_opts.activateOpt);
   m_parser.addOption(m_opts.deactivateOpt);
   m_parser.addOption(m_opts.selftestOfflineOpt);
+  m_parser.addOption(m_opts.validateGuardsOpt);
   m_parser.addOption(m_opts.modbusRtuOpt);
   m_parser.addOption(m_opts.modbusTcpOpt);
   m_parser.addOption(m_opts.modbusSlaveOpt);
@@ -177,6 +179,7 @@ bool CLI::isCliEarlyExit(int argc, char** argv)
                                        "--activate",
                                        "--deactivate",
                                        "--selftest-offline-license",
+                                       "--validate-guards",
                                        "--dump-api-schema"};
 
   for (const char* flag : kFlags)
@@ -225,6 +228,16 @@ CLI::ProcessResult CLI::process(QApplication& app)
 
   if (m_parser.isSet(m_opts.dumpApiSchemaOpt))
     return dumpApiSchema(m_parser.value(m_opts.dumpApiSchemaOpt));
+
+  if (m_parser.isSet(m_opts.validateGuardsOpt)) {
+#ifdef BUILD_COMMERCIAL
+    return Licensing::runGuardSelfTest() == 0 ? ProcessResult::ExitSuccess
+                                              : ProcessResult::ExitFailure;
+#else
+    qInfo().noquote() << "[validate-guards] GPL build: no license guards to validate";
+    return ProcessResult::ExitSuccess;
+#endif
+  }
 
 #ifdef BUILD_COMMERCIAL
   if (m_parser.isSet(m_opts.selftestOfflineOpt)) {

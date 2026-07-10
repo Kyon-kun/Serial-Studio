@@ -49,7 +49,6 @@
 #include "DataModel/Scripting/ControlScript.h"
 #include "DataModel/Scripting/FrameParser.h"
 #include "DataModel/Scripting/NativeTemplates/NativeTemplate.h"
-#include "DataModel/Scripting/ScriptApiCall.h"
 #include "IO/Checksum.h"
 #include "IO/ConnectionManager.h"
 #include "Misc/IconEngine.h"
@@ -318,9 +317,6 @@ bool DataModel::ProjectModel::loadFromJsonDocument(const QJsonDocument& document
   const int loadedSchema = ss_jsr(json, Keys::SchemaVersion, 0).toInt();
   const bool olderSchema = loadedSchema < DataModel::kSchemaVersion;
 
-  m_apiCallAllowFullSurface = ss_jsr(json, Keys::ApiCallAllowFullSurface, false).toBool();
-  DataModel::ScriptApiCall::setAllowFullSurface(m_apiCallAllowFullSurface);
-
   m_controlScriptCode        = ss_jsr(json, Keys::ControlScriptCode, "").toString();
   static auto& controlScript = DataModel::ControlScript::instance();
   controlScript.setCode(m_controlScriptCode);
@@ -355,13 +351,12 @@ bool DataModel::ProjectModel::loadFromJsonDocument(const QJsonDocument& document
   setModified(false);
   watchProjectFile();
 
-  if (migrateLegacySeparator(json))
-    return true;
+  const bool separatorMigrated = migrateLegacySeparator(json);
 
   m_autoSnapshot = buildAutoWorkspaces();
   emitProjectLoadedSignals();
 
-  if (legacyUniqueIds && !m_filePath.isEmpty())
+  if (!separatorMigrated && legacyUniqueIds && !m_filePath.isEmpty())
     persistLegacyMigration();
 
   m_autoSaveSuspended = false;
@@ -1011,6 +1006,9 @@ void DataModel::ProjectModel::migrateLegacyDashboardLayout(const QJsonObject& js
 
 /**
  * @brief Rewrites a legacy parse(frame, separator) function into the modern split-by-string form.
+ *        Migrated projects save to disk inside this call, so the caller skips
+ *        persistLegacyMigration() but must still run the normal load tail (snapshot, loaded
+ *        signals, autosave re-enable).
  */
 bool DataModel::ProjectModel::migrateLegacySeparator(const QJsonObject& json)
 {

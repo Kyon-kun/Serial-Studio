@@ -25,9 +25,11 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QPointer>
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QStandardPaths>
+#include <QTimer>
 #include <QVariantMap>
 
 #include "DataModel/ProjectModel.h"
@@ -217,6 +219,27 @@ QString API::ProcessLauncher::resolveExecutable(const QString& name)
 }
 
 /**
+ * @brief Terminates @p process without blocking the caller: SIGTERM now, a hard kill() scheduled
+ *        for the grace deadline, and deleteLater() once it exits. A hung helper ignoring SIGTERM
+ *        can no longer stall the GUI thread (frame ingest, API server) during a routine
+ *        disconnect or project switch.
+ */
+void API::ProcessLauncher::reapAsync(QProcess* process)
+{
+  if (!process)
+    return;
+
+  connect(process, &QProcess::finished, process, &QObject::deleteLater);
+  process->terminate();
+
+  QPointer<QProcess> guard(process);
+  QTimer::singleShot(kTerminateGraceMs, process, [guard] {
+    if (guard && guard->state() != QProcess::NotRunning)
+      guard->kill();
+  });
+}
+
+/**
  * @brief Terminates a single managed process; returns false when the id is unknown.
  */
 bool API::ProcessLauncher::kill(int processId)
@@ -225,32 +248,20 @@ bool API::ProcessLauncher::kill(int processId)
   if (!process)
     return false;
 
-  process->terminate();
-  if (!process->waitForFinished(kTerminateGraceMs))
-    process->kill();
-
-  process->deleteLater();
+  reapAsync(process);
   return true;
 }
 
 /**
- * @brief Terminates every managed process (terminate, then kill on grace-period timeout).
+ * @brief Terminates every managed process asynchronously (terminate now, hard-kill on timeout).
  */
 void API::ProcessLauncher::killAll()
 {
   const auto processes = m_processes;
   m_processes.clear();
 
-  for (auto* process : processes) {
-    if (!process)
-      continue;
-
-    process->terminate();
-    if (!process->waitForFinished(kTerminateGraceMs))
-      process->kill();
-
-    process->deleteLater();
-  }
+  for (auto* process : processes)
+    reapAsync(process);
 }
 
 /**
@@ -306,9 +317,23 @@ void API::ProcessLauncher::onProjectFileChanged()
 }
 
 /**
- * @brief Reaps every helper during application teardown.
+ * @brief Reaps every helper during application teardown. This path blocks (bounded): the event
+ *        loop is stopping, so the async timer/deleteLater machinery would never run and a
+ *        SIGTERM'd child could be orphaned. The GUI is already gone, so the wait is harmless.
  */
 void API::ProcessLauncher::onAboutToQuit()
 {
-  killAll();
+  const auto processes = m_processes;
+  m_processes.clear();
+
+  for (auto* process : processes) {
+    if (!process)
+      continue;
+
+    process->terminate();
+    if (!process->waitForFinished(kTerminateGraceMs))
+      process->kill();
+
+    process->deleteLater();
+  }
 }

@@ -613,6 +613,9 @@ void Licensing::LemonSqueezy::updateAppNameFromVariant(const QString& variantNam
 
 /**
  * @brief Persists fresh license fields, installs the commercial token, and notifies QML.
+ *        activatedChanged fires on the actual off->on flip, not the one-shot silent-validation
+ *        flag, so a late re-activation (grace-period recovery, licensing.validate) still
+ *        rebuilds every activation-gated consumer.
  */
 void Licensing::LemonSqueezy::applyValidatedLicense(const QJsonObject& json,
                                                     const bool cachedResponse)
@@ -620,6 +623,8 @@ void Licensing::LemonSqueezy::applyValidatedLicense(const QJsonObject& json,
   const auto meta       = json.value("meta").toObject();
   const auto instance   = json.value("instance").toObject();
   const auto licenseKey = json.value("license_key").toObject();
+
+  const bool wasActivated = m_activated;
 
   m_activated      = true;
   m_licensingData  = json;
@@ -653,9 +658,11 @@ void Licensing::LemonSqueezy::applyValidatedLicense(const QJsonObject& json,
     m_settings.endGroup();
   }
 
+  if (!wasActivated)
+    Q_EMIT activatedChanged();
+
   if (!m_silentValidation) {
     m_silentValidation = true;
-    Q_EMIT activatedChanged();
     Misc::Utilities::showMessageBox(
       tr("Your license has been successfully activated."),
       tr("Thank you for supporting Serial Studio!\nYou now have access to all premium features."),
@@ -857,7 +864,6 @@ void Licensing::LemonSqueezy::readDeactivationResponse(const QByteArray& data)
   }
 
   clearLicenseCache(true);
-  Q_EMIT activatedChanged();
   Misc::Utilities::showMessageBox(
     tr("Your license has been deactivated."),
     tr("Access to Pro features has been removed.\nThank you again for supporting Serial Studio!"),

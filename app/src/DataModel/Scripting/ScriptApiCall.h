@@ -62,8 +62,6 @@ public:
   static void installHelperBridgesJS(QJSEngine* js, int sourceId);
   static void installAll(QJSEngine* js, int sourceId);
   static void installAll(lua_State* L, int sourceId);
-  static void setAllowFullSurface(bool allow);
-  static int maxBodyBytes();
 };
 
 }  // namespace DataModel

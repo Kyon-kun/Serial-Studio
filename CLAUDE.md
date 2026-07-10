@@ -214,6 +214,12 @@ cached flags, benchmark mechanics) in
   (see [doc/claude/architecture/startup.md](doc/claude/architecture/startup.md)).
 - **A ctor-edge proof dies when ctor-reachable code changes.** Any edit inside that closure
   re-triggers the check, no matter how unrelated the edit looks.
+- **License-gated state must exist before `restoreLastProject()` or re-derive on
+  `activatedChanged`.** OfflineLicense/Trial are pinned in `instantiateCoreModules()` because
+  their ctors install the CommercialToken; anything that bakes `proWidgetsEnabled()` into
+  derived state at load time (auto workspaces, driver lists, dashboard layout) also needs a
+  `LemonSqueezy::activatedChanged` hook, or a late/async activation ships fallback widgets
+  (2026-07-09: Plot3D degraded to MultiPlot on offline-activated machines).
 
 ## Project Layout — the god files are split
 

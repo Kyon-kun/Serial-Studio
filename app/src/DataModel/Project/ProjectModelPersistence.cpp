@@ -257,9 +257,6 @@ QJsonObject DataModel::ProjectModel::serializeToJson() const
   if (!m_passwordHash.isEmpty())
     json.insert(Keys::PasswordHash, m_passwordHash);
 
-  if (m_apiCallAllowFullSurface)
-    json.insert(Keys::ApiCallAllowFullSurface, true);
-
   if (!m_controlScriptCode.isEmpty())
     json.insert(Keys::ControlScriptCode, m_controlScriptCode);
 

@@ -127,6 +127,8 @@ struct CliOptions {
   QCommandLineOption selftestOfflineOpt{
     "selftest-offline-license",
     "Run offline-certificate verifier self-test vectors and exit (Pro)"};
+  QCommandLineOption validateGuardsOpt{
+    "validate-guards", "Verify all embedded license guards pass in this binary and exit (Pro)"};
   QCommandLineOption modbusRtuOpt{
     "modbus-rtu", "Connects to ModBus RTU device (e.g., /dev/ttyUSB0, COM3)", "port"};
   QCommandLineOption modbusTcpOpt{

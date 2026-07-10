@@ -65,6 +65,55 @@ Item {
   }
 
   //
+  // Persist the discrete timer state (never per-tick) so an external-window
+  // teardown on an unrelated dashboard reconfigure does not wipe the run.
+  //
+  function persistState() {
+    if (!widgetId)
+      return
+
+    var lapList = []
+    for (var i = 0; i < laps.count; ++i) {
+      var l = laps.get(i)
+      lapList.push({ n: l.n, lapMs: l.lapMs, totalMs: l.totalMs })
+    }
+
+    Cpp_JSON_ProjectModel.saveWidgetSetting(widgetId, "swAccumMs", accumMs)
+    Cpp_JSON_ProjectModel.saveWidgetSetting(widgetId, "swRunStartMs", runStartMs)
+    Cpp_JSON_ProjectModel.saveWidgetSetting(widgetId, "swRunning", running)
+    Cpp_JSON_ProjectModel.saveWidgetSetting(widgetId, "swLaps", JSON.stringify(lapList))
+  }
+
+  //
+  // Restore the timer state saved by persistState().
+  //
+  Component.onCompleted: {
+    if (!widgetId)
+      return
+
+    const s = Cpp_JSON_ProjectModel.widgetSettings(widgetId)
+    if (s["swAccumMs"] !== undefined)
+      accumMs = s["swAccumMs"]
+
+    if (s["swRunStartMs"] !== undefined)
+      runStartMs = s["swRunStartMs"]
+
+    if (s["swRunning"] !== undefined)
+      running = s["swRunning"]
+
+    if (s["swLaps"] !== undefined) {
+      try {
+        const arr = JSON.parse(s["swLaps"])
+        laps.clear()
+        for (var i = 0; i < arr.length; ++i)
+          laps.append(arr[i])
+      } catch (e) {}
+    }
+
+    displayMs = currentMs()
+  }
+
+  //
   // 30 Hz tick: only running while the stopwatch is active.
   //
   Timer {
@@ -84,12 +133,14 @@ Item {
       accumMs   = currentMs()
       running   = false
       displayMs = accumMs
+      persistState()
       return
     }
 
     runStartMs = Date.now()
     running    = true
     displayMs  = accumMs
+    persistState()
   }
 
   //
@@ -106,6 +157,7 @@ Item {
       lapMs: Math.max(0, total - prevTotal),
       totalMs: total
     })
+    persistState()
   }
 
   //
@@ -117,6 +169,7 @@ Item {
     runStartMs = 0
     displayMs  = 0
     laps.clear()
+    persistState()
   }
 
   //

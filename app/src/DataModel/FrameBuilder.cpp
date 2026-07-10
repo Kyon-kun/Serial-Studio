@@ -176,37 +176,70 @@ DataModel::FrameBuilder& DataModel::FrameBuilder::instance()
 /**
  * @brief Default-constructs a pool slot with no template generation or bound source frame.
  */
-DataModel::FrameBuilder::PooledFrameSlot::PooledFrameSlot() : generation(0), matchedSrc(nullptr) {}
+DataModel::FrameBuilder::PooledFrameSlot::PooledFrameSlot()
+  : generation(0), matchedSrc(nullptr), owner(kUnownedSlot)
+{}
 
 /**
  * @brief Bumps the pool generation after a template rebuild so stale slots full-assign on reuse
- *        instead of leaking old identity fields through the structure-match fast path.
+ *        instead of leaking old identity fields through the structure-match fast path, and clears
+ *        slot ownership so the next claims re-partition the pool across the new source set.
  */
 void DataModel::FrameBuilder::invalidateFramePool() noexcept
 {
   ++m_framePoolGeneration;
+  m_poolSlotHintBySource.clear();
+  for (const auto& slot : m_framePool)
+    slot->owner = kUnownedSlot;
 }
 
 /**
- * @brief Probes for a free pool slot (the pool holds its only reference) and returns its index,
- *        or kInvalidSlotIdx when every slot is pinned by a consumer. All aliases are created and
- *        released on this thread, so the use_count()==1 probe is exact without a mutex.
+ * @brief Probes for a free pool slot (use_count()==1 is exact: all aliases live on this thread)
+ *        or returns kInvalidSlotIdx when every slot is pinned. Per-source affinity: a source
+ *        reclaims its last slot so interleaved multi-source publishes keep the pointer-identity
+ *        fast path and the span lane's retained values; foreign slots are stolen only last.
  */
-size_t DataModel::FrameBuilder::claimPoolSlot() noexcept
+size_t DataModel::FrameBuilder::claimPoolSlot(int sourceId) noexcept
 {
-  const size_t n    = m_framePool.size();
-  const size_t hint = m_framePoolHint.load(std::memory_order_relaxed);
+  const size_t n = m_framePool.size();
 
+  Q_ASSERT(sourceId >= 0);
   SS_ASSUME(n == static_cast<size_t>(kFramePoolSize));
+
+  const auto hit = m_poolSlotHintBySource.constFind(sourceId);
+  if (hit != m_poolSlotHintBySource.cend()) [[likely]] {
+    const size_t idx = hit.value();
+    if (m_framePool[idx].use_count() == 1 && m_framePool[idx]->owner == sourceId)
+      return idx;
+  }
+
+  const size_t hint = m_framePoolHint.load(std::memory_order_relaxed);
+  size_t stealable  = kInvalidSlotIdx;
 
   for (size_t k = 0; k < n; ++k) {
     const size_t idx = (hint + k) % n;
-
     if (m_framePool[idx].use_count() != 1)
       continue;
 
+    const int owner = m_framePool[idx]->owner;
+    if (owner != sourceId && owner != kUnownedSlot) {
+      if (stealable == kInvalidSlotIdx)
+        stealable = idx;
+
+      continue;
+    }
+
+    m_framePool[idx]->owner = sourceId;
+    m_poolSlotHintBySource.insert(sourceId, idx);
     m_framePoolHint.store(idx, std::memory_order_relaxed);
     return idx;
+  }
+
+  if (stealable != kInvalidSlotIdx) {
+    m_framePool[stealable]->owner = sourceId;
+    m_poolSlotHintBySource.insert(sourceId, stealable);
+    m_framePoolHint.store(stealable, std::memory_order_relaxed);
+    return stealable;
   }
 
   return kInvalidSlotIdx;
@@ -286,7 +319,7 @@ bool DataModel::FrameBuilder::preparePooledSlot(PooledFrameSlot* slot, const Dat
 SS_HOT DataModel::TimestampedFramePtr DataModel::FrameBuilder::acquireFrame(
   const DataModel::Frame& src, const DataModel::TimestampedFrame::SteadyTimePoint& ts)
 {
-  const size_t idx = claimPoolSlot();
+  const size_t idx = claimPoolSlot(src.sourceId);
   if (idx == kInvalidSlotIdx) [[unlikely]] {
     notePoolExhausted();
     auto heap                 = std::make_shared<TimestampedFrame>(src, ts);
@@ -1059,7 +1092,7 @@ int DataModel::FrameBuilder::trySpanLane(int sourceId,
         .count();
   }
 
-  const size_t idx = claimPoolSlot();
+  const size_t idx = claimPoolSlot(sourceId);
   if (idx == kInvalidSlotIdx) [[unlikely]] {
     notePoolExhausted();
     auto heap                 = std::make_shared<TimestampedFrame>(frame, data->timestamp);

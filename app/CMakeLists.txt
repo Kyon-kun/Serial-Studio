@@ -667,6 +667,7 @@ if(BUILD_COMMERCIAL)
     src/Licensing/OfflineCertificate.h
     src/Licensing/OfflineLicense.h
     src/Licensing/OfflineSelfTest.h
+    src/Licensing/GuardSelfTest.h
     src/Sessions/DatabaseManager.h
     src/Sessions/DatabaseWorker.h
     src/Sessions/Export.h
@@ -767,6 +768,7 @@ if(BUILD_COMMERCIAL)
     src/Licensing/OfflineCertificate.cpp
     src/Licensing/OfflineLicense.cpp
     src/Licensing/OfflineSelfTest.cpp
+    src/Licensing/GuardSelfTest.cpp
     src/ThirdParty/tweetnacl.c
     src/ThirdParty/ed25519_verify.cpp
     src/UI/Widgets/Output/Base.cpp

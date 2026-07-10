@@ -191,6 +191,7 @@ private:
 
   QSettings m_settings;
   QImage m_cloudOverlay;
+  QVector<QPointF> m_trajectoryScratch;
 
   QStringList m_mapIDs;
   QStringList m_mapTypes;

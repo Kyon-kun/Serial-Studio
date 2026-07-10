@@ -218,9 +218,6 @@ inline constexpr KeyView PasswordHash("passwordHash");
 // Per-project MQTT publisher configuration (Pro).
 inline constexpr KeyView MqttPublisher("mqttPublisher");
 
-// Full MCP command surface opt-in for user-script apiCall()
-inline constexpr KeyView ApiCallAllowFullSurface("apiCallAllowFullSurface");
-
 inline QString layoutKey(int groupId)
 {
   return QStringLiteral("layout:") + QString::number(groupId);

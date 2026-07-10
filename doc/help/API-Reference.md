@@ -78,7 +78,7 @@ The API Server is available in both **Serial Studio GPL** and **Serial Studio Pr
 
 ## Calling the API from Frame Parsers, Transforms, and Painters
 
-The commands in this document are also reachable from inside Serial Studio's scripting surfaces (Lua and JavaScript) via a generic `apiCall()` gateway. No TCP socket required: the call is dispatched in-process on the dashboard thread. The gateway is default-deny: only a small read-only allow-list is callable with no setup, and every other command returns `METHOD_NOT_ALLOWED` unless the project opts in via `apiCall.allowFullSurface`. See [Frame Parser Scripting](JavaScript-API.md) for the allow-list, rate limits, and examples.
+The commands in this document are also reachable from inside Serial Studio's scripting surfaces (Lua and JavaScript) via a generic `apiCall()` gateway. No TCP socket required: the call is dispatched in-process on the dashboard thread. A project's own scripts are first-party code, so the gateway is ungated for them — the full catalog below is callable with no allow-list, rate limit, or payload cap. The user-consent gate applies only to remote clients over TCP. See [Frame Parser Scripting](JavaScript-API.md) for examples.
 
 ```lua
 local r = apiCall("project.dataset.list")

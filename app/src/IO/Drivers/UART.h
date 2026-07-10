@@ -183,6 +183,7 @@ private:
 
   bool m_dtrEnabled;
   bool m_autoReconnect;
+  bool m_pendingReconnect;
   bool m_usingCustomSerialPort;
 
   int m_lastSerialDeviceIndex;

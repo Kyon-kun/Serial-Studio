@@ -162,7 +162,8 @@ static void replaceDeviceList(ma_context* context,
 /**
  * @brief Checks for changes in the audio device list and updates it if necessary.
  */
-static bool checkAndUpdateDeviceList(ma_context* context,
+static bool checkAndUpdateDeviceList(IO::HAL_Driver* owner,
+                                     ma_context* context,
                                      ma_device_type type,
                                      QVector<ma_device_info>& currentList,
                                      const QVector<ma_device_info>& newList,
@@ -189,7 +190,7 @@ static bool checkAndUpdateDeviceList(ma_context* context,
 
   if (!stillConnected) {
     static auto& connectionManager = IO::ConnectionManager::instance();
-    connectionManager.disconnectDevice();
+    connectionManager.disconnectDevice(owner);
     replaceDeviceList(context, type, currentList, newList, selectedIndex, capabilities);
     settingsChanged();
     configurationChanged();
@@ -1193,6 +1194,7 @@ void IO::Drivers::Audio::refreshAudioDevices()
   // clang-format on
 
   checkAndUpdateDeviceList(
+    this,
     &m_context,
     ma_device_type_capture,
     m_inputDevices,
@@ -1204,6 +1206,7 @@ void IO::Drivers::Audio::refreshAudioDevices()
     m_inputCapabilities);
 
   checkAndUpdateDeviceList(
+    this,
     &m_context,
     ma_device_type_playback,
     m_outputDevices,

@@ -606,10 +606,10 @@ void Misc::ModuleManager::initializeQmlInterface()
 }
 
 /**
- * @brief Constructs every core singleton in a pinned, dependency-verified order, replacing
- *        the settings-dependent lazy first-use order (ProjectModel before AppState kills the
- *        conditional re-entrancy edge in AppState's constructor); see
- *        doc/claude/specs/0001-composition-root/ for the ctor-edge proof.
+ * @brief Constructs every core singleton in a pinned, dependency-verified order (ProjectModel
+ *        before AppState; ctor-edge proof in doc/claude/specs/0001-composition-root/).
+ *        OfflineLicense/Trial precede restoreLastProject(): their ctors install the
+ *        CommercialToken, and a late token bakes fallback widgets into auto workspaces.
  */
 void Misc::ModuleManager::instantiateCoreModules()
 {
@@ -626,6 +626,8 @@ void Misc::ModuleManager::instantiateCoreModules()
 #ifdef BUILD_COMMERCIAL
   (void)Licensing::MachineID::instance();
   (void)Licensing::LemonSqueezy::instance();
+  (void)Licensing::OfflineLicense::instance();
+  (void)Licensing::Trial::instance();
 #endif
   (void)DataModel::FrameBuilder::instance();
   (void)IO::ConnectionManager::instance();
@@ -689,6 +691,16 @@ void Misc::ModuleManager::setupCrossModuleConnections()
           &Misc::ExtensionManager::extensionUninstalled,
           miscThemeManager,
           &Misc::ThemeManager::onExtensionUninstalled);
+
+  auto* workspaceManager = &Misc::WorkspaceManager::instance();
+  connect(workspaceManager,
+          &Misc::WorkspaceManager::pathChanged,
+          miscExtensionManager,
+          &Misc::ExtensionManager::onWorkspacePathChanged);
+  connect(workspaceManager,
+          &Misc::WorkspaceManager::pathChanged,
+          miscThemeManager,
+          &Misc::ThemeManager::onWorkspacePathChanged);
 
   connect(ioManager,
           &IO::ConnectionManager::connectedChanged,

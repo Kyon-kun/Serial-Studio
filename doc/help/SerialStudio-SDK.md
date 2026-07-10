@@ -20,7 +20,7 @@ Two consequences follow from "the SDK is the API, in-process":
 - **Anything the network API can do, a script can do**: connect a source, edit the project, start an export, query the dashboard. The full command catalog is the [API Reference](API-Reference.md); this page covers the ergonomic helpers layered on top.
 - **The same `{ ok, result, error }` discipline applies.** Every call can fail (a wrong UUID, a disconnected device, a Pro-only command on a Free build), so you check the result rather than assume success.
 
-`apiCall` itself is default-deny: only a small read-only allow-list (`project.getStatus`, `dashboard.getStatus`, `project.dataset.list`, and a couple dozen other query commands) is callable with no setup. Every other command — most mutating calls included — returns `errorCode: "METHOD_NOT_ALLOWED"` until the project opts in via the `apiCall.allowFullSurface` setting. `io.getLatestFrame`, `dashboard.reprocess`, and `dashboard.tick`, which back the `newFrame()` / `refreshDashboard()` / `dashboardTick()` helpers under See/Decide/Act below, are outside the default allow-list, so those helpers need the opt-in too. See [Frame Parser Reference](JavaScript-API.md) for the full allow-list and the rate limits.
+`apiCall` runs against the full command catalog with no allow-list, rate limit, or payload cap: a project's own scripts are first-party code, so they reach the same surface the project author could use from the UI. The network API is the gated surface — a remote client over TCP still passes through the user-consent gate for device writes. See [Frame Parser Reference](JavaScript-API.md) for examples.
 
 ## The result envelope
 

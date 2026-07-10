@@ -305,6 +305,7 @@ public:
   [[nodiscard]] const QStringList& availableActionIcons() const;
   [[nodiscard]] bool currentGroupIsEditable() const;
   [[nodiscard]] bool currentDatasetIsEditable() const;
+  [[nodiscard]] bool datasetWidgetEditable(const DataModel::Dataset& dataset) const;
   [[nodiscard]] bool selectedGroupEnabled() const;
   [[nodiscard]] bool selectedDatasetEnabled() const;
   [[nodiscard]] bool currentGroupIsOutputPanel() const;

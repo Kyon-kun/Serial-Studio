@@ -54,6 +54,9 @@ public:
   [[nodiscard]] qint64 deadlineNs() const noexcept;
 
 private:
+  [[nodiscard]] bool finishCall(qint64 startNs) noexcept;
+
+private:
   QJSEngine* m_engine;
   std::atomic<qint64> m_deadlineNs;
   int m_budgetMs;

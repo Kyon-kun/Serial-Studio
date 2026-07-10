@@ -627,7 +627,6 @@ private:
 
   QString m_passwordHash;
   bool m_locked;
-  bool m_apiCallAllowFullSurface;
 
   QTimer* m_autoSaveTimer;
   bool m_autoSaveSuspended;

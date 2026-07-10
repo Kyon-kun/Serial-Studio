@@ -581,8 +581,10 @@ void CSV::Player::updateData()
 
     if (m_framePos < frameCount() - 1)
       QTimer::singleShot(qMax(0LL, msUntilNext), Qt::PreciseTimer, this, [this] {
-        if (isOpen() && isPlaying())
+        if (isOpen() && isPlaying()) {
+          ++m_framePos;
           updateData();
+        }
       });
     else
       pause();

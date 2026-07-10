@@ -620,7 +620,9 @@ void MDF4::Player::setProgress(const double progress)
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Plays back as many frames as needed to catch up with the target timestamp.
+ * @brief Plays back as many frames as needed to catch up with the target timestamp, then
+ *        schedules the NEXT frame with its real delay -- re-entering updateData() at the
+ *        current position would inject the last caught-up frame a second time.
  */
 void MDF4::Player::catchUpToTarget(double targetTime)
 {
@@ -648,8 +650,25 @@ void MDF4::Player::catchUpToTarget(double targetTime)
     Q_EMIT timestampChanged();
   }
 
-  if (isPlaying())
-    QTimer::singleShot(1, Qt::PreciseTimer, this, &MDF4::Player::updateData);
+  if (!isPlaying())
+    return;
+
+  if (m_framePos >= frameCount() - 1) {
+    pause();
+    return;
+  }
+
+  constexpr double kInvMs = 1.0 / 1000.0;
+  const qint64 elapsedMs  = m_elapsedTimer.elapsed();
+  const double nowTarget  = m_startTimestamp + (elapsedMs * kInvMs);
+  const double nextTime   = m_frameIndex[m_framePos + 1].timestamp;
+  const qint64 delayMs    = qMax(0LL, static_cast<qint64>((nextTime - nowTarget) * 1000.0));
+  QTimer::singleShot(delayMs, Qt::PreciseTimer, this, [this]() {
+    if (isOpen() && isPlaying()) {
+      ++m_framePos;
+      updateData();
+    }
+  });
 }
 
 /**

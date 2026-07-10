@@ -236,17 +236,20 @@ private:
     quint64 generation;
     const DataModel::Frame* matchedSrc;
     std::vector<DataModel::Dataset*> flat;
+    int owner;
   };
 
   static constexpr int kFramePoolSize     = 8192;
+  static constexpr int kUnownedSlot       = -1;
   static constexpr size_t kInvalidSlotIdx = static_cast<size_t>(-1);
   std::vector<std::shared_ptr<PooledFrameSlot>> m_framePool;
   std::atomic<size_t> m_framePoolHint;
   quint64 m_framePoolGeneration;
+  QHash<int, size_t> m_poolSlotHintBySource;
 
   void invalidateFramePool() noexcept;
   SS_COLD void notePoolExhausted();
-  [[nodiscard]] size_t claimPoolSlot() noexcept;
+  [[nodiscard]] size_t claimPoolSlot(int sourceId) noexcept;
   void bindSlotTemplate(PooledFrameSlot* slot, const DataModel::Frame& src);
   [[nodiscard]] bool preparePooledSlot(PooledFrameSlot* slot, const DataModel::Frame& src);
   [[nodiscard]] SS_HOT DataModel::TimestampedFramePtr acquireFrame(const DataModel::Frame& src);

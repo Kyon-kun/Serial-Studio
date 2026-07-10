@@ -1760,6 +1760,19 @@ void Misc::ExtensionManager::onDashboardAvailableChanged()
 }
 
 /**
+ * @brief Reloads the installed-extension manifest and catalog after the user relocates the
+ *        workspace directory, so isInstalled()/hasUpdate() no longer report the old folder's
+ *        state against the new folder's paths.
+ */
+void Misc::ExtensionManager::onWorkspacePathChanged()
+{
+  m_installedExtensions = QJsonObject();
+  loadInstalledManifest();
+  applyFilter();
+  rebuildInstalledPlugins();
+}
+
+/**
  * @brief Handles plugin process termination.
  */
 void Misc::ExtensionManager::onPluginFinished(const QString& id)

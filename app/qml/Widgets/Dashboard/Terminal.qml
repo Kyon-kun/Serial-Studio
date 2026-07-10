@@ -234,10 +234,12 @@ Item {
         Layout.alignment: Qt.AlignVCenter
         model: Cpp_Console_Handler.deviceNames
         visible: Cpp_Console_Handler.multiDeviceMode
-        onCurrentIndexChanged: {
-          if (visible)
-            Cpp_Console_Handler.setCurrentDeviceIndex(currentIndex)
-        }
+
+        //
+        // Only a user selection updates the handler; onCurrentIndexChanged also fires when the
+        // device model repopulates, which would push a reset index over the preserved selection.
+        //
+        onActivated: (index) => Cpp_Console_Handler.setCurrentDeviceIndex(index)
       }
 
       Widgets.LineField {

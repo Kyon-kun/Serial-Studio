@@ -157,6 +157,7 @@ public slots:
   void stopAllPlugins();
   void restoreRunningPlugins();
   void onDashboardAvailableChanged();
+  void onWorkspacePathChanged();
 
 private slots:
   void autoUpdateExtensions();

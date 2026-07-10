@@ -17,7 +17,39 @@
 #  include <lua.h>
 #  include <lualib.h>
 
+#  include <QDebug>
+#  include <stdexcept>
+
 #  include "DataModel/Scripting/LuaCompat.h"
+
+/**
+ * @brief Calls lua_pcall under a C++ try/catch -- escaped exceptions become LUA_ERRRUN.
+ */
+[[nodiscard]] static int guardedPcall(lua_State* L, int nargs, int nresults, int msgh) noexcept
+{
+  try {
+    return lua_pcall(L, nargs, nresults, msgh);
+  } catch (...) {
+    qWarning() << "[PublisherScript] Uncaught C++ exception escaped lua_pcall -- "
+                  "treating as LUA_ERRRUN. Check Lua build unwind tables.";
+    try {
+      lua_settop(L, 0);
+      lua_pushstring(L, "uncaught Lua exception (escaped lua_pcall)");
+    } catch (...) {
+    }
+    return LUA_ERRRUN;
+  }
+}
+
+/**
+ * @brief Lua atpanic handler that throws so abort() is never reached.
+ */
+static int luaPanicHandler(lua_State* L)
+{
+  const char* msg = lua_tostring(L, -1);
+  qWarning() << "[PublisherScript] Lua panic:" << (msg ? msg : "<unknown>");
+  throw std::runtime_error(msg ? msg : "lua panic");
+}
 
 /**
  * @brief Loads a sandboxed library set into a fresh Lua state.
@@ -94,6 +126,7 @@ bool MQTT::PublisherScript::compile(const QString& source, int language, QString
       return false;
     }
 
+    lua_atpanic(m_luaState, luaPanicHandler);
     openSafeLibs(m_luaState);
     DataModel::installLuaCompat(m_luaState);
 
@@ -103,8 +136,11 @@ bool MQTT::PublisherScript::compile(const QString& source, int language, QString
 
     const QByteArray utf8 = source.toUtf8();
     m_deadline            = QDeadlineTimer(kRuntimeWatchdogMs);
-    const int status      = luaL_dostring(m_luaState, utf8.constData());
-    m_deadline            = QDeadlineTimer(QDeadlineTimer::Forever);
+    int status            = luaL_loadstring(m_luaState, utf8.constData());
+    if (status == LUA_OK)
+      status = guardedPcall(m_luaState, 0, LUA_MULTRET, 0);
+
+    m_deadline = QDeadlineTimer(QDeadlineTimer::Forever);
     if (status != LUA_OK) {
       errorOut = QString::fromUtf8(lua_tostring(m_luaState, -1));
       destroyLua();
@@ -194,7 +230,7 @@ bool MQTT::PublisherScript::run(const QByteArray& frame, QByteArray& payloadOut,
     lua_pushlstring(m_luaState, frame.constData(), static_cast<size_t>(frame.size()));
 
     m_deadline       = QDeadlineTimer(kRuntimeWatchdogMs);
-    const int status = lua_pcall(m_luaState, 1, 1, 0);
+    const int status = guardedPcall(m_luaState, 1, 1, 0);
     m_deadline       = QDeadlineTimer(QDeadlineTimer::Forever);
     if (status != LUA_OK) {
       errorOut = QString::fromUtf8(lua_tostring(m_luaState, -1));

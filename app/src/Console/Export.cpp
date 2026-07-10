@@ -65,7 +65,9 @@ bool Console::ExportWorker::isResourceOpen() const
 }
 
 /**
- * @brief Processes a batch of console data items, routing to per-device files.
+ * @brief Processes a batch of console data items, routing to per-device files. Connectivity
+ *        only gates the creation of NEW files: already-open logs still receive the queued
+ *        backlog, so the close() drain after a disconnect flushes captured lines.
  */
 void Console::ExportWorker::processItems(const std::vector<ExportDataPtr>& items)
 {
@@ -73,14 +75,17 @@ void Console::ExportWorker::processItems(const std::vector<ExportDataPtr>& items
     return;
 
   static auto& connectionManager = IO::ConnectionManager::instance();
-  if (!connectionManager.isConnected())
-    return;
+  const bool connected           = connectionManager.isConnected();
 
   for (const auto& dataPtr : items) {
     const int devId = dataPtr->deviceId;
     auto it         = m_deviceFiles.find(devId);
-    if (it == m_deviceFiles.end() || !it->second.file || !it->second.file->isOpen())
+    if (it == m_deviceFiles.end() || !it->second.file || !it->second.file->isOpen()) {
+      if (!connected)
+        continue;
+
       createFile(devId);
+    }
 
     it = m_deviceFiles.find(devId);
     if (it != m_deviceFiles.end() && it->second.stream && it->second.stream->device()) {

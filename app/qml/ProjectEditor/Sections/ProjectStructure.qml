@@ -659,6 +659,8 @@ Widgets.Pane {
                           let nextIndex = treeView.index(treeView.currentRow + 1, treeView.currentColumn)
                           if (nextIndex.isValid)
                           treeView.selectionModel.setCurrentIndex(nextIndex, ItemSelectionModel.ClearAndSelect)
+
+                          event.accepted = true
                         }
 
                         // Move up to the previous sibling (or parent)
@@ -666,6 +668,8 @@ Widgets.Pane {
                           let prevIndex = treeView.index(treeView.currentRow - 1, treeView.currentColumn)
                           if (prevIndex.isValid)
                           treeView.selectionModel.setCurrentIndex(prevIndex, ItemSelectionModel.ClearAndSelect)
+
+                          event.accepted = true
                         }
 
                         else if (event.key === Qt.Key_Delete) {

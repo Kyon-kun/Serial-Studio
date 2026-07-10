@@ -620,3 +620,12 @@ void Misc::ThemeManager::onExtensionUninstalled(const QString& id)
   updateLocalizedThemeNames();
   Q_EMIT languageChanged();
 }
+
+/**
+ * @brief Reloads user themes from the new workspace directory after the user relocates it, so the
+ *        theme list reflects the current folder instead of the one present at construction.
+ */
+void Misc::ThemeManager::onWorkspacePathChanged()
+{
+  onExtensionUninstalled(QString());
+}

@@ -1259,8 +1259,15 @@ void Widgets::Terminal::appendString(QStringView string)
   const int linesToDrop = m_data.size() - MAX_LINES + 1;
   if (m_data.size() >= MAX_LINES && linesToDrop > 0) {
     m_data.erase(m_data.begin(), m_data.begin() + linesToDrop);
-    if (ansiColors() && m_colorData.size() >= linesToDrop)
-      m_colorData.erase(m_colorData.begin(), m_colorData.begin() + linesToDrop);
+
+    // code-verify off
+    // Trim color rows in lockstep with text rows regardless of the ansiColors() toggle: rows
+    // recorded while colors were on must not survive as a stale, misaligned front.
+    if (!m_colorData.isEmpty()) {
+      const int colorDrop = qMin(linesToDrop, static_cast<int>(m_colorData.size()));
+      m_colorData.erase(m_colorData.begin(), m_colorData.begin() + colorDrop);
+    }
+    // code-verify on
 
     if (m_cursorPosition.y() >= linesToDrop)
       m_cursorPosition.setY(m_cursorPosition.y() - linesToDrop);

@@ -33,14 +33,29 @@
 #include "Misc/Utilities.h"
 #include "SerialStudio.h"
 
+#ifdef BUILD_COMMERCIAL
+#  include "Licensing/LemonSqueezy.h"
+#endif
+
 //--------------------------------------------------------------------------------------------------
 // Constructor & singleton access
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Constructs the demo launcher.
+ * @brief Constructs the demo launcher. Re-applies the Pro gating on license flips so a demo
+ *        started before activation completes picks up its Pro-only groups.
  */
-Misc::DemoLauncher::DemoLauncher() {}
+Misc::DemoLauncher::DemoLauncher()
+{
+#ifdef BUILD_COMMERCIAL
+  static auto& lemonSqueezy = Licensing::LemonSqueezy::instance();
+  connect(&lemonSqueezy, &Licensing::LemonSqueezy::activatedChanged, this, [this] {
+    static auto& projectModel = DataModel::ProjectModel::instance();
+    if (projectModel.jsonFilePath() == demoProjectPath())
+      applyProGating();
+  });
+#endif
+}
 
 /**
  * @brief Returns the singleton instance of the demo launcher.

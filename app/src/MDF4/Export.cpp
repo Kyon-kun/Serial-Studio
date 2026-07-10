@@ -125,18 +125,20 @@ void MDF4::ExportWorker::writeFrameGroups(const DataModel::Frame& frame,
 }
 
 /**
- * @brief Processes a batch of MDF4 frames
+ * @brief Processes a batch of MDF4 frames. Connectivity only gates the creation of a NEW file:
+ *        an already-open writer still receives the queued backlog, so the close() drain after a
+ *        disconnect flushes captured frames instead of silently dropping them.
  */
 void MDF4::ExportWorker::processItems(const std::vector<DataModel::TimestampedFramePtr>& items)
 {
   if (items.empty())
     return;
 
-  static auto& ioManager = IO::ConnectionManager::instance();
-  if (!ioManager.isConnected())
-    return;
-
   if (!isResourceOpen()) {
+    static auto& ioManager = IO::ConnectionManager::instance();
+    if (!ioManager.isConnected())
+      return;
+
     createFile(items.front()->data);
     m_steadyBaseline = items.front()->timestamp;
     m_systemBaseline = std::chrono::system_clock::now();

@@ -750,13 +750,7 @@ end
 
 ## Calling any API command: `apiCall()`
 
-Beyond the focused helpers above, parsers can invoke Serial Studio's API commands through a generic gateway. This is the same surface exposed on TCP port 7777 for external clients, now reachable from inside the parser, dataset transforms, and Painter widgets. The gateway is default-deny: only a small allow-list is callable with no setup (`project.*`
-getters, `dashboard.getStatus` / `dashboard.getData` / `dashboard.tailFrames`,
-`notifications.list` / `notifications.post`, `sessions.list` / `sessions.get`,
-`controlScript.get` / `controlScript.getStatus`, `api.getCommands`, plus the `system.*` process
-commands `system.projectDir` / `system.exec` / `system.kill` / `system.runningProcesses`, which
-are not read-only); every other command returns `METHOD_NOT_ALLOWED` unless the project opts in
-via `apiCall.allowFullSurface`. Calls are also rate-limited per source: a 100 calls/s token bucket, at most 8 concurrent calls, and a 1 MiB cap on request bodies and responses.
+Beyond the focused helpers above, parsers can invoke Serial Studio's API commands through a generic gateway. This is the same surface exposed on TCP port 7777 for external clients, now reachable from inside the parser, dataset transforms, control script, and Painter widgets. Because these are all the project's own first-party scripts, the gateway is ungated for them: the full command catalog is callable with no allow-list, no rate limit, and no payload cap. The gate lives on the network side instead — a remote TCP client still clears the user-consent prompt before any device write.
 
 ```text
 apiCall(method, params?) -> { ok, result?, error?, errorCode?, errorData? }
@@ -780,7 +774,7 @@ A second helper, `apiCallList()`, returns an array of every registered command n
 
 ### Examples
 
-**Lua -- bring up the right workspace when a fault flag goes high (`ui.window.setActiveGroup` is not in the default allow-list, so this requires the `apiCall.allowFullSurface` opt-in):**
+**Lua -- bring up the right workspace when a fault flag goes high:**
 
 ```lua
 local lastFaultBit = 0
@@ -802,7 +796,7 @@ function parse(frame)
 end
 ```
 
-**JavaScript -- check the dashboard state when an alert arrives (`dashboard.getStatus` is on the default allow-list; no opt-in needed):**
+**JavaScript -- check the dashboard state when an alert arrives:**
 
 ```javascript
 function parse(frame) {
@@ -835,7 +829,7 @@ end
 ### When NOT to use it
 
 - **One-shot, fire-and-forget.** `apiCall` runs synchronously on the dashboard thread. Heavy work (mass mutations, project save, MDF4 export) blocks frame processing. Gate every call on an event transition; never `apiCall` on every frame.
-- **Prefer the focused helpers.** Runtime UI orchestration (clearing plots, toggling panes, switching the active workspace) has `apiCall` equivalents under `ui.*` / `dashboard.*`, but those sit behind the `apiCall.allowFullSurface` opt-in. The dedicated `clearPlots()` / `setPlotPoints()` / `setActiveWorkspace()` shortcuts bypass the allow-list, so use the shortcuts for those tasks; reach for `apiCall` for the rest of the command surface.
+- **Prefer the focused helpers.** Runtime UI orchestration (clearing plots, toggling panes, switching the active workspace) has `apiCall` equivalents under `ui.*` / `dashboard.*`, but the dedicated `clearPlots()` / `setPlotPoints()` / `setActiveWorkspace()` shortcuts are clearer and cheaper; use the shortcuts for those tasks and reach for `apiCall` for the rest of the command surface.
 - **Avoid destructive commands from a parser.** Anything that mutates the project (`project.save`, `project.batch`, `groups.delete`) is fine from a one-time setup hook, but should not fire from the streaming hotpath.
 - **Pro features stay gated.** In GPL builds the commercial-tier handlers (Modbus, CAN, sessions, MDF4, MQTT...) are not registered, so `apiCall` returns `{ ok = false, errorCode = "UNKNOWN_COMMAND" }`. Check `ok` before assuming success.
 

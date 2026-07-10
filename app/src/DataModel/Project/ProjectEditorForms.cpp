@@ -1164,7 +1164,7 @@ void DataModel::ProjectEditor::addFFTSection(CustomModel* model, const DataModel
 void DataModel::ProjectEditor::addWidgetSection(CustomModel* model,
                                                 const DataModel::Dataset& dataset)
 {
-  const bool showWidget = currentDatasetIsEditable();
+  const bool showWidget = datasetWidgetEditable(dataset);
 
   auto* hdr = new QStandardItem();
   hdr->setData(SectionHeader, WidgetType);

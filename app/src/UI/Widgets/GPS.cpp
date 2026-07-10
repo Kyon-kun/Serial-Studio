@@ -915,7 +915,10 @@ void Widgets::GPS::renderTrajectoryPath(
             view.height() * 0.5 + delta.y() * tileSize * scale};
   };
 
-  QVector<QPointF> path;
+  QVector<QPointF>& path = m_trajectoryScratch;
+  path.clear();
+  path.reserve(static_cast<qsizetype>(series.latitudes.size()) + 1);
+
   auto pushIfValid = [&](double lat, double lon) {
     if (std::isnan(lat) || std::isnan(lon) || DSP::isZero(lat) || DSP::isZero(lon))
       return;

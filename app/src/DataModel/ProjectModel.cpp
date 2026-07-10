@@ -63,6 +63,7 @@
 #include "UI/Dashboard.h"
 
 #ifdef BUILD_COMMERCIAL
+#  include "Licensing/LemonSqueezy.h"
 #endif
 
 //--------------------------------------------------------------------------------------------------
@@ -93,7 +94,6 @@ DataModel::ProjectModel::ProjectModel()
   , m_customizeWorkspaces(false)
   , m_passwordHash("")
   , m_locked(false)
-  , m_apiCallAllowFullSurface(false)
   , m_autoSaveTimer(new QTimer(this))
   , m_autoSaveSuspended(false)
   , m_runtimeDirty(false)
@@ -1079,7 +1079,10 @@ void DataModel::ProjectModel::savePluginState(const QString& pluginId, const QJs
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Wires Dashboard, ConnectionManager, and AppState signals to this model.
+ * @brief Wires Dashboard, ConnectionManager, AppState and licensing signals to this model.
+ *        The activation hook re-derives the workspace list because the auto layout bakes the
+ *        Pro/fallback widget choice (Plot3D vs MultiPlot) in at build time, so a license flip
+ *        after project load would otherwise leave stale fallback refs on screen.
  */
 void DataModel::ProjectModel::setupExternalConnections()
 {
@@ -1123,6 +1126,30 @@ void DataModel::ProjectModel::setupExternalConnections()
       if (!IO::ConnectionManager::instance().isConnected())
         clearTransientState();
     });
+
+#ifdef BUILD_COMMERCIAL
+  connect(
+    &Licensing::LemonSqueezy::instance(), &Licensing::LemonSqueezy::activatedChanged, this, [this] {
+      if (AppState::instance().operationMode() != SerialStudio::ProjectFile) {
+        m_sessionWorkspaces = buildAutoWorkspaces();
+        Q_EMIT activeWorkspacesChanged();
+        return;
+      }
+
+      if (m_customizeWorkspaces) {
+        if (mergeAutoWorkspaceUpdates()) {
+          Q_EMIT editorWorkspacesChanged();
+          Q_EMIT activeWorkspacesChanged();
+        }
+
+        return;
+      }
+
+      regenerateAutoWorkspacesUnnotified();
+      Q_EMIT editorWorkspacesChanged();
+      Q_EMIT activeWorkspacesChanged();
+    });
+#endif
 }
 
 //--------------------------------------------------------------------------------------------------

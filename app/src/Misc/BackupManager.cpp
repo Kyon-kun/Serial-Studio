@@ -442,7 +442,10 @@ void Misc::BackupManager::flushDebounced()
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Stem name used as the backup subdirectory; "untitled" when no project file is open.
+ * @brief Stem name used as the backup subdirectory; "untitled" when no project file is open. A
+ *        short hash of the project's full canonical path is appended so two same-named projects
+ *        in different folders never share a backup pool (which merged their histories and let
+ *        retention evict one project's snapshots on behalf of the other).
  */
 QString Misc::BackupManager::currentProjectStem() const
 {
@@ -452,8 +455,15 @@ QString Misc::BackupManager::currentProjectStem() const
   if (path.isEmpty())
     return QStringLiteral("untitled");
 
-  const auto stem = QFileInfo(path).baseName();
-  return stem.isEmpty() ? QStringLiteral("untitled") : stem;
+  const QFileInfo info(path);
+  const auto stem = info.baseName();
+  if (stem.isEmpty())
+    return QStringLiteral("untitled");
+
+  const auto canonical = info.canonicalFilePath();
+  const auto key       = canonical.isEmpty() ? QDir::cleanPath(info.absoluteFilePath()) : canonical;
+  const auto digest    = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Sha1).toHex();
+  return stem + QStringLiteral("-") + QString::fromLatin1(digest.left(8));
 }
 
 /**

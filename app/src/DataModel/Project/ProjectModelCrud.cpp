@@ -1980,6 +1980,77 @@ static bool folderHasSelectedAncestor(const std::vector<Folder>& folders,
   return false;
 }
 
+/**
+ * @brief One pending batch-delete item, pinned to stable uniqueIds where they exist.
+ */
+struct BatchDeleteEntry {
+  int kind;
+  int id;
+  int parentId;
+  int groupUid;
+  int datasetUid;
+  QString path;
+};
+
+/**
+ * @brief Returns the uniqueId of the group at positional @p gid, or -1 when out of range.
+ */
+static int batchGroupUidAt(const std::vector<Group>& groups, int gid)
+{
+  return (gid >= 0 && static_cast<size_t>(gid) < groups.size()) ? groups[gid].uniqueId : -1;
+}
+
+/**
+ * @brief Returns the uniqueId of dataset @p did inside group @p gid, or -1 when out of range.
+ */
+static int batchDatasetUidAt(const std::vector<Group>& groups, int gid, int did)
+{
+  if (gid < 0 || static_cast<size_t>(gid) >= groups.size())
+    return -1;
+
+  const auto& datasets = groups[gid].datasets;
+  return (did >= 0 && static_cast<size_t>(did) < datasets.size()) ? datasets[did].uniqueId : -1;
+}
+
+/**
+ * @brief Re-resolves a pinned group uniqueId to its current positional id; falls back to the
+ *        original positional id for legacy unassigned uniqueIds, and -1 when the group is gone.
+ */
+static int batchResolveGroupId(const std::vector<Group>& groups, int groupUid, int staleGid)
+{
+  if (groupUid < 0)
+    return staleGid;
+
+  for (const auto& group : groups)
+    if (group.uniqueId == groupUid)
+      return group.groupId;
+
+  return -1;
+}
+
+/**
+ * @brief Re-resolves a pinned dataset uniqueId to its current index inside group @p gid; falls
+ *        back to the original positional id when unpinned, and -1 when the dataset is gone.
+ */
+static int batchResolveDatasetId(const std::vector<Group>& groups,
+                                 int gid,
+                                 int datasetUid,
+                                 int staleDid)
+{
+  if (datasetUid < 0)
+    return staleDid;
+
+  if (gid < 0 || static_cast<size_t>(gid) >= groups.size())
+    return -1;
+
+  const auto& datasets = groups[gid].datasets;
+  for (size_t d = 0; d < datasets.size(); ++d)
+    if (datasets[d].uniqueId == datasetUid)
+      return static_cast<int>(d);
+
+  return -1;
+}
+
 }  // namespace DataModel
 
 /**
@@ -2054,55 +2125,75 @@ void DataModel::ProjectModel::duplicateSelectedItems(const QVariantList& items)
 }
 
 /**
- * @brief Deletes every item described in @p items in dependency-safe order:
- * children (higher kind) before parents, then descending parentId/id within a
- * kind, so each removal never shifts the indices of items still pending deletion.
+ * @brief Deletes every item in @p items, children (higher kind) first, descending ids within a
+ * kind. Group-referencing entries are pinned to uniqueIds and re-resolved per delete: deleting
+ * a group's last dataset/output widget cascades into deleting the group and renumbers every
+ * later group, so a stale positional id would delete an unrelated, unselected item.
  */
 void DataModel::ProjectModel::deleteSelectedItems(const QVariantList& items)
 {
-  struct Entry {
-    int kind;
-    int id;
-    int parentId;
-    QString path;
-  };
-
-  QList<Entry> entries;
+  QList<BatchDeleteEntry> entries;
   entries.reserve(items.size());
   for (const auto& v : items) {
     const auto m = v.toMap();
-    Entry e;
-    e.kind     = m.value(QStringLiteral("kind"), -1).toInt();
-    e.id       = m.value(QStringLiteral("id"), -1).toInt();
-    e.parentId = m.value(QStringLiteral("parentId"), -1).toInt();
-    e.path     = m.value(QStringLiteral("path")).toString();
+    BatchDeleteEntry e;
+    e.kind       = m.value(QStringLiteral("kind"), -1).toInt();
+    e.id         = m.value(QStringLiteral("id"), -1).toInt();
+    e.parentId   = m.value(QStringLiteral("parentId"), -1).toInt();
+    e.path       = m.value(QStringLiteral("path")).toString();
+    e.groupUid   = -1;
+    e.datasetUid = -1;
+
+    if (e.kind == ProjectEditor::KindGroup)
+      e.groupUid = batchGroupUidAt(m_groups, e.id);
+
+    if (e.kind == ProjectEditor::KindDataset || e.kind == ProjectEditor::KindOutputWidget)
+      e.groupUid = batchGroupUidAt(m_groups, e.parentId);
+
+    if (e.kind == ProjectEditor::KindDataset)
+      e.datasetUid = batchDatasetUidAt(m_groups, e.parentId, e.id);
+
     entries.append(e);
   }
 
-  std::sort(entries.begin(), entries.end(), [](const Entry& a, const Entry& b) {
-    if (a.kind != b.kind)
-      return a.kind > b.kind;
+  std::sort(
+    entries.begin(), entries.end(), [](const BatchDeleteEntry& a, const BatchDeleteEntry& b) {
+      if (a.kind != b.kind)
+        return a.kind > b.kind;
 
-    if (a.parentId != b.parentId)
-      return a.parentId > b.parentId;
+      if (a.parentId != b.parentId)
+        return a.parentId > b.parentId;
 
-    return a.id > b.id;
-  });
+      return a.id > b.id;
+    });
 
   for (const auto& e : entries) {
     switch (e.kind) {
-      case ProjectEditor::KindGroup:
-        deleteGroup(e.id, false);
+      case ProjectEditor::KindGroup: {
+        const int gid = batchResolveGroupId(m_groups, e.groupUid, e.id);
+        if (gid >= 0)
+          deleteGroup(gid, false);
+
         break;
-      case ProjectEditor::KindDataset:
-        deleteDataset(e.parentId, e.id, false);
+      }
+      case ProjectEditor::KindDataset: {
+        const int gid = batchResolveGroupId(m_groups, e.groupUid, e.parentId);
+        const int did = batchResolveDatasetId(m_groups, gid, e.datasetUid, e.id);
+        if (gid >= 0 && did >= 0)
+          deleteDataset(gid, did, false);
+
         break;
+      }
       case ProjectEditor::KindAction:
         deleteAction(e.id, false);
         break;
-      case ProjectEditor::KindOutputWidget:
-        deleteOutputWidget(e.parentId, e.id, false);
+      case ProjectEditor::KindOutputWidget: {
+        const int gid = batchResolveGroupId(m_groups, e.groupUid, e.parentId);
+        if (gid >= 0)
+          deleteOutputWidget(gid, e.id, false);
+
         break;
+      }
       case ProjectEditor::KindWorkspace:
         deleteWorkspace(e.id);
         break;

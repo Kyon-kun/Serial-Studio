@@ -94,6 +94,29 @@ void DataModel::JsWatchdog::disarm() noexcept
 //--------------------------------------------------------------------------------------------------
 
 /**
+ * @brief Clears the engine interrupt after a call and reports a real timeout only when elapsed
+ *        time reached the budget -- a spurious interrupt set in the disarm() race window (call
+ *        already finished under budget) is cleared without a false timeout.
+ */
+bool DataModel::JsWatchdog::finishCall(qint64 startNs) noexcept
+{
+  disarm();
+
+  if (!m_engine->isInterrupted()) [[likely]]
+    return false;
+
+  m_engine->setInterrupted(false);
+
+  const qint64 elapsedNs = steadyNowNs() - startNs;
+  if (elapsedNs < qint64(m_budgetMs) * 1000000)
+    return false;
+
+  qWarning().noquote() << "[JsWatchdog]" << (m_tag.isEmpty() ? QStringLiteral("script") : m_tag)
+                       << "timed out after" << m_budgetMs << "ms -- interrupted";
+  return true;
+}
+
+/**
  * @brief Calls fn(args) under the watchdog with no explicit `this`.
  */
 QJSValue DataModel::JsWatchdog::call(QJSValue& fn, const QJSValueList& args)
@@ -101,17 +124,11 @@ QJSValue DataModel::JsWatchdog::call(QJSValue& fn, const QJSValueList& args)
   Q_ASSERT(fn.isCallable());
   Q_ASSERT(m_engine != nullptr);
 
-  m_lastTimedOut = false;
+  m_lastTimedOut       = false;
+  const qint64 startNs = steadyNowNs();
   arm();
   const auto result = fn.call(args);
-  disarm();
-
-  if (m_engine->isInterrupted()) [[unlikely]] {
-    m_engine->setInterrupted(false);
-    m_lastTimedOut = true;
-    qWarning().noquote() << "[JsWatchdog]" << (m_tag.isEmpty() ? QStringLiteral("script") : m_tag)
-                         << "timed out after" << m_budgetMs << "ms -- interrupted";
-  }
+  m_lastTimedOut    = finishCall(startNs);
 
   return result;
 }
@@ -124,17 +141,11 @@ QJSValue DataModel::JsWatchdog::call(QJSValue& fn, QJSValue thisObj, const QJSVa
   Q_ASSERT(fn.isCallable());
   Q_ASSERT(m_engine != nullptr);
 
-  m_lastTimedOut = false;
+  m_lastTimedOut       = false;
+  const qint64 startNs = steadyNowNs();
   arm();
   const auto result = fn.callWithInstance(thisObj, args);
-  disarm();
-
-  if (m_engine->isInterrupted()) [[unlikely]] {
-    m_engine->setInterrupted(false);
-    m_lastTimedOut = true;
-    qWarning().noquote() << "[JsWatchdog]" << (m_tag.isEmpty() ? QStringLiteral("script") : m_tag)
-                         << "timed out after" << m_budgetMs << "ms -- interrupted";
-  }
+  m_lastTimedOut    = finishCall(startNs);
 
   return result;
 }

@@ -196,7 +196,34 @@ static void scheduleProjectApply()
 }
 
 /**
- * @brief Execute a registered command
+ * @brief RAII depth marker for nested CommandRegistry::execute calls (all on the GUI thread);
+ *        a batch's inner ops run at depth > 0 and skip the per-op pre-mutation snapshot.
+ */
+struct ExecuteDepthGuard {
+  /**
+   * @brief Enters one nesting level.
+   */
+  ExecuteDepthGuard() { ++depth(); }
+
+  /**
+   * @brief Leaves one nesting level.
+   */
+  ~ExecuteDepthGuard() { --depth(); }
+
+  /**
+   * @brief Current nesting depth (GUI-thread only).
+   */
+  static int& depth()
+  {
+    static int d = 0;
+    return d;
+  }
+};
+
+/**
+ * @brief Execute a registered command. Only the outermost destructive command snapshots the
+ *        project: a project.batch of N deletes takes one snapshot, not N+1 synchronous
+ *        serialize+fsync passes on the GUI thread.
  */
 API::CommandResponse API::CommandRegistry::execute(const QString& name,
                                                    const QString& id,
@@ -207,10 +234,12 @@ API::CommandResponse API::CommandRegistry::execute(const QString& name,
 
   const bool isDryRun = params.value(QStringLiteral("dryRun")).toBool(false);
   QString preMutationBackup;
-  if (!isDryRun && destructiveCommandSet().contains(name)) {
+  if (!isDryRun && ExecuteDepthGuard::depth() == 0 && destructiveCommandSet().contains(name)) {
     static auto& backupManager = Misc::BackupManager::instance();
     preMutationBackup          = backupManager.snapshot(QStringLiteral("pre-") + name);
   }
+
+  const ExecuteDepthGuard depthGuard;
 
   static auto& projectModel = DataModel::ProjectModel::instance();
   const qint64 epochBefore  = projectModel.mutationEpoch();

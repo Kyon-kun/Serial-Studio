@@ -628,7 +628,9 @@ void Widgets::Waterfall::writeRowAt(int row, const float* dbValues, int bins)
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Pulls the latest time-domain samples, runs FFT, pushes a new row.
+ * @brief Pulls the latest time-domain samples, runs FFT, pushes a new row. The plan and history
+ *        image are sized from the ring's capacity, never its fill level, so a filling ring cannot
+ *        thrash the plan or wipe the spectrogram; the unfilled tail is zero-padded instead.
  */
 void Widgets::Waterfall::updateData()
 {
@@ -642,7 +644,7 @@ void Widgets::Waterfall::updateData()
     return;
 
   const auto& data  = m_dashboard.waterfallData(m_index);
-  const int newSize = static_cast<int>(data.size());
+  const int newSize = static_cast<int>(data.capacity());
   if (newSize <= 0)
     return;
 
@@ -655,18 +657,25 @@ void Widgets::Waterfall::updateData()
   if (!m_plan)
     return;
 
+  const int avail = static_cast<int>(std::min(data.size(), static_cast<std::size_t>(m_size)));
+
   const double* in       = data.raw();
   std::size_t idx        = data.frontIndex();
   const std::size_t mask = data.storageMask();
   const double offset    = m_scaleIsValid ? -m_center : 0.0;
   const double scale     = m_scaleIsValid ? (1.0 / m_halfRange) : 1.0;
 
-  for (int i = 0; i < m_size; ++i) {
+  for (int i = 0; i < avail; ++i) {
     const double raw = in[idx];
     const float v    = std::isfinite(raw) ? static_cast<float>((raw + offset) * scale) : 0.0f;
     m_samples[i].r   = v * m_window[i];
     m_samples[i].i   = 0.0f;
     idx              = (idx + 1) & mask;
+  }
+
+  for (int i = avail; i < m_size; ++i) {
+    m_samples[i].r = 0.0f;
+    m_samples[i].i = 0.0f;
   }
 
   kiss_fft(m_plan, m_samples.data(), m_fftOutput.data());
