@@ -37,6 +37,9 @@ flowchart LR
 
 **Visual C++ Redistributable.** On a fresh Windows install, Serial Studio may fail to launch. If that happens, install the [Microsoft Visual C++ Redistributable (64-bit)](https://aka.ms/vs/17/release/vc_redist.x64.exe) and try again.
 
+The portable ZIP and the Microsoft Store edition, plus details on each package, are covered
+in [Windows Installation](Windows-Installation.md).
+
 ### macOS
 
 1. Download the DMG from the [releases page](https://github.com/Serial-Studio/Serial-Studio/releases/latest).

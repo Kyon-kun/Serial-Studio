@@ -128,6 +128,8 @@ Log out and back in for the group change to take effect. More first-connection f
 ## See also
 
 - [Getting Started](Getting-Started.md): first connection walkthrough for all platforms.
+- [Windows Installation](Windows-Installation.md): MSI, portable ZIP, and Microsoft Store
+  packages on Windows.
 - [Troubleshooting](Troubleshooting.md): fixes for common connection and parsing problems.
 - [Command Line Interface](Command-Line-Interface.md): flags for running Serial Studio from
   scripts and headless environments.

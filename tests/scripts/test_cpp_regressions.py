@@ -527,7 +527,7 @@ def test_frame_builder_pool_scan_copies_no_shared_ptr():
     text = _read("app/src/DataModel/FrameBuilder.cpp")
 
     scan = re.search(
-        r"size_t DataModel::FrameBuilder::claimPoolSlot\(\) noexcept\s*\{[\s\S]*?\n\}",
+        r"size_t DataModel::FrameBuilder::claimPoolSlot\([^)]*\) noexcept\s*\{[\s\S]*?\n\}",
         text,
     )
     assert scan is not None, "claimPoolSlot body must be present"
