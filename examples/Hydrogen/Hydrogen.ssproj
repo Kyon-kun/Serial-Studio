@@ -1,6 +1,7 @@
 {
     "actions": [
     ],
+    "changeDrivenTransforms": false,
     "controlScriptCode": "/**\n * Hydrogen - Control Loop\n *\n * Launches the bundled Python data generator (hydrogen.py) automatically when\n * the connection opens, so the example works without running anything by\n * hand. The helper process is stopped by Serial Studio when the device is\n * disconnected, when the project changes, or when the app quits.\n *\n * The interpreter is resolved cross-platform: \"python3\" is tried first\n * (Linux/macOS), falling back to \"python\" (typical on Windows).\n */\n\nvar helperPid = -1;\n\nfunction startHelper() {\n  var dir = system.projectDir();\n  if (!dir.ok)\n    return;\n\n  var script = dir.result.directory + \"/hydrogen.py\";\n\n  var r = system.exec(\"python3\", { args: [\"-u\", script], workingDir: dir.result.directory });\n  if (!r.ok)\n    r = system.exec(\"python\", { args: [\"-u\", script], workingDir: dir.result.directory });\n\n  if (r.ok)\n    helperPid = r.result.processId;\n}\n\nfunction setup() {\n  startHelper();\n}\n\nfunction loop() {\n  delay(1000);\n}\n",
     "groups": [
         {
@@ -14,6 +15,7 @@
                     "fftMin": -5,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 0,
                     "index": 1,
@@ -41,6 +43,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 0,
                     "index": 2,
@@ -68,6 +71,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 0,
                     "index": 3,
@@ -102,6 +106,7 @@
                     "fftMin": -0.1,
                     "fftSamples": 8192,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 4,
@@ -176,6 +181,28 @@
         }
     ],
     "title": "Hydrogen Atom: 1s Orbital",
+    "treeExpansion": {
+        "": false,
+        "Hydrogen Atom: 1s Orbital": true,
+        "Hydrogen Atom: 1s Orbital/ ": false,
+        "Hydrogen Atom: 1s Orbital/Control Loop": false,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets": true,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/3D Visualization": true,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/3D Visualization/X": false,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/3D Visualization/Y": false,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/3D Visualization/Z": false,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/Probability Density": true,
+        "Hydrogen Atom: 1s Orbital/Dashboard Widgets/Probability Density/ψ²": false,
+        "Hydrogen Atom: 1s Orbital/Device A": true,
+        "Hydrogen Atom: 1s Orbital/Device A/Frame Parser": false,
+        "Hydrogen Atom: 1s Orbital/MQTT Publisher": false,
+        "Hydrogen Atom: 1s Orbital/Shared Memory": true,
+        "Hydrogen Atom: 1s Orbital/Shared Memory/Dataset Values": false,
+        "Hydrogen Atom: 1s Orbital/Workspaces": true,
+        "Hydrogen Atom: 1s Orbital/Workspaces/3D Visualization": false,
+        "Hydrogen Atom: 1s Orbital/Workspaces/All Data": false,
+        "Hydrogen Atom: 1s Orbital/Workspaces/Probability Density": false
+    },
     "widgetSettings": {
         "6:0:-1": {
             "anaglyphEnabled": false,
