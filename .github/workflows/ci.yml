@@ -348,6 +348,39 @@ jobs:
         sarif_file: deglyph.sarif
         category: deglyph-linux-x64
 
+    - name: '🔐 Prepare GPG signing (optional)'
+      env:
+        GPG_PRIVATE_KEY: ${{secrets.GPG_PRIVATE_KEY}}
+        GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
+        GPG_KEY_ID: ${{secrets.GPG_KEY_ID}}
+      run: |
+        set -euo pipefail
+        if [ -z "${GPG_KEY_ID:-}" ] || [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+          echo "GPG signing secrets not set; packages will be unsigned."
+          exit 0
+        fi
+        mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
+        echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+        gpg-connect-agent reloadagent /bye
+        if [ -n "${GPG_PASSPHRASE:-}" ]; then
+          for grip in $(gpg --batch --with-colons --with-keygrip \
+              --list-secret-keys "$GPG_KEY_ID" | awk -F: '$1=="grp"{print $10}'); do
+            printf '%s' "$GPG_PASSPHRASE" | \
+              /usr/lib/gnupg/gpg-preset-passphrase --preset "$grip"
+          done
+        fi
+        PASSFILE="$RUNNER_TEMP/gpg-pass"
+        touch "$PASSFILE" && chmod 600 "$PASSFILE"
+        printf '%s' "${GPG_PASSPHRASE:-}" > "$PASSFILE"
+        printf '%%_signature gpg\n' > ~/.rpmmacros
+        printf '%%_gpg_name %s\n' "$GPG_KEY_ID" >> ~/.rpmmacros
+        printf '%%_gpg_sign_cmd_extra_args --batch --pinentry-mode loopback --passphrase-file %s\n' \
+          "$PASSFILE" >> ~/.rpmmacros
+        echo "SS_GPG_SIGN=1" >> "$GITHUB_ENV"
+        echo "LDAI_SIGN=1" >> "$GITHUB_ENV"
+        echo "LDAI_SIGN_KEY=$GPG_KEY_ID" >> "$GITHUB_ENV"
+
     - name: '📦 Create AppImage'
       run: |
         cd "build/app"
@@ -442,21 +475,34 @@ jobs:
 
     - name: '✍🏻 Sign Linux artifacts (GPG, optional)'
       env:
-        GPG_PRIVATE_KEY: ${{secrets.GPG_PRIVATE_KEY}}
         GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
         GPG_KEY_ID: ${{secrets.GPG_KEY_ID}}
       run: |
         set -euo pipefail
-        if [ -z "${GPG_KEY_ID:-}" ] || [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+        if [ "${SS_GPG_SIGN:-0}" != "1" ]; then
           echo "GPG signing secrets not set; skipping Linux signing."
           exit 0
         fi
-        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+        sudo apt-get install -y debsigs
         APPIMAGE="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64.AppImage"
         DEB="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64.deb"
         RPM="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64.rpm"
         BIN="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64"
         cp "build/app/${{env.UNIXNAME}}" "$BIN"
+
+        gpg --export --armor "$GPG_KEY_ID" > signing-public-key.asc
+
+        rpmsign --addsign "$RPM"
+        sudo rpm --import signing-public-key.asc
+        rpm -Kv "$RPM"
+        rpm -K "$RPM" | grep -qi 'signatures OK'
+
+        debsigs --sign=origin --default-key="$GPG_KEY_ID" "$DEB"
+        ar t "$DEB" | grep -q '_gpgorigin'
+
+        chmod +x "$APPIMAGE"
+        ./"$APPIMAGE" --appimage-signature | grep -q 'BEGIN PGP SIGNATURE'
+
         for f in "$APPIMAGE" "$DEB" "$RPM" "$BIN"; do
           gpg --batch --yes --pinentry-mode loopback \
             ${GPG_PASSPHRASE:+--passphrase "$GPG_PASSPHRASE"} \
@@ -494,6 +540,7 @@ jobs:
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64.rpm.asc
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-x64.asc
+          signing-public-key.asc
 
 #-------------------------------------------------------------------------------
 # GNU/Linux build (aarch64)
@@ -739,6 +786,39 @@ jobs:
         sarif_file: deglyph.sarif
         category: deglyph-linux-arm64
 
+    - name: '🔐 Prepare GPG signing (optional)'
+      env:
+        GPG_PRIVATE_KEY: ${{secrets.GPG_PRIVATE_KEY}}
+        GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
+        GPG_KEY_ID: ${{secrets.GPG_KEY_ID}}
+      run: |
+        set -euo pipefail
+        if [ -z "${GPG_KEY_ID:-}" ] || [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+          echo "GPG signing secrets not set; packages will be unsigned."
+          exit 0
+        fi
+        mkdir -p ~/.gnupg && chmod 700 ~/.gnupg
+        echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
+        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+        gpg-connect-agent reloadagent /bye
+        if [ -n "${GPG_PASSPHRASE:-}" ]; then
+          for grip in $(gpg --batch --with-colons --with-keygrip \
+              --list-secret-keys "$GPG_KEY_ID" | awk -F: '$1=="grp"{print $10}'); do
+            printf '%s' "$GPG_PASSPHRASE" | \
+              /usr/lib/gnupg/gpg-preset-passphrase --preset "$grip"
+          done
+        fi
+        PASSFILE="$RUNNER_TEMP/gpg-pass"
+        touch "$PASSFILE" && chmod 600 "$PASSFILE"
+        printf '%s' "${GPG_PASSPHRASE:-}" > "$PASSFILE"
+        printf '%%_signature gpg\n' > ~/.rpmmacros
+        printf '%%_gpg_name %s\n' "$GPG_KEY_ID" >> ~/.rpmmacros
+        printf '%%_gpg_sign_cmd_extra_args --batch --pinentry-mode loopback --passphrase-file %s\n' \
+          "$PASSFILE" >> ~/.rpmmacros
+        echo "SS_GPG_SIGN=1" >> "$GITHUB_ENV"
+        echo "LDAI_SIGN=1" >> "$GITHUB_ENV"
+        echo "LDAI_SIGN_KEY=$GPG_KEY_ID" >> "$GITHUB_ENV"
+
     - name: '📦 Create AppImage'
       run: |
         cd "build/app"
@@ -833,21 +913,34 @@ jobs:
 
     - name: '✍🏻 Sign Linux artifacts (GPG, optional)'
       env:
-        GPG_PRIVATE_KEY: ${{secrets.GPG_PRIVATE_KEY}}
         GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE}}
         GPG_KEY_ID: ${{secrets.GPG_KEY_ID}}
       run: |
         set -euo pipefail
-        if [ -z "${GPG_KEY_ID:-}" ] || [ -z "${GPG_PRIVATE_KEY:-}" ]; then
+        if [ "${SS_GPG_SIGN:-0}" != "1" ]; then
           echo "GPG signing secrets not set; skipping Linux signing."
           exit 0
         fi
-        printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --import
+        sudo apt-get install -y debsigs
         APPIMAGE="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64.AppImage"
         DEB="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64.deb"
         RPM="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64.rpm"
         BIN="${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64"
         cp "build/app/${{env.UNIXNAME}}" "$BIN"
+
+        gpg --export --armor "$GPG_KEY_ID" > signing-public-key.asc
+
+        rpmsign --addsign "$RPM"
+        sudo rpm --import signing-public-key.asc
+        rpm -Kv "$RPM"
+        rpm -K "$RPM" | grep -qi 'signatures OK'
+
+        debsigs --sign=origin --default-key="$GPG_KEY_ID" "$DEB"
+        ar t "$DEB" | grep -q '_gpgorigin'
+
+        chmod +x "$APPIMAGE"
+        ./"$APPIMAGE" --appimage-signature | grep -q 'BEGIN PGP SIGNATURE'
+
         for f in "$APPIMAGE" "$DEB" "$RPM" "$BIN"; do
           gpg --batch --yes --pinentry-mode loopback \
             ${GPG_PASSPHRASE:+--passphrase "$GPG_PASSPHRASE"} \
@@ -885,6 +978,7 @@ jobs:
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64.rpm.asc
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64
           ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux-arm64.asc
+          signing-public-key.asc
 
 #-------------------------------------------------------------------------------
 # macOS arm64 slice
