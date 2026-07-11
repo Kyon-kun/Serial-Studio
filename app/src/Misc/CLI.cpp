@@ -229,15 +229,12 @@ CLI::ProcessResult CLI::process(QApplication& app)
   if (m_parser.isSet(m_opts.dumpApiSchemaOpt))
     return dumpApiSchema(m_parser.value(m_opts.dumpApiSchemaOpt));
 
-  if (m_parser.isSet(m_opts.validateGuardsOpt)) {
 #ifdef BUILD_COMMERCIAL
+  if (m_parser.isSet(m_opts.validateGuardsOpt)) {
     return Licensing::runGuardSelfTest() == 0 ? ProcessResult::ExitSuccess
                                               : ProcessResult::ExitFailure;
-#else
-    qInfo().noquote() << "[validate-guards] GPL build: no license guards to validate";
-    return ProcessResult::ExitSuccess;
-#endif
   }
+#endif
 
 #ifdef BUILD_COMMERCIAL
   if (m_parser.isSet(m_opts.selftestOfflineOpt)) {

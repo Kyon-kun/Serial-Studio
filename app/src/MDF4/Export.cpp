@@ -612,11 +612,11 @@ void MDF4::Export::setSettingsPersistent(const bool persistent)
  */
 void MDF4::Export::setExportEnabled(const bool enabled)
 {
+#ifdef BUILD_COMMERCIAL
   static auto& appState = AppState::instance();
+  const auto& tk        = Licensing::CommercialToken::current();
   const bool allow      = enabled && appState.operationMode() != SerialStudio::ConsoleOnly;
 
-#ifdef BUILD_COMMERCIAL
-  const auto& tk = Licensing::CommercialToken::current();
   if (tk.isValid() && SS_LICENSE_GUARD() && tk.featureTier() >= Licensing::FeatureTier::Trial) {
     if (!allow && isOpen())
       closeFile();
