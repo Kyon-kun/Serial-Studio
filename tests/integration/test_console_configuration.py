@@ -47,6 +47,39 @@ def test_console_timestamp_toggle(api_client, clean_state):
 
 
 @pytest.mark.integration
+def test_console_collapse_duplicates_toggle(api_client, clean_state):
+    """Verify duplicate-line collapsing can be toggled and round-trips via getConfig."""
+    api_client.command("console.setCollapseDuplicates", {"enabled": True})
+    time.sleep(0.1)
+
+    config = api_client.command("console.getConfig")
+    assert config.get("collapseDuplicates") is True
+    assert "searchCaseSensitive" in config
+
+    api_client.command("console.setCollapseDuplicates", {"enabled": False})
+    time.sleep(0.1)
+
+    config = api_client.command("console.getConfig")
+    assert config.get("collapseDuplicates") is False
+
+
+@pytest.mark.integration
+def test_console_search_case_sensitive_toggle(api_client, clean_state):
+    """Verify case-sensitive search can be toggled and round-trips via getConfig."""
+    api_client.command("console.setSearchCaseSensitive", {"enabled": True})
+    time.sleep(0.1)
+
+    config = api_client.command("console.getConfig")
+    assert config.get("searchCaseSensitive") is True
+
+    api_client.command("console.setSearchCaseSensitive", {"enabled": False})
+    time.sleep(0.1)
+
+    config = api_client.command("console.getConfig")
+    assert config.get("searchCaseSensitive") is False
+
+
+@pytest.mark.integration
 def test_console_display_mode(api_client, clean_state):
     """Verify console display mode switches between PlainText (0) and Hex (1)."""
     api_client.command("console.setDisplayMode", {"modeIndex": 0})
@@ -178,6 +211,8 @@ def test_console_configuration_fields(api_client, clean_state):
         "fontSize",
         "checksumMethod",
         "bufferLength",
+        "collapseDuplicates",
+        "searchCaseSensitive",
     ]
 
     for field in expected_fields:

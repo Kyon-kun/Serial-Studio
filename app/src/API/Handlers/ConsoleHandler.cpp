@@ -61,6 +61,14 @@ void API::Handlers::ConsoleHandler::registerDisplayCommands()
                            QStringLiteral("Show/hide timestamps"),
                            enabledSchema,
                            &setShowTimestamp);
+  registry.registerCommand(QStringLiteral("console.setCollapseDuplicates"),
+                           QStringLiteral("Collapse consecutive duplicate lines"),
+                           enabledSchema,
+                           &setCollapseDuplicates);
+  registry.registerCommand(QStringLiteral("console.setSearchCaseSensitive"),
+                           QStringLiteral("Toggle case-sensitive console search"),
+                           enabledSchema,
+                           &setSearchCaseSensitive);
   registry.registerCommand(QStringLiteral("console.setDisplayMode"),
                            QStringLiteral("Set display mode"),
                            API::makeSchema({
@@ -231,6 +239,46 @@ API::CommandResponse API::Handlers::ConsoleHandler::setShowTimestamp(const QStri
   const bool enabled   = params.value(QStringLiteral("enabled")).toBool();
   static auto& handler = Console::Handler::instance();
   handler.setShowTimestamp(enabled);
+
+  QJsonObject result;
+  result[QStringLiteral("enabled")] = enabled;
+  return CommandResponse::makeSuccess(id, result);
+}
+
+/**
+ * @brief Enable/disable duplicate-line collapsing in the console view
+ */
+API::CommandResponse API::Handlers::ConsoleHandler::setCollapseDuplicates(const QString& id,
+                                                                          const QJsonObject& params)
+{
+  if (!params.contains(QStringLiteral("enabled"))) {
+    return CommandResponse::makeError(
+      id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: enabled"));
+  }
+
+  const bool enabled   = params.value(QStringLiteral("enabled")).toBool();
+  static auto& handler = Console::Handler::instance();
+  handler.setCollapseDuplicates(enabled);
+
+  QJsonObject result;
+  result[QStringLiteral("enabled")] = enabled;
+  return CommandResponse::makeSuccess(id, result);
+}
+
+/**
+ * @brief Enable/disable case-sensitive console search
+ */
+API::CommandResponse API::Handlers::ConsoleHandler::setSearchCaseSensitive(
+  const QString& id, const QJsonObject& params)
+{
+  if (!params.contains(QStringLiteral("enabled"))) {
+    return CommandResponse::makeError(
+      id, ErrorCode::MissingParam, QStringLiteral("Missing required parameter: enabled"));
+  }
+
+  const bool enabled   = params.value(QStringLiteral("enabled")).toBool();
+  static auto& handler = Console::Handler::instance();
+  handler.setSearchCaseSensitive(enabled);
 
   QJsonObject result;
   result[QStringLiteral("enabled")] = enabled;
@@ -543,15 +591,17 @@ API::CommandResponse API::Handlers::ConsoleHandler::getConfiguration(const QStri
   static auto& console = Console::Handler::instance();
 
   QJsonObject result;
-  result[QStringLiteral("echo")]           = console.echo();
-  result[QStringLiteral("showTimestamp")]  = console.showTimestamp();
-  result[QStringLiteral("displayMode")]    = static_cast<int>(console.displayMode());
-  result[QStringLiteral("dataMode")]       = static_cast<int>(console.dataMode());
-  result[QStringLiteral("lineEnding")]     = static_cast<int>(console.lineEnding());
-  result[QStringLiteral("fontFamily")]     = console.fontFamily();
-  result[QStringLiteral("fontSize")]       = console.fontSize();
-  result[QStringLiteral("checksumMethod")] = console.checksumMethod();
-  result[QStringLiteral("bufferLength")]   = console.bufferLength();
+  result[QStringLiteral("echo")]                = console.echo();
+  result[QStringLiteral("showTimestamp")]       = console.showTimestamp();
+  result[QStringLiteral("displayMode")]         = static_cast<int>(console.displayMode());
+  result[QStringLiteral("dataMode")]            = static_cast<int>(console.dataMode());
+  result[QStringLiteral("lineEnding")]          = static_cast<int>(console.lineEnding());
+  result[QStringLiteral("fontFamily")]          = console.fontFamily();
+  result[QStringLiteral("fontSize")]            = console.fontSize();
+  result[QStringLiteral("checksumMethod")]      = console.checksumMethod();
+  result[QStringLiteral("bufferLength")]        = console.bufferLength();
+  result[QStringLiteral("collapseDuplicates")]  = console.collapseDuplicates();
+  result[QStringLiteral("searchCaseSensitive")] = console.searchCaseSensitive();
 
   return CommandResponse::makeSuccess(id, result);
 }

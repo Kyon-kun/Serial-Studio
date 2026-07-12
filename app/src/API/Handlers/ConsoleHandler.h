@@ -39,6 +39,8 @@ private:
 
   static CommandResponse setEcho(const QString& id, const QJsonObject& params);
   static CommandResponse setShowTimestamp(const QString& id, const QJsonObject& params);
+  static CommandResponse setCollapseDuplicates(const QString& id, const QJsonObject& params);
+  static CommandResponse setSearchCaseSensitive(const QString& id, const QJsonObject& params);
   static CommandResponse setDisplayMode(const QString& id, const QJsonObject& params);
   static CommandResponse setDataMode(const QString& id, const QJsonObject& params);
   static CommandResponse setLineEnding(const QString& id, const QJsonObject& params);

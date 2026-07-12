@@ -72,6 +72,8 @@ Console::Handler::Handler()
   , m_checksumMethod(0)
   , m_echo(true)
   , m_showTimestamp(false)
+  , m_collapseDuplicates(false)
+  , m_searchCaseSensitive(false)
   , m_ansiColorsEnabled(false)
   , m_vt100Emulation(true)
   , m_ansiColors(true)
@@ -88,16 +90,18 @@ Console::Handler::Handler()
   clear();
   static auto& commonFonts = Misc::CommonFonts::instance();
   const auto defaultFont   = commonFonts.monoFont();
-  m_fontFamily     = m_settings.value("Console/FontFamily", defaultFont.family()).toString();
-  m_fontSize       = m_settings.value("Console/FontSize", defaultFont.pointSize()).toInt();
-  m_echo           = m_settings.value("Console/Echo", true).toBool();
-  m_showTimestamp  = m_settings.value("Console/ShowTimestamp", false).toBool();
-  m_vt100Emulation = m_settings.value("Console/VT100Emulation", true).toBool();
-  m_ansiColors     = m_settings.value("Console/AnsiColors", true).toBool();
-  m_checksumMethod = m_settings.value("Console/ChecksumMethod", 0).toInt();
-  m_dataMode       = static_cast<DataMode>(m_settings.value("Console/DataMode", 0).toInt());
-  m_lineEnding     = static_cast<LineEnding>(m_settings.value("Console/LineEnding", 0).toInt());
-  m_displayMode    = static_cast<DisplayMode>(m_settings.value("Console/DisplayMode", 0).toInt());
+  m_fontFamily          = m_settings.value("Console/FontFamily", defaultFont.family()).toString();
+  m_fontSize            = m_settings.value("Console/FontSize", defaultFont.pointSize()).toInt();
+  m_echo                = m_settings.value("Console/Echo", true).toBool();
+  m_showTimestamp       = m_settings.value("Console/ShowTimestamp", false).toBool();
+  m_collapseDuplicates  = m_settings.value("Console/CollapseDuplicates", false).toBool();
+  m_searchCaseSensitive = m_settings.value("Console/SearchCaseSensitive", false).toBool();
+  m_vt100Emulation      = m_settings.value("Console/VT100Emulation", true).toBool();
+  m_ansiColors          = m_settings.value("Console/AnsiColors", true).toBool();
+  m_checksumMethod      = m_settings.value("Console/ChecksumMethod", 0).toInt();
+  m_dataMode            = static_cast<DataMode>(m_settings.value("Console/DataMode", 0).toInt());
+  m_lineEnding  = static_cast<LineEnding>(m_settings.value("Console/LineEnding", 0).toInt());
+  m_displayMode = static_cast<DisplayMode>(m_settings.value("Console/DisplayMode", 0).toInt());
 
   const int encInt = m_settings.value("Console/Encoding", 0).toInt();
   if (encInt >= 0 && encInt <= SerialStudio::EncEucKr)
@@ -153,6 +157,22 @@ bool Console::Handler::echo() const
 bool Console::Handler::showTimestamp() const
 {
   return m_showTimestamp;
+}
+
+/**
+ * @brief Returns true if consecutive duplicate console lines collapse into one entry.
+ */
+bool Console::Handler::collapseDuplicates() const
+{
+  return m_collapseDuplicates;
+}
+
+/**
+ * @brief Returns true if console search matches case-sensitively.
+ */
+bool Console::Handler::searchCaseSensitive() const
+{
+  return m_searchCaseSensitive;
 }
 
 /**
@@ -585,6 +605,30 @@ void Console::Handler::setShowTimestamp(const bool enabled)
     m_showTimestamp = enabled;
     m_settings.setValue("Console/ShowTimestamp", m_showTimestamp);
     Q_EMIT showTimestampChanged();
+  }
+}
+
+/**
+ * @brief Enables or disables collapsing of consecutive duplicate console lines.
+ */
+void Console::Handler::setCollapseDuplicates(const bool enabled)
+{
+  if (collapseDuplicates() != enabled) {
+    m_collapseDuplicates = enabled;
+    m_settings.setValue("Console/CollapseDuplicates", m_collapseDuplicates);
+    Q_EMIT collapseDuplicatesChanged();
+  }
+}
+
+/**
+ * @brief Enables or disables case-sensitive console search.
+ */
+void Console::Handler::setSearchCaseSensitive(const bool enabled)
+{
+  if (searchCaseSensitive() != enabled) {
+    m_searchCaseSensitive = enabled;
+    m_settings.setValue("Console/SearchCaseSensitive", m_searchCaseSensitive);
+    Q_EMIT searchCaseSensitiveChanged();
   }
 }
 

@@ -68,12 +68,17 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
   , m_autoscroll(true)
   , m_ansiColors(false)
   , m_emulateVt100(false)
+  , m_collapseDuplicates(m_consoleHandler.collapseDuplicates())
   , m_cursorVisible(true)
   , m_mouseTracking(false)
   , m_currentFormatValue(0)
   , m_privateMode(false)
   , m_stateChanged(false)
   , m_cursorHidden(false)
+  , m_searchCurrent(-1)
+  , m_searchDirty(false)
+  , m_searchCaseSensitive(false)
+  , m_badgeMetrics(QFont())
 {
   initBuffer();
 
@@ -95,6 +100,9 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
   connect(
     &m_themeManager, &Misc::ThemeManager::themeChanged, this, &Widgets::Terminal::onThemeChanged);
   connect(&m_consoleHandler, &Console::Handler::displayString, this, &Widgets::Terminal::append);
+  connect(&m_consoleHandler, &Console::Handler::collapseDuplicatesChanged, this, [this] {
+    m_collapseDuplicates = m_consoleHandler.collapseDuplicates();
+  });
   connect(&m_consoleHandler, &Console::Handler::cleared, this, &Widgets::Terminal::clear);
   connect(&m_connectionManager, &IO::ConnectionManager::connectedChanged, this, [=, this] {
     if (m_connectionManager.isConnected())
@@ -136,6 +144,9 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
 
   m_stateChanged = true;
   connect(&m_timerEvents, &Misc::TimerEvents::uiTimeout, this, [=, this] {
+    if (m_searchDirty && !m_searchQuery.isEmpty() && isVisible())
+      refreshSearchMatches();
+
     if (isVisible() && m_stateChanged) {
       m_stateChanged = false;
       update();
@@ -336,6 +347,40 @@ void Widgets::Terminal::drawCursor(QPainter* painter, int firstLine, int lastVLi
 }
 
 /**
+ * @brief Paints the "x N" repeat badge after the final wrapped segment of a collapsed row;
+ *        skipped when the segment leaves no room before the border (paint-only decoration,
+ *        the badge never enters the text buffer).
+ */
+void Widgets::Terminal::drawRepeatBadge(
+  QPainter* painter, int count, int segmentWidth, int y, bool rtlMode)
+{
+  Q_ASSERT(painter);
+  Q_ASSERT(count > 1);
+
+  const QString label   = QStringLiteral("\u00D7 %1").arg(count);
+  const int padX        = qMax(2, m_cWidth / 2);
+  const int badgeWidth  = m_badgeMetrics.horizontalAdvance(label) + padX * 2;
+  const int badgeHeight = qMax(2, m_cHeight - 2);
+  const int rightEdge   = width() - m_borderX;
+
+  const int x =
+    rtlMode ? (rightEdge - segmentWidth - padX - badgeWidth) : (m_borderX + segmentWidth + padX);
+  if (x < m_borderX || x + badgeWidth > rightEdge)
+    return;
+
+  const QRect rect(x, y + (m_cHeight - badgeHeight) / 2, badgeWidth, badgeHeight);
+  painter->save();
+  painter->setRenderHint(QPainter::Antialiasing);
+  painter->setPen(Qt::NoPen);
+  painter->setBrush(m_palette.color(QPalette::Highlight));
+  painter->drawRoundedRect(rect, badgeHeight / 2.0, badgeHeight / 2.0);
+  painter->setPen(m_palette.color(QPalette::Text));
+  painter->setFont(m_badgeFont);
+  painter->drawText(rect, Qt::AlignCenter, label);
+  painter->restore();
+}
+
+/**
  * @brief Paints the terminal widget content.
  */
 void Widgets::Terminal::paint(QPainter* painter)
@@ -349,6 +394,9 @@ void Widgets::Terminal::paint(QPainter* painter)
   const int lastVLine  = qMin(firstLine + linesPerPage(), lineCount() - 1);
 
   paintSelectionHighlights(painter, firstLine, lastVLine, lineHeight);
+  if (searchActive())
+    paintSearchHighlights(painter, firstLine, lastVLine, lineHeight);
+
   paintTextContent(painter, firstLine, lastVLine, lineHeight);
 
   if (m_cursorVisible && !m_cursorHidden)
@@ -398,6 +446,109 @@ void Widgets::Terminal::paintSelectionHighlights(QPainter* painter,
       drawSegmentSelection(painter, line, i, start, lineEnd, y);
       y     += lineHeight;
       start  = lineEnd;
+    }
+  }
+}
+
+/**
+ * @brief Fills the highlight rectangle for the part of one match that falls inside a
+ *        word-wrapped segment; the current match paints opaque, the rest translucent.
+ */
+void Widgets::Terminal::drawSegmentMatch(QPainter* painter,
+                                         const QFontMetrics& fm,
+                                         const QString& line,
+                                         const QPoint& match,
+                                         bool isCurrent,
+                                         int segStart,
+                                         int segEnd,
+                                         int y)
+{
+  const int matchStart = match.x();
+  const int matchEnd   = matchStart + static_cast<int>(m_searchQuery.length());
+  const int selStartX  = qMax(matchStart, segStart);
+  const int selEndX    = qMin(matchEnd, segEnd);
+  if (selStartX >= selEndX)
+    return;
+
+  int leadingOffset = 0;
+  int matchWidth    = 0;
+  for (int j = segStart; j < selEndX; ++j) {
+    const int charWidth = fm.horizontalAdvance(line[j]);
+    if (j < selStartX)
+      leadingOffset += charWidth;
+    else
+      matchWidth += charWidth;
+  }
+
+  const bool rtl     = m_translator.rtl();
+  const int maxWidth = width() - 2 * m_borderX;
+
+  int startX = 0;
+  if (rtl) {
+    const int rightEdge = width() - m_borderX;
+    startX              = rightEdge - leadingOffset - matchWidth;
+    matchWidth          = qMin(matchWidth, maxWidth);
+  }
+
+  else {
+    startX     = m_borderX + leadingOffset;
+    matchWidth = qMin(matchWidth, maxWidth - leadingOffset);
+  }
+
+  QColor fill = m_palette.color(QPalette::Highlight);
+  if (!isCurrent)
+    fill.setAlpha(110);
+
+  painter->fillRect(QRect(startX, y, matchWidth, m_cHeight), fill);
+}
+
+/**
+ * @brief Paints search-match highlights for the visible line range, walking the same
+ *        wrapped-segment geometry as the selection pass.
+ */
+void Widgets::Terminal::paintSearchHighlights(QPainter* painter,
+                                              int firstLine,
+                                              int lastVLine,
+                                              int lineHeight)
+{
+  if (m_searchMatches.isEmpty())
+    return;
+
+  const QFontMetrics fm = painter->fontMetrics();
+
+  const qsizetype matchCount = m_searchMatches.size();
+  qsizetype k                = 0;
+  while (k < matchCount && m_searchMatches[k].y() < firstLine)
+    ++k;
+
+  int y = m_borderY;
+  for (int i = firstLine; i <= lastVLine && y < height() - m_borderY; ++i) {
+    const QString& line = m_data[i];
+
+    const qsizetype lineFirst = k;
+    while (k < matchCount && m_searchMatches[k].y() <= i)
+      ++k;
+
+    if (line.isEmpty()) {
+      y += lineHeight;
+      continue;
+    }
+
+    int start = 0;
+    while (start < line.length()) {
+      const int segEnd = qMin<int>(start + maxCharsPerLine(), line.length());
+      for (qsizetype m = lineFirst; m < k; ++m)
+        drawSegmentMatch(painter,
+                         fm,
+                         line,
+                         m_searchMatches[m],
+                         m == static_cast<qsizetype>(m_searchCurrent),
+                         start,
+                         segEnd,
+                         y);
+
+      y     += lineHeight;
+      start  = segEnd;
     }
   }
 }
@@ -470,6 +621,9 @@ void Widgets::Terminal::paintTextContent(QPainter* painter,
       const int x           = rtlMode ? rightEdge - fm.horizontalAdvance(segment) : m_borderX;
 
       paintSegment(painter, segment, start, colorLine, defaultTextColor, x, y, ascent, rtlMode);
+
+      if (end == line.length() && i < m_repeatCounts.size() && m_repeatCounts[i] > 1)
+        drawRepeatBadge(painter, m_repeatCounts[i], fm.horizontalAdvance(segment), y, rtlMode);
 
       y     += lineHeight;
       start  = end;
@@ -991,6 +1145,166 @@ void Widgets::Terminal::selectAll()
 }
 
 //--------------------------------------------------------------------------------------------------
+// In-buffer search
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Returns true while a search query is set.
+ */
+bool Widgets::Terminal::searchActive() const
+{
+  return !m_searchQuery.isEmpty();
+}
+
+/**
+ * @brief Returns the number of matches for the active search query.
+ */
+int Widgets::Terminal::searchMatchCount() const
+{
+  return static_cast<int>(m_searchMatches.size());
+}
+
+/**
+ * @brief Returns the 1-based index of the current match (0 when there is none).
+ */
+int Widgets::Terminal::searchCurrentMatch() const
+{
+  return m_searchCurrent + 1;
+}
+
+/**
+ * @brief Sets the search query and case mode, then rescans the buffer immediately.
+ */
+void Widgets::Terminal::setSearchQuery(const QString& query, const bool caseSensitive)
+{
+  if (m_searchQuery == query && m_searchCaseSensitive == caseSensitive)
+    return;
+
+  m_searchQuery         = query;
+  m_searchCaseSensitive = caseSensitive;
+  m_searchCurrent       = 0;
+  refreshSearchMatches();
+  update();
+}
+
+/**
+ * @brief Advances to the next match (wraps) and scrolls it into view.
+ */
+void Widgets::Terminal::searchNext()
+{
+  if (m_searchDirty)
+    refreshSearchMatches();
+
+  if (m_searchMatches.isEmpty())
+    return;
+
+  m_searchCurrent = (m_searchCurrent + 1) % static_cast<int>(m_searchMatches.size());
+  Q_EMIT searchResultsChanged();
+  scrollToCurrentMatch();
+}
+
+/**
+ * @brief Moves to the previous match (wraps) and scrolls it into view.
+ */
+void Widgets::Terminal::searchPrevious()
+{
+  if (m_searchDirty)
+    refreshSearchMatches();
+
+  if (m_searchMatches.isEmpty())
+    return;
+
+  const int count = static_cast<int>(m_searchMatches.size());
+  m_searchCurrent = (m_searchCurrent <= 0) ? count - 1 : m_searchCurrent - 1;
+  Q_EMIT searchResultsChanged();
+  scrollToCurrentMatch();
+}
+
+/**
+ * @brief Clears all search state and repaints without highlights.
+ */
+void Widgets::Terminal::clearSearch()
+{
+  if (m_searchQuery.isEmpty() && m_searchMatches.isEmpty())
+    return;
+
+  m_searchQuery.clear();
+  m_searchMatches.clear();
+  m_searchCurrent = -1;
+  m_searchDirty   = false;
+  Q_EMIT searchResultsChanged();
+  m_stateChanged = true;
+  update();
+}
+
+/**
+ * @brief Rescans the line buffer for the active query; clamps the current-match index so
+ *        navigation stays valid after rows are trimmed, erased, or collapsed.
+ */
+void Widgets::Terminal::refreshSearchMatches()
+{
+  m_searchDirty = false;
+  m_searchMatches.clear();
+
+  if (m_searchQuery.isEmpty()) {
+    m_searchCurrent = -1;
+    Q_EMIT searchResultsChanged();
+    return;
+  }
+
+  const auto cs = m_searchCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive;
+  for (int i = 0; i < m_data.size(); ++i) {
+    const QString& line = m_data[i];
+
+    qsizetype from = 0;
+    while (from < line.length()) {
+      const qsizetype index = line.indexOf(m_searchQuery, from, cs);
+      if (index < 0)
+        break;
+
+      m_searchMatches.append(QPoint(static_cast<int>(index), i));
+      from = index + qMax<qsizetype>(1, m_searchQuery.length());
+    }
+  }
+
+  if (m_searchMatches.isEmpty())
+    m_searchCurrent = -1;
+  else
+    m_searchCurrent = qBound(0, m_searchCurrent, static_cast<int>(m_searchMatches.size()) - 1);
+
+  Q_ASSERT(m_searchCurrent >= -1);
+  Q_ASSERT(m_searchCurrent < m_searchMatches.size());
+
+  m_stateChanged = true;
+  Q_EMIT searchResultsChanged();
+}
+
+/**
+ * @brief Suspends autoscroll and adjusts the scroll offset so the current match is visible.
+ */
+void Widgets::Terminal::scrollToCurrentMatch()
+{
+  if (m_searchCurrent < 0 || m_searchCurrent >= m_searchMatches.size())
+    return;
+
+  setAutoscroll(false);
+
+  const int row = m_searchMatches[m_searchCurrent].y();
+  Q_ASSERT(row >= 0);
+  Q_ASSERT(row < lineCount());
+
+  int offset = m_scrollOffsetY;
+  if (row < offset)
+    offset = row;
+  else if (row >= offset + linesPerPage())
+    offset = row - linesPerPage() + 1;
+
+  setScrollOffsetY(qBound(0, offset, qMax(0, lineCount() - 1)));
+  m_stateChanged = true;
+  update();
+}
+
+//--------------------------------------------------------------------------------------------------
 // Style setters
 //--------------------------------------------------------------------------------------------------
 
@@ -1007,6 +1321,10 @@ void Widgets::Terminal::setFont(const QFont& font)
   m_cWidth     = metrics.horizontalAdvance("M");
   m_borderX    = qMax(m_cWidth, m_cHeight) / 2;
   m_borderY    = qMax(m_cWidth, m_cHeight) / 2;
+
+  m_badgeFont = m_font;
+  m_badgeFont.setPointSize(qMax(6, m_font.pointSize() - 2));
+  m_badgeMetrics = QFontMetrics(m_badgeFont);
 
   Q_EMIT fontChanged();
 }
@@ -1267,6 +1585,13 @@ void Widgets::Terminal::appendString(QStringView string)
       const int colorDrop = qMin(linesToDrop, static_cast<int>(m_colorData.size()));
       m_colorData.erase(m_colorData.begin(), m_colorData.begin() + colorDrop);
     }
+
+    if (!m_repeatCounts.isEmpty()) {
+      const int countDrop = qMin(linesToDrop, static_cast<int>(m_repeatCounts.size()));
+      m_repeatCounts.erase(m_repeatCounts.begin(), m_repeatCounts.begin() + countDrop);
+    }
+
+    m_searchDirty = true;
     // code-verify on
 
     if (m_cursorPosition.y() >= linesToDrop)
@@ -1304,6 +1629,91 @@ void Widgets::Terminal::appendString(QStringView string)
     if (isVisible())
       Q_EMIT scrollOffsetYChanged();
   }
+}
+
+/**
+ * @brief Returns true when @p line starts with a well-formed "HH:mm:ss.zzz -> " stamp.
+ */
+bool Widgets::Terminal::hasTimestampPrefix(QStringView line)
+{
+  constexpr int kStampLen        = 16;
+  constexpr int kDigitIndices[9] = {0, 1, 3, 4, 6, 7, 9, 10, 11};
+
+  if (line.size() < kStampLen)
+    return false;
+
+  if (line[2] != QLatin1Char(':') || line[5] != QLatin1Char(':') || line[8] != QLatin1Char('.'))
+    return false;
+
+  if (line[12] != QLatin1Char(' ') || line[13] != QLatin1Char('-') || line[14] != QLatin1Char('>')
+      || line[15] != QLatin1Char(' '))
+    return false;
+
+  for (const int index : kDigitIndices)
+    if (!line[index].isDigit())
+      return false;
+
+  return true;
+}
+
+/**
+ * @brief Returns the comparable content of @p line for duplicate collapsing, skipping the
+ *        timestamp stamp prefix when timestamps are enabled and the prefix shape matches.
+ */
+QStringView Widgets::Terminal::lineContentView(QStringView line) const
+{
+  constexpr int kStampLen = 16;
+
+  if (!m_consoleHandler.showTimestamp() || !hasTimestampPrefix(line))
+    return line;
+
+  return line.mid(kStampLen);
+}
+
+/**
+ * @brief Merges the just-completed line into the previous row when duplicate collapsing is
+ *        on and both rows carry identical content; returns true when the row was merged so
+ *        the caller reuses the freed row index for the next line.
+ */
+bool Widgets::Terminal::collapseCompletedLine()
+{
+  if (!m_collapseDuplicates)
+    return false;
+
+  const int y = m_cursorPosition.y();
+  if (y < 1 || y != m_data.size() - 1)
+    return false;
+
+  const auto current  = lineContentView(m_data[y]);
+  const auto previous = lineContentView(m_data[y - 1]);
+  if (current.trimmed().isEmpty() || current != previous)
+    return false;
+
+  m_data.removeLast();
+  if (m_colorData.size() > m_data.size())
+    m_colorData.resize(m_data.size());
+
+  if (m_repeatCounts.size() > m_data.size())
+    m_repeatCounts.resize(m_data.size());
+
+  Q_ASSERT(y - 1 < m_repeatCounts.size());
+  if (y - 1 < m_repeatCounts.size() && m_repeatCounts[y - 1] < INT_MAX)
+    ++m_repeatCounts[y - 1];
+
+  m_searchDirty = true;
+
+  if (autoscroll()) {
+    const int lastRow = m_data.size() - 1;
+    const int length  = m_data[lastRow].length();
+    const int wrapped = qMax(1, (length + maxCharsPerLine() - 1) / maxCharsPerLine());
+
+    m_scrollOffsetY = qMax(0, lastRow + wrapped - linesPerPage());
+    if (isVisible())
+      Q_EMIT scrollOffsetYChanged();
+  }
+
+  m_stateChanged = true;
+  return true;
 }
 
 /**
@@ -1352,6 +1762,10 @@ void Widgets::Terminal::initBuffer()
   m_data.reserve(MAX_LINES);
   m_colorData.clear();
   m_colorData.squeeze();
+  m_repeatCounts.clear();
+  m_repeatCounts.squeeze();
+  m_repeatCounts.reserve(MAX_LINES);
+  m_searchDirty = true;
 
   if (ansiColors()) {
     m_colorData.reserve(MAX_LINES);
@@ -1374,7 +1788,9 @@ void Widgets::Terminal::processText(const QChar& byte, QString& text)
   if (code == '\n') {
     appendString(text);
     text.clear();
-    setCursorPosition(0, m_cursorPosition.y() + 1);
+
+    const int next_row = m_cursorPosition.y() + (collapseCompletedLine() ? 0 : 1);
+    setCursorPosition(0, next_row);
     return;
   }
 
@@ -1664,6 +2080,11 @@ void Widgets::Terminal::handleCsiEraseDisplay()
         m_data.erase(m_data.begin() + cy + 1, m_data.end());
         if (ansiColors() && cy + 1 < m_colorData.size())
           m_colorData.erase(m_colorData.begin() + cy + 1, m_colorData.end());
+
+        if (cy + 1 < m_repeatCounts.size())
+          m_repeatCounts.erase(m_repeatCounts.begin() + cy + 1, m_repeatCounts.end());
+
+        m_searchDirty = true;
       }
 
       break;
@@ -1673,6 +2094,12 @@ void Widgets::Terminal::handleCsiEraseDisplay()
         m_data.erase(m_data.begin(), m_data.begin() + cy);
         if (ansiColors() && cy < m_colorData.size())
           m_colorData.erase(m_colorData.begin(), m_colorData.begin() + cy);
+
+        const auto countDrop = qMin<qsizetype>(cy, m_repeatCounts.size());
+        if (countDrop > 0)
+          m_repeatCounts.erase(m_repeatCounts.begin(), m_repeatCounts.begin() + countDrop);
+
+        m_searchDirty = true;
       }
 
       setCursorPosition(m_cursorPosition.x(), 0);
@@ -2021,6 +2448,10 @@ void Widgets::Terminal::replaceData(int x, int y, const QChar& byte)
   if (y >= m_data.size())
     m_data.resize(y + 1);
 
+  while (m_repeatCounts.size() < m_data.size())
+    m_repeatCounts.append(1);
+
+  m_searchDirty = true;
   QString& line = m_data[y];
 
   if (ansiColors()) {

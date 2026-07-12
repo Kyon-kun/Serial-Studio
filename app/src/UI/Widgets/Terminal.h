@@ -22,6 +22,7 @@
 #pragma once
 
 #include <QColor>
+#include <QFontMetrics>
 #include <QKeyEvent>
 #include <QPalette>
 #include <QQuickPaintedItem>
@@ -105,6 +106,15 @@ class Terminal : public QQuickPaintedItem {
   Q_PROPERTY(int terminalRows
              READ terminalRows
              NOTIFY terminalSizeChanged)
+  Q_PROPERTY(bool searchActive
+             READ searchActive
+             NOTIFY searchResultsChanged)
+  Q_PROPERTY(int searchMatchCount
+             READ searchMatchCount
+             NOTIFY searchResultsChanged)
+  Q_PROPERTY(int searchCurrentMatch
+             READ searchCurrentMatch
+             NOTIFY searchResultsChanged)
   // clang-format on
 
 signals:
@@ -118,6 +128,7 @@ signals:
   void vt100EmulationChanged();
   void ansiColorsChanged();
   void terminalSizeChanged();
+  void searchResultsChanged();
 
 public:
   Terminal(QQuickItem* parent = 0);
@@ -154,6 +165,9 @@ public:
 
   [[nodiscard]] int lineCount() const;
   [[nodiscard]] int linesPerPage() const;
+  [[nodiscard]] bool searchActive() const;
+  [[nodiscard]] int searchMatchCount() const;
+  [[nodiscard]] int searchCurrentMatch() const;
   [[nodiscard]] int scrollOffsetY() const;
   [[nodiscard]] int maxCharsPerLine() const;
   [[nodiscard]] int terminalColumns() const;
@@ -174,6 +188,10 @@ public slots:
   void setColorPalette(const QPalette& palette);
   void setAnsiColors(const bool enabled);
   void setVt100Emulation(const bool enabled);
+  void setSearchQuery(const QString& query, const bool caseSensitive);
+  void searchNext();
+  void searchPrevious();
+  void clearSearch();
 
 private slots:
   void toggleCursor();
@@ -186,6 +204,11 @@ private slots:
 
 private:
   void initBuffer();
+  [[nodiscard]] bool collapseCompletedLine();
+  [[nodiscard]] QStringView lineContentView(QStringView line) const;
+  [[nodiscard]] static bool hasTimestampPrefix(QStringView line);
+  void refreshSearchMatches();
+  void scrollToCurrentMatch();
   void processText(const QChar& byte, QString& text);
   void processEscape(const QChar& byte, QString& text);
   void processFormat(const QChar& byte, QString& text);
@@ -218,6 +241,7 @@ private:
   [[nodiscard]] int calcCursorPixelX(
     QPainter* painter, const QString& line, int segStart, int cursorCol, int segEnd) const;
   void drawCursor(QPainter* painter, int firstLine, int lastVLine, int lineHeight);
+  void drawRepeatBadge(QPainter* painter, int count, int segmentWidth, int y, bool rtlMode);
   void drawSegmentSelection(
     QPainter* painter, const QString& line, int lineIndex, int segStart, int segEnd, int y);
   void renderFastSegment(
@@ -240,6 +264,15 @@ private:
                     bool rtlMode);
 
   void paintSelectionHighlights(QPainter* painter, int firstLine, int lastVLine, int lineHeight);
+  void paintSearchHighlights(QPainter* painter, int firstLine, int lastVLine, int lineHeight);
+  void drawSegmentMatch(QPainter* painter,
+                        const QFontMetrics& fm,
+                        const QString& line,
+                        const QPoint& match,
+                        bool isCurrent,
+                        int segStart,
+                        int segEnd,
+                        int y);
   void paintTextContent(QPainter* painter, int firstLine, int lastVLine, int lineHeight);
   void paintScrollbar(QPainter* painter);
 
@@ -270,6 +303,7 @@ private:
   QPalette m_palette;
   QStringList m_data;
   QList<QList<CharColor>> m_colorData;
+  QList<int> m_repeatCounts;
 
   QFont m_font;
   int m_cWidth;
@@ -290,6 +324,7 @@ private:
   bool m_autoscroll;
   bool m_ansiColors;
   bool m_emulateVt100;
+  bool m_collapseDuplicates;
   bool m_cursorVisible;
   bool m_mouseTracking;
 
@@ -305,5 +340,14 @@ private:
 
   QColor m_ansiStandardColors[8];
   QColor m_ansiBrightColors[8];
+
+  QString m_searchQuery;
+  QList<QPoint> m_searchMatches;
+  int m_searchCurrent;
+  bool m_searchDirty;
+  bool m_searchCaseSensitive;
+
+  QFont m_badgeFont;
+  QFontMetrics m_badgeMetrics;
 };
 }  // namespace Widgets

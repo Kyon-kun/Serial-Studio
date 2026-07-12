@@ -61,6 +61,14 @@ class Handler : public QObject {
              READ showTimestamp
              WRITE setShowTimestamp
              NOTIFY showTimestampChanged)
+  Q_PROPERTY(bool collapseDuplicates
+             READ collapseDuplicates
+             WRITE setCollapseDuplicates
+             NOTIFY collapseDuplicatesChanged)
+  Q_PROPERTY(bool searchCaseSensitive
+             READ searchCaseSensitive
+             WRITE setSearchCaseSensitive
+             NOTIFY searchCaseSensitiveChanged)
   Q_PROPERTY(bool ansiColorsEnabled
              READ ansiColorsEnabled
              WRITE setAnsiColorsEnabled
@@ -170,6 +178,8 @@ signals:
   void currentDeviceIdChanged();
   void ansiColorsEnabledChanged();
   void imageWidgetActiveChanged();
+  void collapseDuplicatesChanged();
+  void searchCaseSensitiveChanged();
   void displayString(const QString& text);
   void deviceDataReady(int deviceId, const QString& text);
 
@@ -205,6 +215,8 @@ public:
 
   [[nodiscard]] bool echo() const;
   [[nodiscard]] bool showTimestamp() const;
+  [[nodiscard]] bool collapseDuplicates() const;
+  [[nodiscard]] bool searchCaseSensitive() const;
   [[nodiscard]] bool ansiColorsEnabled() const;
   [[nodiscard]] bool vt100Emulation() const;
   [[nodiscard]] bool ansiColors() const;
@@ -251,6 +263,8 @@ public slots:
   void setChecksumMethod(const int method);
   void setFontFamily(const QString& family);
   void setShowTimestamp(const bool enabled);
+  void setCollapseDuplicates(const bool enabled);
+  void setSearchCaseSensitive(const bool enabled);
   void setAnsiColorsEnabled(const bool enabled);
   void setVt100Emulation(const bool enabled);
   void setAnsiColors(const bool enabled);
@@ -298,6 +312,8 @@ private:
 
   bool m_echo;
   bool m_showTimestamp;
+  bool m_collapseDuplicates;
+  bool m_searchCaseSensitive;
   bool m_ansiColorsEnabled;
   bool m_vt100Emulation;
   bool m_ansiColors;

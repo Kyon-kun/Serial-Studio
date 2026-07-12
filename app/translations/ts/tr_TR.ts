@@ -227,12 +227,12 @@ Otomatik onay etkinleştirildiğinde bile her cihaz eylemi sohbette açık çağ
 <context>
     <name>API::ProcessLauncher</name>
     <message>
-        <location filename="../../src/API/ProcessLauncher.cpp" line="89"/>
+        <location filename="../../src/API/ProcessLauncher.cpp" line="91"/>
         <source>No program specified</source>
         <translation>Program belirtilmedi</translation>
     </message>
     <message>
-        <location filename="../../src/API/ProcessLauncher.cpp" line="95"/>
+        <location filename="../../src/API/ProcessLauncher.cpp" line="97"/>
         <source>Program "%1" not found in PATH</source>
         <translation>"%1" programı PATH içinde bulunamadı</translation>
     </message>
@@ -2132,63 +2132,63 @@ Bunu yalnızca güvenilir ağlarda etkinleştirin. Güvenilmeyen istemciler canl
         <translation>CSV dosyası devam etmek için en az bir veri satırı içermelidir. Dosyayı kontrol edin ve tekrar deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="650"/>
+        <location filename="../../src/CSV/Player.cpp" line="652"/>
         <source>Invalid CSV</source>
         <translation>Geçersiz CSV</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="651"/>
+        <location filename="../../src/CSV/Player.cpp" line="653"/>
         <source>The CSV file does not contain any data or headers.</source>
         <translation>CSV dosyası herhangi bir veri veya başlık içermiyor.</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="660"/>
+        <location filename="../../src/CSV/Player.cpp" line="662"/>
         <source>Select a date/time column</source>
         <translation>Tarih/saat sütunu seçin</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="660"/>
-        <location filename="../../src/CSV/Player.cpp" line="672"/>
+        <location filename="../../src/CSV/Player.cpp" line="662"/>
+        <location filename="../../src/CSV/Player.cpp" line="674"/>
         <source>Set interval manually</source>
         <translation>Aralığı manuel olarak ayarla</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="662"/>
+        <location filename="../../src/CSV/Player.cpp" line="664"/>
         <source>CSV Date/Time Selection</source>
         <translation>CSV Tarih/saat Seçimi</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="663"/>
+        <location filename="../../src/CSV/Player.cpp" line="665"/>
         <source>Choose how to handle the date/time data:</source>
         <translation>Tarih/saat verisinin nasıl işleneceğini seçin:</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="675"/>
+        <location filename="../../src/CSV/Player.cpp" line="677"/>
         <source>Set Interval</source>
         <translation>Aralığı Ayarla</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="676"/>
+        <location filename="../../src/CSV/Player.cpp" line="678"/>
         <source>Please enter the interval between rows in milliseconds:</source>
         <translation>Lütfen satırlar arasındaki aralığı milisaniye cinsinden girin:</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="692"/>
+        <location filename="../../src/CSV/Player.cpp" line="694"/>
         <source>Select Date/Time Column</source>
         <translation>Tarih/saat Sütunu Seç</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="693"/>
+        <location filename="../../src/CSV/Player.cpp" line="695"/>
         <source>Please select the column that contains the date/time data:</source>
         <translation>Lütfen tarih/saat verilerini içeren sütunu seçin:</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="703"/>
+        <location filename="../../src/CSV/Player.cpp" line="705"/>
         <source>Invalid Selection</source>
         <translation>Geçersiz Seçim</translation>
     </message>
     <message>
-        <location filename="../../src/CSV/Player.cpp" line="703"/>
+        <location filename="../../src/CSV/Player.cpp" line="705"/>
         <source>The selected column is not valid.</source>
         <translation>Seçilen sütun geçerli değil.</translation>
     </message>
@@ -2248,12 +2248,12 @@ Bunu yalnızca güvenilir ağlarda etkinleştirin. Güvenilmeyen istemciler canl
 <context>
     <name>Console::Export</name>
     <message>
-        <location filename="../../src/Console/Export.cpp" line="333"/>
+        <location filename="../../src/Console/Export.cpp" line="338"/>
         <source>Console Export is a Pro feature.</source>
         <translation>Konsol Dışa Aktarma bir Pro özelliğidir.</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Export.cpp" line="334"/>
+        <location filename="../../src/Console/Export.cpp" line="339"/>
         <source>This feature requires a license. Please purchase one to enable console export.</source>
         <translation>Bu özellik lisans gerektirir. Konsol dışa aktarmayı etkinleştirmek için lütfen bir lisans satın alın.</translation>
     </message>
@@ -2261,52 +2261,52 @@ Bunu yalnızca güvenilir ağlarda etkinleştirin. Güvenilmeyen istemciler canl
 <context>
     <name>Console::Handler</name>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="249"/>
+        <location filename="../../src/Console/Handler.cpp" line="269"/>
         <source>ASCII</source>
         <translation>ASCII</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="250"/>
+        <location filename="../../src/Console/Handler.cpp" line="270"/>
         <source>HEX</source>
         <translation>HEX</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="260"/>
+        <location filename="../../src/Console/Handler.cpp" line="280"/>
         <source>No Line Ending</source>
         <translation>Satır Sonu Yok</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="261"/>
+        <location filename="../../src/Console/Handler.cpp" line="281"/>
         <source>New Line</source>
         <translation>Yeni Satır</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="262"/>
+        <location filename="../../src/Console/Handler.cpp" line="282"/>
         <source>Carriage Return</source>
         <translation>Satır Başı</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="263"/>
+        <location filename="../../src/Console/Handler.cpp" line="283"/>
         <source>CR + NL</source>
         <translation>CR + NL</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="273"/>
+        <location filename="../../src/Console/Handler.cpp" line="293"/>
         <source>Plain Text</source>
         <translation>Düz Metin</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="274"/>
+        <location filename="../../src/Console/Handler.cpp" line="294"/>
         <source>Hexadecimal</source>
         <translation>Onaltılık</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="296"/>
+        <location filename="../../src/Console/Handler.cpp" line="316"/>
         <source>No Checksum</source>
         <translation>Sağlama Toplamı Yok</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Handler.cpp" line="944"/>
+        <location filename="../../src/Console/Handler.cpp" line="988"/>
         <source>Device %1</source>
         <translation>Cihaz %1</translation>
     </message>
@@ -3429,54 +3429,54 @@ Bunu yalnızca güvenilir ağlarda etkinleştirin. Güvenilmeyen istemciler canl
 <context>
     <name>DataModel::FrameBuilder</name>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1721"/>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1836"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1754"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1869"/>
         <source>Channel %1</source>
         <translation>Kanal %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1847"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1880"/>
         <source>Audio Input</source>
         <translation>Ses Girişi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1730"/>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1852"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1763"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1885"/>
         <source>Quick Plot</source>
         <translation>Hızlı Grafik</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1440"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1473"/>
         <source>JavaScript transform exceeded budget</source>
         <translation>JavaScript dönüşümü bütçeyi aştı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1441"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1474"/>
         <source>A dataset transform took longer than %1 ms; remaining datasets in the frame fell back to raw values until the next frame. Profile or simplify the transform code.</source>
         <translation>Bir veri kümesi dönüşümü %1 ms'den uzun sürdü; çerçevedeki kalan veri kümeleri bir sonraki çerçeveye kadar ham değerlere döndü. Dönüşüm kodunu profilleyin veya basitleştirin.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="231"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="264"/>
         <source>Frame pool exhausted</source>
         <translation>Çerçeve havuzu tükendi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="233"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="266"/>
         <source>A downstream consumer (dashboard, CSV/MDF4 export, session DB, or API subscriber) is not draining frames fast enough. Serial Studio is falling back to per-frame allocations until the backlog clears. Disable a heavy consumer or reduce the data rate.</source>
         <translation>Bir alt tüketici (gösterge paneli, CSV/MDF4 dışa aktarımı, oturum veritabanı veya API abonesi) çerçeveleri yeterince hızlı boşaltmıyor. Serial Studio, birikmiş işleri temizleyene kadar çerçeve başına tahsise geri dönüyor. Yoğun bir tüketiciyi devre dışı bırakın veya veri hızını azaltın.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1681"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1714"/>
         <source>Device A</source>
         <translation>Cihaz A</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1737"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1770"/>
         <source>Quick Plot Data</source>
         <translation>Hızlı Grafik Verisi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1749"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1782"/>
         <source>Multiple Plots</source>
         <translation>Çoklu Grafikler</translation>
     </message>
@@ -4134,12 +4134,12 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Değer gösterimi için sabit ondalık basamaklar; formatı geçersiz kılar (-1 = otomatik)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="678"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="689"/>
         <source>Auto-detect</source>
         <translation>Otomatik Algıla</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="678"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="689"/>
         <source>Manual Delimiters</source>
         <translation>Manuel Sınırlayıcılar</translation>
     </message>
@@ -4837,12 +4837,12 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>LED, değer bu eşiği karşıladığında veya aştığında yanar; çok durumlu renkler için alarm aralıkları tanımlayın</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="693"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="704"/>
         <source>Painter Widget</source>
         <translation>Painter Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="694"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="705"/>
         <source>Web View</source>
         <translation>Web Görünümü</translation>
     </message>
@@ -5056,7 +5056,7 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Gösterge veya çubuk görüntüleme aralığının üst sınırı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="705"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1251"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1286"/>
         <source>Auto</source>
@@ -5143,234 +5143,234 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">LED, değer bu eşiği karşıladığında veya aştığında yanar</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="642"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="653"/>
         <source>Rectangular (None)</source>
         <translation>Dikdörtgen (Yok)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="642"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="653"/>
         <source>Bartlett (Triangular)</source>
         <translation>Bartlett (Üçgen)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="642"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="653"/>
         <source>Hann</source>
         <translation>Hann</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="643"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="654"/>
         <source>Hamming</source>
         <translation>Hamming</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="643"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="654"/>
         <source>Blackman</source>
         <translation>Blackman</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="643"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="654"/>
         <source>Blackman-Harris</source>
         <translation>Blackman-harris</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="643"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="654"/>
         <source>Nuttall</source>
         <translation>Nuttall</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="644"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="655"/>
         <source>Blackman-Nuttall</source>
         <translation>Blackman-nuttall</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="644"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="655"/>
         <source>Flat Top</source>
         <translation>Düz Üst</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="644"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="655"/>
         <source>Welch</source>
         <translation>Welch</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="644"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="655"/>
         <source>Bartlett-Hann</source>
         <translation>Bartlett-hann</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="645"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
         <source>Bohman</source>
         <translation>Bohman</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="645"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
         <source>Cosine (Sine)</source>
         <translation>Kosinüs (Sinüs)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="645"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
         <source>Lanczos</source>
         <translation>Lanczos</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="645"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
         <source>Parzen</source>
         <translation>Parzen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="667"/>
         <source>Off</source>
         <translation>Kapalı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="667"/>
         <source>Auto Start</source>
         <translation>Otomatik Başlat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="667"/>
         <source>Start on Trigger</source>
         <translation>Tetiklemede Başlat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="656"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="667"/>
         <source>Toggle on Trigger</source>
         <translation>Tetiklemede Değiştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="657"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="668"/>
         <source>Repeat N Times</source>
         <translation>N Kez Tekrarla</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="660"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="671"/>
         <source>Plain Text (UTF8)</source>
         <translation>Düz Metin (UTF8)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="660"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="671"/>
         <source>Hexadecimal</source>
         <translation>Onaltılık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="660"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="671"/>
         <source>Base64</source>
         <translation>Base64</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="661"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="672"/>
         <source>Binary (Direct)</source>
         <translation>İkili (Doğrudan)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="666"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="677"/>
         <source>No Checksum</source>
         <translation>Sağlama Toplamı Yok</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="670"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
         <source>End Delimiter Only</source>
         <translation>Yalnızca Bitiş Sınırlayıcısı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="670"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
         <source>Start Delimiter Only</source>
         <translation>Yalnızca Başlangıç Sınırlayıcısı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="671"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="682"/>
         <source>Start + End Delimiter</source>
         <translation>Başlangıç + Bitiş Sınırlayıcısı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="671"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="682"/>
         <source>No Delimiters</source>
         <translation>Sınırlayıcı Yok</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="692"/>
         <source>Button</source>
         <translation>Düğme</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="692"/>
         <source>Slider</source>
         <translation>Kaydırıcı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="692"/>
         <source>Toggle</source>
         <translation>Anahtar</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="681"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="692"/>
         <source>Text Field</source>
         <translation>Metin Alanı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="682"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="693"/>
         <source>Knob</source>
         <translation>Düğme</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="686"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="697"/>
         <source>Data Grid</source>
         <translation>Veri Tablosu</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="687"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="698"/>
         <source>GPS Map</source>
         <translation>GPS Haritası</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="688"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="699"/>
         <source>Gyroscope</source>
         <translation>Jiroskop</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="689"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="700"/>
         <source>Multiple Plot</source>
         <translation>Çoklu Grafik</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="690"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="701"/>
         <source>Accelerometer</source>
         <translation>İvmeölçer</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="691"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="702"/>
         <source>3D Plot</source>
         <translation>3D Grafik</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="692"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="703"/>
         <source>Image View</source>
         <translation>Görüntü Görünümü</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="695"/>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="698"/>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="713"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="706"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="709"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="724"/>
         <source>None</source>
         <translation>Yok</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="699"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="710"/>
         <source>Bar</source>
         <translation>Çubuk</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="700"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="711"/>
         <source>Gauge</source>
         <translation>Gösterge</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="701"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="712"/>
         <source>Compass</source>
         <translation>Pusula</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="702"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="713"/>
         <source>Meter</source>
         <translation>Ölçer</translation>
     </message>
@@ -5379,52 +5379,52 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Termometre</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="706"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="717"/>
         <source>Integer (0 decimals)</source>
         <translation>Tamsayı (0 ondalık)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="707"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="718"/>
         <source>1 decimal</source>
         <translation>1 ondalık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="708"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="719"/>
         <source>2 decimals</source>
         <translation>2 ondalık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="709"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="720"/>
         <source>3 decimals</source>
         <translation>3 ondalık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="710"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="721"/>
         <source>Scientific</source>
         <translation>Bilimsel</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="714"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="725"/>
         <source>New Line (\n)</source>
         <translation>Yeni Satır (</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="715"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="726"/>
         <source>Carriage Return (\r)</source>
         <translation>Satırbaşı (\r)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="727"/>
         <source>CRLF (\r\n)</source>
         <translation>CRLF (\r</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="719"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="730"/>
         <source>No</source>
         <translation>Hayır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectEditor.cpp" line="720"/>
+        <location filename="../../src/DataModel/ProjectEditor.cpp" line="731"/>
         <source>Yes</source>
         <translation>Evet</translation>
     </message>
@@ -5658,80 +5658,80 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="406"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="401"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Serial Studio Proje Dosyaları (*.ssproj)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1160"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1187"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="397"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="392"/>
         <source>Untitled Project</source>
         <translation>Adsız Proje</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1176"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="553"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1203"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="548"/>
         <source>Device A</source>
         <translation>Cihaz A</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="228"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="227"/>
         <source>Select Project File</source>
         <translation>Proje Dosyası Seç</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="230"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="229"/>
         <source>Project Files (*.json *.ssproj)</source>
         <translation>Proje Dosyaları (*.json *.ssproj)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="276"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="275"/>
         <source>JSON validation error</source>
         <translation>JSON doğrulama hatası</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="371"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="366"/>
         <source>Project upgraded from an earlier file format</source>
         <translation>Proje önceki bir dosya formatından yükseltildi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="372"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="367"/>
         <source>This project was saved with schema version %1; the current version is %2. Defaults have been applied to any new fields. Save the project to lock in the upgrade.</source>
         <translation>Bu proje şema sürümü %1 ile kaydedildi; mevcut sürüm %2. Yeni alanlara varsayılanlar uygulandı. Yükseltmeyi kalıcı yapmak için projeyi kaydedin.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="404"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="399"/>
         <source>Save Imported Project</source>
         <translation>İçe Aktarılan Projeyi Kaydet</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="606"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="601"/>
         <source>Multi-source projects require a Pro license</source>
         <translation>Çoklu kaynak projeleri Pro lisansı gerektirir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="607"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="602"/>
         <source>This project contains multiple data sources. Only the first source has been loaded. A Serial Studio Pro license is required to use multi-source projects.</source>
         <translation>Bu proje birden fazla veri kaynağı içeriyor. Yalnızca ilk kaynak yüklendi. Çoklu kaynak projelerini kullanmak için Serial Studio Pro lisansı gereklidir.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="850"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="845"/>
         <source>Workspace IDs remapped on load</source>
         <translation>Çalışma Alanı Kimlikleri yüklemede yeniden eşlendi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="851"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="846"/>
         <source>%1 custom workspace ID(s) overlapped the new reserved auto range and were moved into the user range. Save the project to make the remap permanent.</source>
         <translation>%1 özel çalışma alanı kimliği yeni ayrılmış otomatik aralıkla çakıştı ve kullanıcı aralığına taşındı. Yeniden eşlemeyi kalıcı hale getirmek için projeyi kaydedin.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1040"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1038"/>
         <source>Legacy frame parser function updated</source>
         <translation>Eski çerçeve ayrıştırıcı fonksiyonu güncellendi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1041"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1039"/>
         <source>Your project used a legacy frame parser function with a 'separator' argument. It has been automatically migrated to the new format.</source>
         <translation>Projeniz 'separator' argümanlı eski bir çerçeve ayrıştırıcı işlevi kullanıyordu. Yeni biçime otomatik olarak taşındı.</translation>
     </message>
@@ -5945,10 +5945,10 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Yeni Paylaşılan Tablo</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1530"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1554"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1557"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1581"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1600"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1608"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1627"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
@@ -5972,22 +5972,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Tabloyu Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1530"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1557"/>
         <source>Rename Group</source>
         <translation>Grubu Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1554"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1581"/>
         <source>Rename Dataset</source>
         <translation>Veri Kümesini Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1581"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1608"/>
         <source>Rename Data Source</source>
         <translation>Veri Kaynağını Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1600"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1627"/>
         <source>Rename Action</source>
         <translation>Eylemi Yeniden Adlandır</translation>
     </message>
@@ -6005,7 +6005,7 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2139"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
         <source>This action cannot be undone.</source>
         <translation>Bu işlem geri alınamaz.</translation>
     </message>
@@ -6142,28 +6142,28 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Çalışma Alanını Sil</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="493"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="490"/>
         <source>Project file removed from disk</source>
         <translation>Proje dosyası diskten kaldırıldı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="494"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="491"/>
         <source>%1 was deleted or renamed by another program. Save the project to recreate it.</source>
         <translation>%1 başka bir program tarafından silindi veya yeniden adlandırıldı. Yeniden oluşturmak için projeyi kaydedin.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="516"/>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="537"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="513"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="534"/>
         <source>Project file changed on disk</source>
         <translation>Proje dosyası diskte değiştirildi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="517"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="514"/>
         <source>%1 was modified by another program. The in-memory project was kept; reopen the file to load the external changes.</source>
         <translation>%1 başka bir program tarafından değiştirildi. Bellekteki proje korundu; harici değişiklikleri yüklemek için dosyayı yeniden açın.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="533"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="530"/>
         <source>The project file was modified by another program.
 
 Reload it and discard your unsaved changes?</source>
@@ -6172,7 +6172,7 @@ Reload it and discard your unsaved changes?</source>
 Yeniden yüklensin ve kaydedilmemiş değişiklikler iptal edilsin mi?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="535"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="532"/>
         <source>The project file was modified by another program.
 
 Reload it?</source>
@@ -6181,22 +6181,22 @@ Reload it?</source>
 Yeniden yüklensin mi?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="566"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="563"/>
         <source>File save error</source>
         <translation>Dosya kaydetme hatası</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2138"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2229"/>
         <source>Delete %1 selected items?</source>
         <translation>Seçilen %1 öğe silinsin mi?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2141"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2232"/>
         <source>Delete Items</source>
         <translation>Öğeleri Sil</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="440"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="435"/>
         <source>File open error</source>
         <translation>Dosya açma hatası</translation>
     </message>
@@ -7947,37 +7947,37 @@ Geçerli biçim: 01 A2 FF 3C</translation>
 <context>
     <name>GPS</name>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="105"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="113"/>
         <source>Auto Center</source>
         <translation>Otomatik Ortala</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="121"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="129"/>
         <source>Plot Trajectory</source>
         <translation>Yörüngeyi Çiz</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="138"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="146"/>
         <source>Zoom In</source>
         <translation>Yakınlaştır</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="149"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="157"/>
         <source>Zoom Out</source>
         <translation>Uzaklaştır</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="173"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="181"/>
         <source>Show Weather</source>
         <translation>Hava Durumunu Göster</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="191"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="199"/>
         <source>NASA Weather Overlay</source>
         <translation>NASA Hava Durumu Katmanı</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="223"/>
+        <location filename="../../qml/Widgets/Dashboard/GPS.qml" line="231"/>
         <source>Base Map: %1</source>
         <translation>Temel Harita: %1</translation>
     </message>
@@ -8516,67 +8516,67 @@ Geçerli biçim: 01 A2 FF 3C</translation>
 <context>
     <name>IO::Drivers::Audio</name>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="774"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="775"/>
         <source>channels</source>
         <translation>kanal</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="827"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="828"/>
         <source> channels</source>
         <translation>kanal</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="975"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="976"/>
         <source>Unsigned 8-bit</source>
         <translation>İşaretsiz 8-bit</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="976"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="977"/>
         <source>Signed 16-bit</source>
         <translation>İşaretli 16-bit</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="977"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="978"/>
         <source>Signed 24-bit</source>
         <translation>İşaretli 24-bit</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="978"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="979"/>
         <source>Signed 32-bit</source>
         <translation>İşaretli 32-bit</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="979"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="980"/>
         <source>Float 32-bit</source>
         <translation>Kayan Noktalı 32-bit</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="982"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="983"/>
         <source>Mono</source>
         <translation>Mono</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="983"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="984"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="1371"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="1374"/>
         <source>Input Device</source>
         <translation>Giriş Aygıtı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="1379"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="1382"/>
         <source>Sample Rate</source>
         <translation>Örnekleme Hızı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="1387"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="1390"/>
         <source>Sample Format</source>
         <translation>Örnek Biçimi</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/Audio.cpp" line="1395"/>
+        <location filename="../../src/IO/Drivers/Audio.cpp" line="1398"/>
         <source>Channels</source>
         <translation>Kanallar</translation>
     </message>
@@ -9680,171 +9680,171 @@ Check that your user is in the 'plugdev' group or that a udev rule grants access
 <context>
     <name>IO::Drivers::UART</name>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="69"/>
         <location filename="../../src/IO/Drivers/UART.cpp" line="70"/>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="391"/>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="430"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="71"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="393"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="432"/>
         <source>None</source>
         <translation>Yok</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="349"/>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="733"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="351"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="735"/>
         <source>Select Port</source>
         <translation>Port Seç</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="392"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="394"/>
         <source>Even</source>
         <translation>Çift</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="393"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="395"/>
         <source>Odd</source>
         <translation>Tek</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="394"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="396"/>
         <source>Space</source>
         <translation>Space</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="395"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="397"/>
         <source>Mark</source>
         <translation>Mark</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="431"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="433"/>
         <source>RTS/CTS</source>
         <translation>RTS/CTS</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="432"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="434"/>
         <source>XON/XOFF</source>
         <translation>XON/XOFF</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="562"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="564"/>
         <source>"%1" is not a valid path</source>
         <translation>"%1" geçerli bir yol değil</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="563"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="565"/>
         <source>Please type another path to register a custom serial device</source>
         <translation>Özel bir seri cihaz kaydetmek için başka bir yol yazın</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="825"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="830"/>
         <source>The specified device could not be found. Check the connection and try again.</source>
         <translation>Belirtilen cihaz bulunamadı. Bağlantıyı kontrol edin ve tekrar deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="832"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="837"/>
         <source>An unknown error occurred. Check the device and try again.</source>
         <translation>Bilinmeyen bir hata oluştu. Cihazı kontrol edin ve tekrar deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="834"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="839"/>
         <source>The device is not open. Open the device before attempting this operation.</source>
         <translation>Cihaz açık değil. Bu işlemi denemeden önce cihazı açın.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="261"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="263"/>
         <source>Failed to connect to serial port "%1"</source>
         <translation>"%1" seri portuna bağlanılamadı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="800"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="802"/>
         <source>Unknown</source>
         <translation>Bilinmiyor</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="801"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="803"/>
         <source>Critical error on serial port "%1"</source>
         <translation>"%1" seri portunda kritik hata</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="802"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="804"/>
         <source>Unknown error</source>
         <translation>Bilinmeyen hata</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="824"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="829"/>
         <source>No error occurred.</source>
         <translation>Hata oluşmadı.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="826"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="831"/>
         <source>Permission denied. Ensure the application has the necessary access rights to the device.</source>
         <translation>İzin reddedildi. Uygulamanın cihaza erişim yetkisine sahip olduğundan emin olun.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="827"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="832"/>
         <source>Failed to open the device. It may already be in use or unavailable.</source>
         <translation>Cihaz açılamadı. Zaten kullanımda veya erişilemez durumda olabilir.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="828"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="833"/>
         <source>An error occurred while writing data to the device.</source>
         <translation>Cihaza veri yazılırken hata oluştu.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="829"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="834"/>
         <source>An error occurred while reading data from the device.</source>
         <translation>Cihazdan veri okunurken hata oluştu.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="830"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="835"/>
         <source>A critical resource error occurred. The device may have been disconnected or is no longer accessible.</source>
         <translation>Kritik kaynak hatası oluştu. Cihaz bağlantısı kesilmiş veya artık erişilebilir olmayabilir.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="831"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="836"/>
         <source>The requested operation is not supported on this device.</source>
         <translation>İstenen işlem bu cihazda desteklenmiyor.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="833"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="838"/>
         <source>The operation timed out. The device may not be responding.</source>
         <translation>İşlem zaman aşımına uğradı. Cihaz yanıt vermiyor olabilir.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="996"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1001"/>
         <source>Serial Port</source>
         <translation>Seri Port</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1004"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1009"/>
         <source>Baud Rate</source>
         <translation>İletim Hızı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1012"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1017"/>
         <source>Parity</source>
         <translation>Eşlik</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1020"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1025"/>
         <source>Data Bits</source>
         <translation>Veri Bitleri</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1028"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1033"/>
         <source>Stop Bits</source>
         <translation>Durma Bitleri</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1036"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1041"/>
         <source>Flow Control</source>
         <translation>Akış Kontrolü</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1044"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1049"/>
         <source>DTR</source>
         <translation>DTR</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/UART.cpp" line="1051"/>
+        <location filename="../../src/IO/Drivers/UART.cpp" line="1056"/>
         <source>Auto-Reconnect</source>
         <translation>Otomatik Yeniden Bağlan</translation>
     </message>
@@ -10055,12 +10055,12 @@ The device may not expose data endpoints in its active configuration, or it may 
 Cihaz, etkin yapılandırmasında veri uç noktalarını sunmuyor olabilir veya belirli bir sürücü gerektirebilir.</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1622"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1629"/>
         <source>USB Device</source>
         <translation>USB Cihazı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1630"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1637"/>
         <source>Transfer Mode</source>
         <translation>Transfer Modu</translation>
     </message>
@@ -10069,32 +10069,32 @@ Cihaz, etkin yapılandırmasında veri uç noktalarını sunmuyor olabilir veya 
         <translation type="vanished">Toplu Akış</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1633"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1640"/>
         <source>Advanced Control</source>
         <translation>Gelişmiş Kontrol</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1633"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1640"/>
         <source>Isochronous</source>
         <translation>Eşzamanlı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1633"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1640"/>
         <source>Bulk/Interrupt Stream</source>
         <translation>Bulk/interrupt Akışı</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1638"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1645"/>
         <source>IN Endpoint</source>
         <translation>IN Uç Noktası</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1646"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1653"/>
         <source>OUT Endpoint</source>
         <translation>OUT Uç Noktası</translation>
     </message>
     <message>
-        <location filename="../../src/IO/Drivers/USB.cpp" line="1654"/>
+        <location filename="../../src/IO/Drivers/USB.cpp" line="1661"/>
         <source>ISO Packet Size</source>
         <translation>ISO Paket Boyutu</translation>
     </message>
@@ -10948,8 +10948,8 @@ Planlar Aylık, Yıllık ve Ömür Boyu seçeneklerini içerir.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="541"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="723"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="843"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="730"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="850"/>
         <source>The license key you provided does not belong to Serial Studio.</source>
         <translation>Girdiğiniz lisans anahtarı Serial Studio'ya ait değil.</translation>
     </message>
@@ -10960,25 +10960,25 @@ Planlar Aylık, Yıllık ve Ömür Boyu seçeneklerini içerir.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="554"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="733"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="740"/>
         <source>This license key was activated on a different device.</source>
         <translation>Bu lisans anahtarı farklı bir cihazda etkinleştirilmiş.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="555"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="734"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="741"/>
         <source>Deactivate it there first or contact support for help.</source>
         <translation>Önce orada devre dışı bırakın veya yardım için destek ile iletişime geçin.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="566"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="744"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="751"/>
         <source>This license is not currently active.</source>
         <translation>Bu lisans şu anda aktif değil.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="567"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="745"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="752"/>
         <source>It may have expired or been deactivated (status: %1).</source>
         <translation>Süresi dolmuş veya devre dışı bırakılmış olabilir (durum: %1).</translation>
     </message>
@@ -10989,7 +10989,7 @@ Planlar Aylık, Yıllık ve Ömür Boyu seçeneklerini içerir.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="578"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="755"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="762"/>
         <source>No activation ID was returned.</source>
         <translation>Etkinleştirme kimliği döndürülmedi.</translation>
     </message>
@@ -11000,19 +11000,19 @@ Planlar Aylık, Yıllık ve Ömür Boyu seçeneklerini içerir.</translation>
     </message>
     <message>
         <location filename="../../src/Licensing/LemonSqueezy.cpp" line="589"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="764"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="853"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="771"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="860"/>
         <source>Try again later.</source>
         <translation>Daha sonra tekrar deneyin.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="724"/>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="844"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="731"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="851"/>
         <source>Double-check that you purchased your license from the official Serial Studio store.</source>
         <translation>Lisansınızı resmi Serial Studio mağazasından satın aldığınızdan emin olun.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="754"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="761"/>
         <source>Something went wrong on the server…</source>
         <translation>Sunucuda bir sorun oluştu…</translation>
     </message>
@@ -11027,44 +11027,44 @@ Planlar Aylık, Yıllık ve Ömür Boyu seçeneklerini içerir.</translation>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="660"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="667"/>
         <source>Your license has been successfully activated.</source>
         <translation>Lisansınız başarıyla etkinleştirildi.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="661"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="668"/>
         <source>Thank you for supporting Serial Studio!
 You now have access to all premium features.</source>
         <translation>Serial Studio'yu desteklediğiniz için teşekkür ederiz!
 Artık tüm premium özelliklere erişiminiz var.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="715"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="722"/>
         <source>There was an issue activating your license.</source>
         <translation>Lisansınız etkinleştirilirken bir sorun oluştu.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="763"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="770"/>
         <source>Could not activate your license at this time.</source>
         <translation>Lisansınız şu anda etkinleştirilemedi.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="835"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="842"/>
         <source>There was an issue deactivating your license.</source>
         <translation>Lisansınız devre dışı bırakılırken bir sorun oluştu.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="852"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="859"/>
         <source>Could not deactivate your license at this time.</source>
         <translation>Lisansınız şu anda devre dışı bırakılamadı.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="862"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="868"/>
         <source>Your license has been deactivated.</source>
         <translation>Lisansınız devre dışı bırakıldı.</translation>
     </message>
     <message>
-        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="863"/>
+        <location filename="../../src/Licensing/LemonSqueezy.cpp" line="869"/>
         <source>Access to Pro features has been removed.
 Thank you again for supporting Serial Studio!</source>
         <translation>Pro özelliklere erişim kaldırıldı.
@@ -11120,12 +11120,12 @@ Bu koltuğu başka bir cihazda yeniden kullanmak için cihaz kimliğinizi veya .
 <context>
     <name>MDF4::Export</name>
     <message>
-        <location filename="../../src/MDF4/Export.cpp" line="647"/>
+        <location filename="../../src/MDF4/Export.cpp" line="649"/>
         <source>MDF4 Export is a Pro feature.</source>
         <translation>MDF4 Dışa Aktarma bir Pro özelliğidir.</translation>
     </message>
     <message>
-        <location filename="../../src/MDF4/Export.cpp" line="648"/>
+        <location filename="../../src/MDF4/Export.cpp" line="650"/>
         <source>This feature requires a license. Please purchase one to enable MDF4 export.</source>
         <translation>Bu özellik lisans gerektirir. MDF4 dışa aktarmayı etkinleştirmek için lütfen bir lisans satın alın.</translation>
     </message>
@@ -12259,12 +12259,12 @@ Lütfen gerekli kimlik bilgilerini sağlayın.</translation>
 <context>
     <name>Misc::DemoLauncher</name>
     <message>
-        <location filename="../../src/Misc/DemoLauncher.cpp" line="194"/>
+        <location filename="../../src/Misc/DemoLauncher.cpp" line="209"/>
         <source>Cannot start the demo</source>
         <translation>Demo başlatılamıyor</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/DemoLauncher.cpp" line="195"/>
+        <location filename="../../src/Misc/DemoLauncher.cpp" line="210"/>
         <source>The demo project could not be staged or opened. Check the application data directory permissions.</source>
         <translation>Demo projesi hazırlanamadı veya açılamadı. Uygulama veri dizini izinlerini kontrol edin.</translation>
     </message>
@@ -14124,52 +14124,52 @@ Birden fazla kayıt türünü sorgulamak için yukarıdan grup ekleyin.</transla
 <context>
     <name>Plot3D</name>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="202"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="212"/>
         <source>Interpolate</source>
         <translation>Enterpolasyon Yap</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="220"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="230"/>
         <source>Orbit Navigation</source>
         <translation>Yörünge Navigasyonu</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="230"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="240"/>
         <source>Pan Navigation</source>
         <translation>Kaydırma Navigasyonu</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="241"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="251"/>
         <source>Orthogonal View</source>
         <translation>Ortogonal Görünüm</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="247"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="257"/>
         <source>Top View</source>
         <translation>Üstten Görünüm</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="253"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="263"/>
         <source>Left View</source>
         <translation>Soldan Görünüm</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="259"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="269"/>
         <source>Front View</source>
         <translation>Önden Görünüm</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="276"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="286"/>
         <source>Auto Center</source>
         <translation>Otomatik Ortala</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="292"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="302"/>
         <source>Anaglyph 3D</source>
         <translation>Anaglyph 3D</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="306"/>
+        <location filename="../../qml/Widgets/Dashboard/Plot3D.qml" line="316"/>
         <source>Invert Eye Positions</source>
         <translation>Göz Konumlarını Ters Çevir</translation>
     </message>
@@ -15215,12 +15215,12 @@ Listeyi güncellemek için Yenile'ye tıklayın.</translation>
         <translation>Sunucu yanıtında gerekli alanlar eksik.</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Export.cpp" line="166"/>
+        <location filename="../../src/Console/Export.cpp" line="171"/>
         <source>Console Output File Error</source>
         <translation>Konsol Çıktı Dosyası Hatası</translation>
     </message>
     <message>
-        <location filename="../../src/Console/Export.cpp" line="167"/>
+        <location filename="../../src/Console/Export.cpp" line="172"/>
         <source>Cannot open file for writing!</source>
         <translation>Dosya yazmak için açılamıyor!</translation>
     </message>
@@ -15477,12 +15477,12 @@ Ayırıcı parametresine artık gerek yok.</translation>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/CLI.cpp" line="625"/>
+        <location filename="../../src/Misc/CLI.cpp" line="635"/>
         <source>Project file not found</source>
         <translation>Proje dosyası bulunamadı</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/CLI.cpp" line="626"/>
+        <location filename="../../src/Misc/CLI.cpp" line="636"/>
         <source>The project file referenced by this shortcut could not be found:
 
 %1</source>
@@ -15491,32 +15491,32 @@ Ayırıcı parametresine artık gerek yok.</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/CLI.cpp" line="629"/>
+        <location filename="../../src/Misc/CLI.cpp" line="639"/>
         <source>Would you like to delete this shortcut?</source>
         <translation>Bu kısayolu silmek ister misiniz?</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/CLI.cpp" line="633"/>
+        <location filename="../../src/Misc/CLI.cpp" line="643"/>
         <source>Delete Shortcut</source>
         <translation>Kısayolu Sil</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/CLI.cpp" line="635"/>
+        <location filename="../../src/Misc/CLI.cpp" line="645"/>
         <source>Quit</source>
         <translation>Çık</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1032"/>
+        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1041"/>
         <source>Time (s)</source>
         <translation>Zaman (s)</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1090"/>
+        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1099"/>
         <source>Freq: %1</source>
         <translation>Frekans: %1</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1093"/>
+        <location filename="../../src/UI/Widgets/Waterfall.cpp" line="1102"/>
         <source>Time: −%1</source>
         <translation>Zaman: −%1</translation>
     </message>
@@ -15561,12 +15561,12 @@ Ayırıcı parametresine artık gerek yok.</translation>
         <translation>Groq API anahtarı ayarlanmamış. Bir tane eklemek için Anahtarları Yönet'i açın.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1158"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1191"/>
         <source>The frame parser is using more than %1% of CPU time.</source>
         <translation>Frame ayrıştırıcı CPU zamanının %1%'sinden fazlasını kullanıyor.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1160"/>
+        <location filename="../../src/DataModel/FrameBuilder.cpp" line="1193"/>
         <source>Serial Studio is dropping frames to keep the application responsive. Please simplify or optimize the frame parser script to reduce its workload.</source>
         <translation>Serial Studio uygulamanın yanıt vermesini sağlamak için kareleri atıyor. İş yükünü azaltmak için lütfen frame ayrıştırıcı betiğini basitleştirin veya optimize edin.</translation>
     </message>
@@ -18265,43 +18265,43 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
 <context>
     <name>Stopwatch</name>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="200"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="253"/>
         <source>Stop</source>
         <translation>Durdur</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="200"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="253"/>
         <source>Start</source>
         <translation>Başlat</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="210"/>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="288"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="263"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="341"/>
         <source>Lap</source>
         <translation>Tur</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="226"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="279"/>
         <source>Reset</source>
         <translation>Sıfırla</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="279"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="332"/>
         <source>#</source>
         <translation>#</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="297"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="350"/>
         <source>Total</source>
         <translation>Toplam</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="393"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="446"/>
         <source>No laps recorded</source>
         <translation>Kayıtlı tur yok</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="401"/>
+        <location filename="../../qml/Widgets/Dashboard/Stopwatch.qml" line="454"/>
         <source>Press Lap while the stopwatch is running</source>
         <translation>Kronometre çalışırken Tur'a basın</translation>
     </message>
@@ -18594,49 +18594,109 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
 <context>
     <name>Terminal</name>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="141"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="164"/>
         <source>Copy</source>
         <translation>Kopyala</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="149"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="172"/>
         <source>Select all</source>
         <translation>Tümünü Seç</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="155"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="178"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="253"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="259"/>
+        <source>Find in console</source>
+        <translation>Konsolda Bul</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="296"/>
+        <source>%1 of %2</source>
+        <translation>%2 içinde %1</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="297"/>
+        <source>No results</source>
+        <translation>Sonuç bulunamadı</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="309"/>
+        <source>Match case</source>
+        <translation>Büyük/küçük harf duyarlı</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="324"/>
+        <source>Previous match</source>
+        <translation>Önceki eşleşme</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="335"/>
+        <source>Next match</source>
+        <translation>Sonraki eşleşme</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="345"/>
+        <source>Close search</source>
+        <translation>Aramayı kapat</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="374"/>
+        <source>Send a file to the connected device</source>
+        <translation>Bağlı cihaza dosya gönder</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="385"/>
+        <source>Search console output</source>
+        <translation>Konsol çıktısında ara</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="410"/>
+        <source>Collapse repeated lines into a single entry</source>
+        <translation>Tekrarlanan satırları tek girdi olarak daralt</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="441"/>
         <source>Send Data to Device</source>
         <translation>Cihaza Veri Gönder</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="428"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="598"/>
+        <source>Send data to the device</source>
+        <translation>Cihaza veri gönder</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="617"/>
         <source>Show Timestamp</source>
         <translation>Zaman Damgasını Göster</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="436"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="625"/>
         <source>Echo</source>
         <translation>Yankı</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="453"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="642"/>
         <source>Emulate VT-100</source>
         <translation>VT-100 Emülasyonu</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="466"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="655"/>
         <source>ANSI Colors</source>
         <translation>ANSI Renkleri</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="486"/>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="675"/>
         <source>Display: %1</source>
         <translation>Görüntüleme: %1</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Widgets/Dashboard/Terminal.qml" line="688"/>
+        <source>Clear console output</source>
+        <translation>Konsol çıktısını temizle</translation>
     </message>
 </context>
 <context>
@@ -19689,27 +19749,27 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
 <context>
     <name>Waterfall</name>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="237"/>
+        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="244"/>
         <source>Show Colorbar</source>
         <translation>Renk Çubuğunu Göster</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="250"/>
+        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="257"/>
         <source>Show Axes &amp; Grid</source>
         <translation>Eksenleri ve Izgarayı Göster</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="263"/>
+        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="270"/>
         <source>Show Crosshair</source>
         <translation>Artı İşaretini Göster</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="277"/>
+        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="284"/>
         <source>Pause</source>
         <translation>Duraklat</translation>
     </message>
     <message>
-        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="277"/>
+        <location filename="../../qml/Widgets/Dashboard/Waterfall.qml" line="284"/>
         <source>Resume</source>
         <translation>Devam Et</translation>
     </message>
@@ -20118,52 +20178,52 @@ Deneme sona erdiğinde lisans satın almam veya GPLv3 sürümünü derlemem gere
 <context>
     <name>Widgets::GPS</name>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="98"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="120"/>
         <source>Satellite Imagery</source>
         <translation>Uydu Görüntüsü</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="98"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="120"/>
         <source>Satellite Imagery with Labels</source>
         <translation>Etiketli Uydu Görüntüsü</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="98"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="120"/>
         <source>Street Map</source>
         <translation>Sokak Haritası</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="99"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="121"/>
         <source>Topographic Map</source>
         <translation>Topografik Harita</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="99"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="121"/>
         <source>Terrain</source>
         <translation>Arazi</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="99"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="121"/>
         <source>Light Gray Canvas</source>
         <translation>Açık Gri Tuval</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="100"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="122"/>
         <source>Dark Gray Canvas</source>
         <translation>Koyu Gri Tuval</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="100"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="122"/>
         <source>National Geographic</source>
         <translation>National Geographic</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="391"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="379"/>
         <source>Additional map layers are available only for Pro users.</source>
         <translation>Ek harita katmanları yalnızca Pro kullanıcıları için kullanılabilir.</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Widgets/GPS.cpp" line="392"/>
+        <location filename="../../src/UI/Widgets/GPS.cpp" line="380"/>
         <source>We can't offer unrestricted access because the ArcGIS API key incurs real costs.</source>
         <translation>ArcGIS API anahtarı gerçek maliyetler doğurduğu için sınırsız erişim sunamıyoruz.</translation>
     </message>
@@ -20210,7 +20270,7 @@ Deneme sona erdiğinde lisans satın almam veya GPLv3 sürümünü derlemem gere
 <context>
     <name>Widgets::Plot3D</name>
     <message>
-        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="946"/>
+        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1111"/>
         <source>Grid Interval: %1 unit(s)</source>
         <translation>Izgara Aralığı: %1 birim</translation>
     </message>

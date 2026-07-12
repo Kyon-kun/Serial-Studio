@@ -70,6 +70,7 @@ Item {
   //
   property bool minimal: true
   property int minimumRows: 24
+  property bool searchOpen: false
   property int minimumColumns: 80
   property int minimumHeight: Cpp_Console_Handler.defaultCharHeight * root.minimumRows
   property int minimumWidth: Cpp_Console_Handler.defaultCharWidth * root.minimumColumns
@@ -112,6 +113,16 @@ Item {
   }
 
   //
+  // Closes the search bar, clears search state and returns focus to the terminal
+  //
+  function closeSearch() {
+    root.searchOpen = false
+    searchField.clear()
+    terminal.clearSearch()
+    terminal.forceActiveFocus()
+  }
+
+  //
   // VT-100 read-write mode forwards Ctrl+C / Ctrl+A as SIGINT / SOH.
   //
   readonly property bool vt100Interactive: Cpp_Console_Handler.vt100Emulation
@@ -125,6 +136,18 @@ Item {
     onActivated: root.copy()
     sequences: [StandardKey.Copy]
     enabled: terminal.activeFocus && !root.vt100Interactive
+  } Shortcut {
+    sequences: [StandardKey.Find]
+    enabled: terminal.activeFocus || searchField.activeFocus
+    onActivated: {
+      root.searchOpen = true
+      searchField.forceActiveFocus()
+      searchField.selectAll()
+    }
+  } Shortcut {
+    sequence: "Escape"
+    onActivated: root.closeSearch()
+    enabled: root.searchOpen && (terminal.activeFocus || searchField.activeFocus)
   }
 
   //
@@ -203,6 +226,128 @@ Item {
                      }
                    }
       }
+
+      //
+      // In-console search bar (Ctrl+F / Cmd+F)
+      //
+      Rectangle {
+        id: searchBar
+
+        radius: 4
+        border.width: 1
+        anchors.margins: 8
+        anchors.top: parent.top
+        visible: root.searchOpen
+        anchors.right: parent.right
+        implicitHeight: searchRow.implicitHeight + 8
+        implicitWidth: searchRow.implicitWidth + 16
+        color: Cpp_ThemeManager.colors["console_base"]
+        border.color: Cpp_ThemeManager.colors["console_border"]
+
+        RowLayout {
+          id: searchRow
+
+          spacing: 4
+          anchors.centerIn: parent
+
+          Widgets.LineField {
+            id: searchField
+
+            implicitWidth: 164
+            implicitHeight: 24
+            font: Cpp_Misc_CommonFonts.monoFont
+            placeholderText: qsTr("Find in console") + "..."
+            palette.base: Cpp_ThemeManager.colors["console_base"]
+            palette.text: Cpp_ThemeManager.colors["console_text"]
+            palette.highlight: Cpp_ThemeManager.colors["console_highlight"]
+            palette.highlightedText: Cpp_ThemeManager.colors["console_text"]
+            palette.placeholderText: Cpp_ThemeManager.colors["placeholder_text"]
+
+            background: Rectangle {
+              border.width: 1
+              color: Cpp_ThemeManager.colors["console_base"]
+              border.color: Cpp_ThemeManager.colors["console_border"]
+            }
+
+            onTextChanged: terminal.setSearchQuery(text, caseButton.checked)
+
+            Keys.onReturnPressed: (event) => {
+              if (event.modifiers & Qt.ShiftModifier)
+                terminal.searchPrevious()
+              else
+                terminal.searchNext()
+            }
+
+            Keys.onEnterPressed: (event) => {
+              if (event.modifiers & Qt.ShiftModifier)
+                terminal.searchPrevious()
+              else
+                terminal.searchNext()
+            }
+
+            Keys.onEscapePressed: root.closeSearch()
+          }
+
+          Label {
+            visible: searchField.length > 0
+            font: Cpp_Misc_CommonFonts.monoFont
+            color: Cpp_ThemeManager.colors["console_text"]
+            text: terminal.searchMatchCount > 0
+                  ? qsTr("%1 of %2").arg(terminal.searchCurrentMatch).arg(terminal.searchMatchCount)
+                  : qsTr("No results")
+          }
+
+          Button {
+            id: caseButton
+
+            text: "Aa"
+            checkable: true
+            implicitWidth: 32
+            implicitHeight: 24
+            ToolTip.delay: 500
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Match case")
+            checked: Cpp_Console_Handler.searchCaseSensitive
+            onCheckedChanged: {
+              if (Cpp_Console_Handler.searchCaseSensitive !== checked)
+                Cpp_Console_Handler.searchCaseSensitive = checked
+
+              terminal.setSearchQuery(searchField.text, checked)
+            }
+          }
+
+          Widgets.IconButton {
+            iconSize: 16
+            implicitHeight: 24
+            Layout.maximumWidth: 24
+            opacity: enabled ? 1 : 0.5
+            ToolTip.text: qsTr("Previous match")
+            onClicked: terminal.searchPrevious()
+            enabled: terminal.searchMatchCount > 0
+            icon.source: "qrc:/icons/buttons/backward.svg"
+          }
+
+          Widgets.IconButton {
+            iconSize: 16
+            implicitHeight: 24
+            Layout.maximumWidth: 24
+            opacity: enabled ? 1 : 0.5
+            ToolTip.text: qsTr("Next match")
+            onClicked: terminal.searchNext()
+            enabled: terminal.searchMatchCount > 0
+            icon.source: "qrc:/icons/buttons/forward.svg"
+          }
+
+          Widgets.IconButton {
+            iconSize: 16
+            implicitHeight: 24
+            Layout.maximumWidth: 24
+            ToolTip.text: qsTr("Close search")
+            onClicked: root.closeSearch()
+            icon.source: "qrc:/icons/buttons/close.svg"
+          }
+        }
+      }
     }
 
     //
@@ -226,6 +371,47 @@ Item {
         Layout.alignment: Qt.AlignVCenter
         onClicked: app.showFileTransmission()
         icon.source: "qrc:/icons/buttons/attach.svg"
+        ToolTip.text: qsTr("Send a file to the connected device")
+      }
+
+      Widgets.IconButton {
+        id: searchButton
+
+        iconSize: 16
+        implicitHeight: 24
+        Layout.maximumWidth: 24
+        Layout.alignment: Qt.AlignVCenter
+        icon.source: "qrc:/icons/buttons/search.svg"
+        ToolTip.text: qsTr("Search console output")
+        icon.color: root.searchOpen
+                    ? Cpp_ThemeManager.colors["accent"]
+                    : Cpp_ThemeManager.colors["button_text"]
+
+        onClicked: {
+          if (root.searchOpen)
+            root.closeSearch()
+
+          else {
+            root.searchOpen = true
+            searchField.forceActiveFocus()
+            searchField.selectAll()
+          }
+        }
+      }
+
+      Widgets.IconButton {
+        id: collapseButton
+
+        iconSize: 16
+        implicitHeight: 24
+        Layout.maximumWidth: 24
+        Layout.alignment: Qt.AlignVCenter
+        icon.source: "qrc:/icons/buttons/collapse-duplicates.svg"
+        ToolTip.text: qsTr("Collapse repeated lines into a single entry")
+        icon.color: Cpp_Console_Handler.collapseDuplicates
+                    ? Cpp_ThemeManager.colors["accent"]
+                    : Cpp_ThemeManager.colors["button_text"]
+        onClicked: Cpp_Console_Handler.collapseDuplicates = !Cpp_Console_Handler.collapseDuplicates
       }
 
       Widgets.Combo {
@@ -409,6 +595,7 @@ Item {
         opacity: enabled ? 1 : 0.5
         onClicked: root.sendData()
         icon.source: "qrc:/icons/buttons/send.svg"
+        ToolTip.text: qsTr("Send data to the device")
         enabled: Cpp_IO_Manager.readWrite && (send.length > 0 || Cpp_Console_Handler.lineEnding != 0)
       }
     }
@@ -498,6 +685,7 @@ Item {
         onClicked: root.clear()
         Layout.maximumWidth: 32
         opacity: enabled ? 1 : 0.5
+        ToolTip.text: qsTr("Clear console output")
         icon.source: "qrc:/icons/buttons/clear.svg"
       }
     }

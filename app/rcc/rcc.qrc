@@ -164,6 +164,7 @@
         <file>icons/buttons/clear.svg</file>
         <file>icons/buttons/close.svg</file>
         <file>icons/buttons/code.svg</file>
+        <file>icons/buttons/collapse-duplicates.svg</file>
         <file>icons/buttons/connected.svg</file>
         <file>icons/buttons/copy.svg</file>
         <file>icons/buttons/deactivate.svg</file>

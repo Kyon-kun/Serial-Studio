@@ -21,6 +21,9 @@ Button {
   opacity: enabled ? 1 : 0.5
   icon.color: Cpp_ThemeManager.colors["button_text"]
 
+  ToolTip.delay: 500
+  ToolTip.visible: root.hovered && root.ToolTip.text !== ""
+
   property int iconSize: 18
   property bool mirrorIconInRtl: icon.source.toString() !== "qrc:/icons/buttons/apply.svg"
 
