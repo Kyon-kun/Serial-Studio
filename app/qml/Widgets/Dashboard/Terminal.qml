@@ -227,8 +227,6 @@ Item {
 
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           implicitHeight: 32
           text: qsTr("Clear")
@@ -245,8 +243,6 @@ Item {
 
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           text: qsTr("Find")
           implicitHeight: 32
@@ -274,8 +270,6 @@ Item {
 
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           implicitHeight: 32
           text: qsTr("Collapse")
@@ -299,8 +293,6 @@ Item {
 
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           implicitHeight: 32
           checked: terminal.paused
@@ -325,8 +317,6 @@ Item {
         Widgets.IconButton {
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           text: qsTr("Text")
           implicitHeight: 32
@@ -342,8 +332,6 @@ Item {
         Widgets.IconButton {
           flat: true
           leftPadding: 8
-          icon.width: 18
-          icon.height: 18
           rightPadding: 8
           text: qsTr("Hex")
           implicitHeight: 32
@@ -366,9 +354,7 @@ Item {
           id: settingsButton
 
           flat: true
-          icon.width: 18
           leftPadding: 8
-          icon.height: 18
           rightPadding: 8
           implicitHeight: 32
           text: qsTr("Settings")
