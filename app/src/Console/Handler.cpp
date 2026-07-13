@@ -70,6 +70,7 @@ Console::Handler::Handler()
   , m_encoding(SerialStudio::EncUtf8)
   , m_historyItem(0)
   , m_checksumMethod(0)
+  , m_scrollbackLines(1000)
   , m_echo(true)
   , m_showTimestamp(false)
   , m_collapseDuplicates(false)
@@ -99,6 +100,7 @@ Console::Handler::Handler()
   m_vt100Emulation      = m_settings.value("Console/VT100Emulation", true).toBool();
   m_ansiColors          = m_settings.value("Console/AnsiColors", true).toBool();
   m_checksumMethod      = m_settings.value("Console/ChecksumMethod", 0).toInt();
+  m_scrollbackLines     = m_settings.value("Console/ScrollbackLines", 1000).toInt();
   m_dataMode            = static_cast<DataMode>(m_settings.value("Console/DataMode", 0).toInt());
   m_lineEnding  = static_cast<LineEnding>(m_settings.value("Console/LineEnding", 0).toInt());
   m_displayMode = static_cast<DisplayMode>(m_settings.value("Console/DisplayMode", 0).toInt());
@@ -111,6 +113,8 @@ Console::Handler::Handler()
     m_fontSize = 6;
   else if (m_fontSize > 72)
     m_fontSize = 72;
+
+  m_scrollbackLines = qBound(100, m_scrollbackLines, 100000);
 
   const int checksumCount = IO::availableChecksums().count();
   if (m_checksumMethod < 0 || m_checksumMethod >= checksumCount)
@@ -290,8 +294,8 @@ QStringList Console::Handler::lineEndings() const
 QStringList Console::Handler::displayModes() const
 {
   QStringList list;
-  list.append(tr("Plain Text"));
-  list.append(tr("Hexadecimal"));
+  list.append(tr("Text"));
+  list.append(tr("Hex"));
   return list;
 }
 
@@ -337,6 +341,14 @@ QFont Console::Handler::font() const
 int Console::Handler::fontSize() const
 {
   return m_fontSize;
+}
+
+/**
+ * @brief Returns the number of lines retained in the console scrollback buffer.
+ */
+int Console::Handler::scrollbackLines() const
+{
+  return m_scrollbackLines;
 }
 
 /**
@@ -699,6 +711,19 @@ void Console::Handler::setFontSize(const int size)
 }
 
 /**
+ * @brief Sets the number of lines retained in the console scrollback buffer.
+ */
+void Console::Handler::setScrollbackLines(const int lines)
+{
+  const int constrainedLines = qBound(100, lines, 100000);
+  if (m_scrollbackLines != constrainedLines) {
+    m_scrollbackLines = constrainedLines;
+    m_settings.setValue("Console/ScrollbackLines", m_scrollbackLines);
+    Q_EMIT scrollbackLinesChanged();
+  }
+}
+
+/**
  * @brief Sets the currently selected checksum method by index.
  */
 void Console::Handler::setChecksumMethod(const int method)
@@ -834,9 +859,6 @@ void Console::Handler::append(const QString& string, const bool addTimestamp)
     }
 
     if (nlPos >= 0) {
-      if (m_isStartingLine)
-        processedString.append(timestamp);
-
       processedString.append('\n');
       m_isStartingLine = true;
       pos              = nlPos + 1;
@@ -1070,9 +1092,6 @@ QString Console::Handler::appendToDevice(int deviceId, const QString& str, bool 
     }
 
     if (nlPos >= 0) {
-      if (state.isStartingLine)
-        processedString.append(timestamp);
-
       processedString.append('\n');
       state.isStartingLine = true;
       pos                  = nlPos + 1;

@@ -26,6 +26,7 @@
 #include <QKeyEvent>
 #include <QPalette>
 #include <QQuickPaintedItem>
+#include <QRect>
 #include <QTimer>
 
 namespace Console {
@@ -204,6 +205,7 @@ private slots:
   void toggleCursor();
   void onThemeChanged();
   void loadWelcomeGuide();
+  void applyScrollbackLimit();
   void append(const QString& data);
   void appendString(QStringView string);
   void removeStringFromCursor(const Widgets::Terminal::Direction direction = RightDirection,
@@ -211,6 +213,7 @@ private slots:
 
 private:
   void initBuffer();
+  void trimExcessLines(const int linesToDrop);
   [[nodiscard]] bool collapseCompletedLine();
   [[nodiscard]] QStringView lineContentView(QStringView line) const;
   [[nodiscard]] static bool hasTimestampPrefix(QStringView line);
@@ -282,6 +285,12 @@ private:
                         int y);
   void paintTextContent(QPainter* painter, int firstLine, int lastVLine, int lineHeight);
   void paintScrollbar(QPainter* painter);
+  [[nodiscard]] QRect scrollbarTrackRect() const;
+  [[nodiscard]] QRect scrollbarThumbRect() const;
+  [[nodiscard]] int scrollOffsetForThumbY(const int thumbY) const;
+  [[nodiscard]] bool isOverScrollbar(const QPoint& pos) const;
+  [[nodiscard]] bool handleScrollbarPress(const QPoint& pos);
+  void applyScrollbarOffset(const int offset);
 
   static QByteArray translateKeyToVt100(const QKeyEvent* event);
   static QByteArray translateSpecialKey(int key);
@@ -295,6 +304,7 @@ protected:
   void mousePressEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void mouseDoubleClickEvent(QMouseEvent* event) override;
+  void mouseUngrabEvent() override;
   void geometryChange(const QRectF& newGeometry, const QRectF& oldGeometry) override;
 
 private:
@@ -319,6 +329,8 @@ private:
   int m_borderX;
   int m_borderY;
   int m_scrollOffsetY;
+  int m_maxLines;
+  int m_dragThumbGrabY;
 
   QTimer m_cursorTimer;
   QPoint m_cursorPosition;
@@ -335,6 +347,7 @@ private:
   bool m_collapseDuplicates;
   bool m_cursorVisible;
   bool m_mouseTracking;
+  bool m_draggingScrollbar;
 
   QList<int> m_formatValues;
   int m_currentFormatValue;

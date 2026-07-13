@@ -1458,6 +1458,31 @@ Widgets.SmartDialog {
           }
 
           Label {
+            text: qsTr("Scrollback Lines")
+            color: Cpp_ThemeManager.colors["text"]
+          } SpinBox {
+            id: _scrollbackLines
+
+            from: 100
+            to: 100000
+            stepSize: 100
+            editable: true
+            Layout.fillWidth: true
+            value: Cpp_Console_Handler.scrollbackLines
+
+            onValueModified: {
+              Cpp_Console_Handler.scrollbackLines = value
+            }
+
+            Connections {
+              target: Cpp_Console_Handler
+              function onScrollbackLinesChanged() {
+                _scrollbackLines.value = Cpp_Console_Handler.scrollbackLines
+              }
+            }
+          }
+
+          Label {
             text: qsTr("Show Timestamps")
             color: Cpp_ThemeManager.colors["text"]
           } Switch {
@@ -1847,6 +1872,7 @@ Widgets.SmartDialog {
           Cpp_UI_TaskbarSettings.resetToDefaults()
           Cpp_Console_Handler.fontFamily = Cpp_Misc_CommonFonts.monoFont.family
           Cpp_Console_Handler.fontSize = Cpp_Misc_CommonFonts.monoFont.pointSize
+          Cpp_Console_Handler.scrollbackLines = 1000
           Cpp_Console_Handler.echo = false
           Cpp_Console_Handler.showTimestamp = false
           Cpp_Console_Handler.vt100Emulation = true

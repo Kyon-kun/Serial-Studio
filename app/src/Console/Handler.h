@@ -133,6 +133,10 @@ class Handler : public QObject {
              READ fontSize
              WRITE setFontSize
              NOTIFY fontSizeChanged)
+  Q_PROPERTY(int scrollbackLines
+             READ scrollbackLines
+             WRITE setScrollbackLines
+             NOTIFY scrollbackLinesChanged)
   Q_PROPERTY(int fontFamilyIndex
              READ fontFamilyIndex
              NOTIFY fontFamilyChanged)
@@ -175,6 +179,7 @@ signals:
   void showTimestampChanged();
   void checksumMethodChanged();
   void vt100EmulationChanged();
+  void scrollbackLinesChanged();
   void currentDeviceIdChanged();
   void ansiColorsEnabledChanged();
   void imageWidgetActiveChanged();
@@ -241,6 +246,7 @@ public:
   [[nodiscard]] int fontFamilyIndex() const;
   [[nodiscard]] QStringList availableFonts() const;
 
+  [[nodiscard]] int scrollbackLines() const;
   [[nodiscard]] int defaultCharWidth() const;
   [[nodiscard]] int defaultCharHeight() const;
   [[nodiscard]] qsizetype bufferLength() const;
@@ -260,6 +266,7 @@ public slots:
   void send(const QString& data);
   void setEcho(const bool enabled);
   void setFontSize(const int size);
+  void setScrollbackLines(const int lines);
   void setChecksumMethod(const int method);
   void setFontFamily(const QString& family);
   void setShowTimestamp(const bool enabled);
@@ -309,6 +316,7 @@ private:
 
   int m_historyItem;
   int m_checksumMethod;
+  int m_scrollbackLines;
 
   bool m_echo;
   bool m_showTimestamp;

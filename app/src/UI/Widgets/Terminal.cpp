@@ -38,9 +38,10 @@
 #endif
 
 /**
- * @brief Define the number of max lines supported
+ * @brief Cap on the upfront buffer reservation so large scrollback settings do not
+ *        front-load multi-megabyte allocations; growth beyond it is amortized.
  */
-constexpr int MAX_LINES = 1000;
+constexpr int MAX_UPFRONT_RESERVE = 10000;
 
 //--------------------------------------------------------------------------------------------------
 // Constructor & initialization
@@ -64,6 +65,8 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
   , m_borderX(0)
   , m_borderY(0)
   , m_scrollOffsetY(0)
+  , m_maxLines(m_consoleHandler.scrollbackLines())
+  , m_dragThumbGrabY(0)
   , m_state(Text)
   , m_paused(false)
   , m_autoscroll(true)
@@ -72,6 +75,7 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
   , m_collapseDuplicates(m_consoleHandler.collapseDuplicates())
   , m_cursorVisible(true)
   , m_mouseTracking(false)
+  , m_draggingScrollbar(false)
   , m_currentFormatValue(0)
   , m_privateMode(false)
   , m_stateChanged(false)
@@ -104,6 +108,10 @@ Widgets::Terminal::Terminal(QQuickItem* parent)
   connect(&m_consoleHandler, &Console::Handler::collapseDuplicatesChanged, this, [this] {
     m_collapseDuplicates = m_consoleHandler.collapseDuplicates();
   });
+  connect(&m_consoleHandler,
+          &Console::Handler::scrollbackLinesChanged,
+          this,
+          &Widgets::Terminal::applyScrollbackLimit);
   connect(&m_consoleHandler, &Console::Handler::cleared, this, &Widgets::Terminal::clear);
   connect(&m_connectionManager, &IO::ConnectionManager::connectedChanged, this, [=, this] {
     if (m_connectionManager.isConnected())
@@ -635,32 +643,120 @@ void Widgets::Terminal::paintTextContent(QPainter* painter,
 }
 
 /**
- * @brief Draws the rounded scrollbar thumb when manual scrolling is active.
+ * @brief Returns the full-height scrollbar track rectangle, mirrored under RTL layouts.
+ */
+QRect Widgets::Terminal::scrollbarTrackRect() const
+{
+  const int scrollbarWidth = 6;
+  const bool rtl           = m_translator.rtl();
+  const int x = rtl ? m_borderX : (static_cast<int>(width()) - scrollbarWidth - m_borderX);
+  const int trackHeight = qMax(0, static_cast<int>(height()) - 2 * m_borderY);
+  return QRect(x, m_borderY, scrollbarWidth, trackHeight);
+}
+
+/**
+ * @brief Returns the scrollbar thumb rectangle for the current scroll offset.
+ */
+QRect Widgets::Terminal::scrollbarThumbRect() const
+{
+  const QRect track         = scrollbarTrackRect();
+  const int availableHeight = track.height();
+  const int lines           = qMax(1, lineCount());
+
+  int thumbHeight = qMax(20, availableHeight * availableHeight / lines);
+  if (thumbHeight > availableHeight / 2)
+    thumbHeight = availableHeight / 2;
+
+  const int denom  = qMax(1, lineCount() - linesPerPage());
+  const int travel = qMax(0, availableHeight - thumbHeight);
+  const int offset = qBound(0, m_scrollOffsetY, denom);
+  const int y      = track.y() + (travel * offset) / denom;
+  return QRect(track.x(), y, track.width(), thumbHeight);
+}
+
+/**
+ * @brief Maps a thumb top Y coordinate back to a scroll offset, clamped to valid range.
+ */
+int Widgets::Terminal::scrollOffsetForThumbY(const int thumbY) const
+{
+  const QRect track = scrollbarTrackRect();
+  const QRect thumb = scrollbarThumbRect();
+  const int travel  = qMax(1, track.height() - thumb.height());
+  const int denom   = qMax(0, lineCount() - linesPerPage());
+  const int local   = qBound(0, thumbY - track.y(), travel);
+  const int offset  = (local * denom + travel / 2) / travel;
+  return qBound(0, offset, denom);
+}
+
+/**
+ * @brief Applies a scrollbar-driven scroll offset with the wheel handler's autoscroll
+ *        rules: leaving the bottom disengages autoscroll, reaching it re-engages.
+ */
+void Widgets::Terminal::applyScrollbarOffset(const int offset)
+{
+  const int maxOffset = qMax(0, lineCount() - linesPerPage());
+  const int clamped   = qBound(0, offset, maxOffset);
+
+  if (clamped < maxOffset && autoscroll())
+    setAutoscroll(false);
+  else if (clamped >= maxOffset && !autoscroll())
+    setAutoscroll(true);
+
+  setScrollOffsetY(clamped);
+  m_stateChanged = true;
+}
+
+/**
+ * @brief Returns true when @p pos falls inside the interactive scrollbar band; the band
+ *        only exists while the thumb is visible (manual scrolling, buffer overflow).
+ */
+bool Widgets::Terminal::isOverScrollbar(const QPoint& pos) const
+{
+  if (autoscroll() || lineCount() <= linesPerPage())
+    return false;
+
+  return scrollbarTrackRect().adjusted(-3, 0, 3, 0).contains(pos);
+}
+
+/**
+ * @brief Consumes a left press on the scrollbar band: grabs the thumb for dragging or
+ *        pages toward a track click; returns false when the press is outside the band.
+ */
+bool Widgets::Terminal::handleScrollbarPress(const QPoint& pos)
+{
+  if (!isOverScrollbar(pos))
+    return false;
+
+  const QRect thumb = scrollbarThumbRect();
+  if (pos.y() >= thumb.top() && pos.y() <= thumb.bottom()) {
+    m_draggingScrollbar = true;
+    m_dragThumbGrabY    = pos.y() - thumb.y();
+    setAutoscroll(false);
+  }
+
+  else if (pos.y() < thumb.top())
+    applyScrollbarOffset(m_scrollOffsetY - linesPerPage());
+
+  else
+    applyScrollbarOffset(m_scrollOffsetY + linesPerPage());
+
+  m_stateChanged = true;
+  return true;
+}
+
+/**
+ * @brief Draws the rounded scrollbar thumb while manual scrolling is active.
  */
 void Widgets::Terminal::paintScrollbar(QPainter* painter)
 {
   if (autoscroll() || lineCount() <= linesPerPage())
     return;
 
-  const int availableHeight = height() - 2 * m_borderY;
-  const int scrollbarWidth  = 6;
-  int scrollbarHeight       = qMax(20.0, qPow(availableHeight, 2) / lineCount());
-  if (scrollbarHeight > availableHeight / 2)
-    scrollbarHeight = availableHeight / 2;
-
-  const bool rtl = m_translator.rtl();
-  const int x    = rtl ? m_borderX : (width() - scrollbarWidth - m_borderX);
-  int y          = (m_scrollOffsetY / static_cast<float>(lineCount() - linesPerPage()))
-          * (availableHeight - scrollbarHeight)
-        - m_borderY;
-  y = qMax(m_borderY, y);
-
-  QRect scrollbarRect(x, y, scrollbarWidth, scrollbarHeight);
-  QBrush scrollbarBrush(m_palette.color(QPalette::Window));
+  const QRect thumb = scrollbarThumbRect();
   painter->setRenderHint(QPainter::Antialiasing);
-  painter->setBrush(scrollbarBrush);
   painter->setPen(Qt::NoPen);
-  painter->drawRoundedRect(scrollbarRect, scrollbarWidth / 2, scrollbarWidth / 2);
+  painter->setBrush(m_palette.color(QPalette::Window));
+  painter->drawRoundedRect(thumb, thumb.width() / 2.0, thumb.width() / 2.0);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -1407,7 +1503,7 @@ void Widgets::Terminal::setAnsiColors(const bool enabled)
 
   if (enabled) {
     m_currentColor = QColor();
-    m_colorData.reserve(MAX_LINES);
+    m_colorData.reserve(qMin(m_maxLines, MAX_UPFRONT_RESERVE));
   }
 
   Q_EMIT ansiColorsChanged();
@@ -1598,40 +1694,95 @@ void Widgets::Terminal::append(const QString& data)
 //--------------------------------------------------------------------------------------------------
 
 /**
+ * @brief Re-reads the scrollback setting and trims the buffer front when it now exceeds
+ *        the cap, squeezing afterwards because a QList front-erase strands its capacity;
+ *        raising the cap only lets future appends grow further.
+ */
+void Widgets::Terminal::applyScrollbackLimit()
+{
+  m_maxLines = m_consoleHandler.scrollbackLines();
+  Q_ASSERT(m_maxLines >= 100);
+  Q_ASSERT(m_maxLines <= 100000);
+
+  const int excess = static_cast<int>(m_data.size()) - m_maxLines;
+  if (excess > 0) {
+    trimExcessLines(excess);
+    m_data.squeeze();
+    m_colorData.squeeze();
+    m_repeatCounts.squeeze();
+  }
+
+  m_stateChanged = true;
+  update();
+}
+
+/**
+ * @brief Drops @p linesToDrop rows from the front of the buffer, keeping the color rows,
+ *        repeat counts, cursor, scroll offset, selection, and search state in lockstep.
+ */
+void Widgets::Terminal::trimExcessLines(const int linesToDrop)
+{
+  Q_ASSERT(linesToDrop > 0);
+  Q_ASSERT(linesToDrop <= m_data.size());
+
+  m_data.erase(m_data.begin(), m_data.begin() + linesToDrop);
+
+  // code-verify off
+  // Trim color rows in lockstep with text rows regardless of the ansiColors() toggle: rows
+  // recorded while colors were on must not survive as a stale, misaligned front.
+  if (!m_colorData.isEmpty()) {
+    const int colorDrop = qMin(linesToDrop, static_cast<int>(m_colorData.size()));
+    m_colorData.erase(m_colorData.begin(), m_colorData.begin() + colorDrop);
+  }
+
+  if (!m_repeatCounts.isEmpty()) {
+    const int countDrop = qMin(linesToDrop, static_cast<int>(m_repeatCounts.size()));
+    m_repeatCounts.erase(m_repeatCounts.begin(), m_repeatCounts.begin() + countDrop);
+  }
+
+  m_searchDirty = true;
+  // code-verify on
+
+  if (m_cursorPosition.y() >= linesToDrop)
+    m_cursorPosition.setY(m_cursorPosition.y() - linesToDrop);
+  else
+    m_cursorPosition.setY(0);
+
+  setScrollOffsetY(qMax(0, m_scrollOffsetY - linesToDrop));
+
+  if (!m_selectionEnd.isNull() || !m_selectionStart.isNull()) {
+    if (m_selectionEnd.y() < linesToDrop) {
+      m_selectionStart = QPoint();
+      m_selectionEnd   = QPoint();
+    } else {
+      m_selectionEnd.ry() -= linesToDrop;
+      if (m_selectionStart.y() >= linesToDrop)
+        m_selectionStart.ry() -= linesToDrop;
+      else
+        m_selectionStart = QPoint(0, 0);
+    }
+
+    Q_EMIT selectionChanged();
+  }
+
+  if (!m_selectionStartCursor.isNull()) {
+    if (m_selectionStartCursor.y() >= linesToDrop)
+      m_selectionStartCursor.ry() -= linesToDrop;
+    else
+      m_selectionStartCursor = QPoint(0, 0);
+  }
+
+  m_stateChanged = true;
+}
+
+/**
  * @brief Appends a string to the terminal's data buffer, updating the cursor position.
  */
 void Widgets::Terminal::appendString(QStringView string)
 {
-  const int linesToDrop = m_data.size() - MAX_LINES + 1;
-  if (m_data.size() >= MAX_LINES && linesToDrop > 0) {
-    m_data.erase(m_data.begin(), m_data.begin() + linesToDrop);
-
-    // code-verify off
-    // Trim color rows in lockstep with text rows regardless of the ansiColors() toggle: rows
-    // recorded while colors were on must not survive as a stale, misaligned front.
-    if (!m_colorData.isEmpty()) {
-      const int colorDrop = qMin(linesToDrop, static_cast<int>(m_colorData.size()));
-      m_colorData.erase(m_colorData.begin(), m_colorData.begin() + colorDrop);
-    }
-
-    if (!m_repeatCounts.isEmpty()) {
-      const int countDrop = qMin(linesToDrop, static_cast<int>(m_repeatCounts.size()));
-      m_repeatCounts.erase(m_repeatCounts.begin(), m_repeatCounts.begin() + countDrop);
-    }
-
-    m_searchDirty = true;
-    // code-verify on
-
-    if (m_cursorPosition.y() >= linesToDrop)
-      m_cursorPosition.setY(m_cursorPosition.y() - linesToDrop);
-    else
-      m_cursorPosition.setY(0);
-
-    if (m_scrollOffsetY >= linesToDrop)
-      m_scrollOffsetY -= linesToDrop;
-    else
-      m_scrollOffsetY = 0;
-  }
+  const int linesToDrop = m_data.size() - m_maxLines + 1;
+  if (m_data.size() >= m_maxLines && linesToDrop > 0)
+    trimExcessLines(linesToDrop);
 
   for (const auto& character : string) {
     int cursorX = m_cursorPosition.x();
@@ -1784,19 +1935,21 @@ void Widgets::Terminal::removeStringFromCursor(const Direction direction, int le
  */
 void Widgets::Terminal::initBuffer()
 {
+  const int reserveLines = qMin(m_maxLines, MAX_UPFRONT_RESERVE);
+
   m_data.clear();
   m_data.squeeze();
   m_scrollOffsetY = 0;
-  m_data.reserve(MAX_LINES);
+  m_data.reserve(reserveLines);
   m_colorData.clear();
   m_colorData.squeeze();
   m_repeatCounts.clear();
   m_repeatCounts.squeeze();
-  m_repeatCounts.reserve(MAX_LINES);
+  m_repeatCounts.reserve(reserveLines);
   m_searchDirty = true;
 
   if (ansiColors()) {
-    m_colorData.reserve(MAX_LINES);
+    m_colorData.reserve(reserveLines);
     m_currentColor = QColor();
   }
 }
@@ -2453,7 +2606,7 @@ QString Widgets::Terminal::formatDebugMessage(QtMsgType type,
 void Widgets::Terminal::setCursorPosition(const QPoint& position)
 {
   const QPoint clamped(qBound(0, position.x(), maxCharsPerLine()),
-                       qBound(0, position.y(), MAX_LINES));
+                       qBound(0, position.y(), m_maxLines));
   if (m_cursorPosition != clamped) {
     m_cursorPosition = clamped;
     Q_EMIT cursorMoved();
@@ -2573,6 +2726,12 @@ void Widgets::Terminal::wheelEvent(QWheelEvent* event)
  */
 void Widgets::Terminal::mouseMoveEvent(QMouseEvent* event)
 {
+  if (m_draggingScrollbar) {
+    const int thumbY = event->position().toPoint().y() - m_dragThumbGrabY;
+    applyScrollbarOffset(scrollOffsetForThumbY(thumbY));
+    return;
+  }
+
   if (!m_mouseTracking)
     return;
 
@@ -2600,6 +2759,11 @@ void Widgets::Terminal::mouseMoveEvent(QMouseEvent* event)
 void Widgets::Terminal::mousePressEvent(QMouseEvent* event)
 {
   if (event->button() == Qt::LeftButton) {
+    if (handleScrollbarPress(event->position().toPoint())) {
+      forceActiveFocus();
+      return;
+    }
+
     m_mouseTracking        = true;
     m_selectionStartCursor = positionToCursor(event->pos());
     m_selectionStart       = m_selectionStartCursor;
@@ -2616,6 +2780,12 @@ void Widgets::Terminal::mousePressEvent(QMouseEvent* event)
  */
 void Widgets::Terminal::mouseReleaseEvent(QMouseEvent* event)
 {
+  if (event->button() == Qt::LeftButton && m_draggingScrollbar) {
+    m_draggingScrollbar = false;
+    applyScrollbarOffset(m_scrollOffsetY);
+    return;
+  }
+
   if (event->button() == Qt::LeftButton) {
     if (m_selectionStart == m_selectionEnd) {
       m_selectionStart = QPoint();
@@ -2630,10 +2800,24 @@ void Widgets::Terminal::mouseReleaseEvent(QMouseEvent* event)
 }
 
 /**
+ * @brief Clears drag and selection-tracking state when the mouse grab is taken away.
+ */
+void Widgets::Terminal::mouseUngrabEvent()
+{
+  m_mouseTracking        = false;
+  m_draggingScrollbar    = false;
+  m_selectionStartCursor = QPoint();
+  QQuickPaintedItem::mouseUngrabEvent();
+}
+
+/**
  * @brief Handles mouse double-click events for selecting the word under the cursor.
  */
 void Widgets::Terminal::mouseDoubleClickEvent(QMouseEvent* event)
 {
+  if (isOverScrollbar(event->position().toPoint()))
+    return;
+
   auto cursorPos = positionToCursor(event->pos());
   if (cursorPos.y() >= 0 && cursorPos.y() < m_data.size()) {
     const QString& line = m_data[cursorPos.y()];

@@ -119,7 +119,7 @@ For a button-by-button map of the toolbar, the Setup panel, the dashboard taskba
 
 ### 2. Console (center, default view)
 
-When you first connect, the console panel shows raw incoming data from your device. You can switch between Plain Text and Hexadecimal display. The console is handy for confirming that your device is sending data before you configure a dashboard.
+When you first connect, the console panel shows raw incoming data from your device. You can switch between Text and Hex display. The console is handy for confirming that your device is sending data before you configure a dashboard.
 
 ### 3. Dashboard (center, replaces the console)
 
@@ -231,7 +231,7 @@ Console Only is a diagnostic mode. Serial Studio doesn't try to parse anything; 
 1. In the Setup panel, set the operation mode to **Console Only (No Parsing)**.
 2. Pick your I/O interface and configure the connection (port, baud rate, IP, and so on).
 3. Click **Connect**.
-4. Raw bytes appear in the terminal. Toggle between Plain Text and Hexadecimal display from the console toolbar.
+4. Raw bytes appear in the terminal. Toggle between Text and Hex display from the console toolbar.
 5. Use the input box at the bottom of the console to send bytes back to the device.
 
 No dashboard, no CSV export, no parsing. Once the stream looks correct, switch to Quick Plot or Project File to visualize the data.

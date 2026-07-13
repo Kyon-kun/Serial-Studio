@@ -445,6 +445,34 @@ Item {
                 checked: Cpp_Console_Handler.vt100Emulation && Cpp_Console_Handler.ansiColors
                 enabled: Cpp_Console_Handler.vt100Emulation && !Cpp_Console_Handler.imageWidgetActive
               }
+
+              RowLayout {
+                spacing: 4
+
+                Label {
+                  text: qsTr("Scrollback Lines")
+                  Layout.alignment: Qt.AlignVCenter
+                }
+
+                SpinBox {
+                  id: scrollbackSpin
+
+                  from: 100
+                  to: 100000
+                  stepSize: 100
+                  editable: true
+                  Layout.fillWidth: true
+                  value: Cpp_Console_Handler.scrollbackLines
+                  onValueModified: Cpp_Console_Handler.scrollbackLines = value
+
+                  Connections {
+                    target: Cpp_Console_Handler
+                    function onScrollbackLinesChanged() {
+                      scrollbackSpin.value = Cpp_Console_Handler.scrollbackLines
+                    }
+                  }
+                }
+              }
             }
           }
         }

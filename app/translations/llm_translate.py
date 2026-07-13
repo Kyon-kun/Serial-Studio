@@ -734,6 +734,39 @@ DOMAIN_GLOSSARY = [
     "'Console' / 'Terminal' — text-based I/O view. Standard term.",
 ]
 
+# Manual translations pinned by EXACT source-string match, per language. Pinned
+# entries never reach the LLM: the hand-picked value ships verbatim on every
+# run. Use for short technical terms where LLM creativity is worse than a
+# curated form — Latin-script locales keep the conventional "Hex", Cyrillic and
+# RTL/Indic scripts get the standard transliteration, CJK gets the native term.
+# A language missing from a term's map falls through to the normal LLM path.
+# Applied in translate_ts_file() before batching and re-enforced by
+# --verify-only (cased scripts only) so later runs cannot drift them.
+PINNED_TRANSLATIONS = {
+    "Hex": {
+        "cs_CZ": "Hex",
+        "de_DE": "Hex",
+        "es_MX": "Hex",
+        "fr_FR": "Hex",
+        "it_IT": "Hex",
+        "nl_NL": "Hex",
+        "pl_PL": "Hex",
+        "pt_BR": "Hex",
+        "ro_RO": "Hex",
+        "sv_SE": "Hex",
+        "tr_TR": "Hex",
+        "vi_VN": "Hex",
+        "ru_RU": "Хекс",
+        "uk_UA": "Хекс",
+        "ar_SA": "هيكس",
+        "he_IL": "הקס",
+        "hi_IN": "हेक्स",
+        "ja_JP": "16進",
+        "ko_KR": "16진수",
+        "zh_CN": "十六进制",
+    },
+}
+
 # ------------------------------------------------------------------------------
 # Utility Functions
 # ------------------------------------------------------------------------------
@@ -1711,6 +1744,15 @@ def translate_ts_file(
             if not needs_translation:
                 continue
 
+            pinned = PINNED_TRANSLATIONS.get(source.text, {}).get(lang_code)
+            if pinned is not None:
+                translation.text = pinned
+                translation.attrib.pop("type", None)
+                log_fn(
+                    f"[PINNED] '{source.text}' → '{pinned}' (manual translation, no LLM call)"
+                )
+                continue
+
             pending.append((context_tag, source.text, translation))
 
     total_pending = len(pending)
@@ -1915,10 +1957,9 @@ def verify_capitalization_ts_file(filename):
         print(f"Skipping {filename}: unsupported language code.")
         return
 
-    # Skip languages with caseless scripts (Chinese, Japanese, Hindi, etc.)
-    if lang_code in CASELESS_SCRIPTS:
-        print(f"\n{filename}: Skipped (caseless script - no uppercase/lowercase) ⊘\n")
-        return
+    # Caseless scripts (Chinese, Japanese, Hindi, etc.) skip the capitalization
+    # pass below but still get pinned-translation enforcement.
+    caseless = lang_code in CASELESS_SCRIPTS
 
     ts_path = os.path.join(SCRIPT_DIR, TS_DIRECTORY, filename)
     tree = etree.parse(ts_path)
@@ -1933,6 +1974,23 @@ def verify_capitalization_ts_file(filename):
             translation = message.find("translation")
 
             if source is None or not source.text or not source.text.strip():
+                continue
+
+            pinned = PINNED_TRANSLATIONS.get(source.text, {}).get(lang_code)
+            if pinned is not None:
+                if translation is None:
+                    translation = etree.SubElement(message, "translation")
+                if (
+                    translation.text != pinned
+                    or translation.get("type") == "unfinished"
+                ):
+                    print(f"[PIN] {source.text} → {pinned}")
+                    translation.text = pinned
+                    translation.attrib.pop("type", None)
+                    total_fixed += 1
+                continue
+
+            if caseless:
                 continue
 
             if (
