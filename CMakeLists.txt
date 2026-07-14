@@ -368,7 +368,9 @@ endif()
 #                                 and warns "argument unused during compilation".
 #   MSVC cl.exe (Windows)         /wd4324 (C4324 alignment padding) /wd4267 (C4267 size_t->int) plus
 #                                 /Zc:inline /Zc:lambda /Zc:throwingNew conformance switches.
-#   GCC/Clang/MinGW               -Wall -Wextra -pedantic.
+#   GCC/Clang/MinGW               -Wall -Wextra -pedantic, plus -Wshadow (locals shadowing
+#                                 members/outers) and -Wundef (undefined macros in #if silently
+#                                 evaluating to 0).
 #
 # Third-party libraries in lib/ build with -w (or /w), so these are effectively app-only.
 #
@@ -393,6 +395,8 @@ else()
     -Wall
     -Wextra
     -pedantic
+    -Wshadow
+    -Wundef
   )
 endif()
 
