@@ -50,10 +50,10 @@
          "mandatory":false
       },
       "windows-msix":{
-         "open-url":"https://github.com/Serial-Studio/Serial-Studio/releases/tag/v4.0.2",
-         "latest-version":"4.0.2",
+         "open-url":"https://apps.microsoft.com/detail/9N5PZLKJCDP7?hl=en-us&gl=US&ocid=pdpshare",
+         "latest-version":"4.0.3",
          "download-url":"",
-         "changelog":"https://github.com/Serial-Studio/Serial-Studio/releases/tag/v4.0.2",
+         "changelog":"https://github.com/Serial-Studio/Serial-Studio/releases/tag/v4.0.3",
          "mandatory":false
       },
       "linux-appimage-x64":{
