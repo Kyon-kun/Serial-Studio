@@ -51,22 +51,22 @@ Every device action still requires your explicit per-call approval in the chat, 
 כל פעולת מכשיר עדיין דורשת את אישורך המפורש לכל קריאה בצ'אט, גם כאשר אישור אוטומטי מופעל. הפעל זאת רק אם אתה סומך על ספק ה-AI המוגדר עם גישה לחומרה.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="621"/>
+        <location filename="../../src/AI/Assistant.cpp" line="630"/>
         <source>Switch AI provider?</source>
         <translation>להחליף ספק AI?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="622"/>
+        <location filename="../../src/AI/Assistant.cpp" line="631"/>
         <source>Switching to a different provider clears the current conversation. Do you want to continue?</source>
         <translation>מעבר לספק אחר מוחק את השיחה הנוכחית. להמשיך?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="625"/>
+        <location filename="../../src/AI/Assistant.cpp" line="634"/>
         <source>Assistant</source>
         <translation>עוזר</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="662"/>
+        <location filename="../../src/AI/Assistant.cpp" line="671"/>
         <source>AI Assistant is not available in this build</source>
         <translation>עוזר ה-AI אינו זמין בגרסה זו</translation>
     </message>
@@ -75,7 +75,7 @@ Every device action still requires your explicit per-call approval in the chat, 
         <translation type="vanished">עוזר AI דורש רישיון Pro</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="667"/>
+        <location filename="../../src/AI/Assistant.cpp" line="676"/>
         <source>Set an API key first</source>
         <translation>הגדר תחילה מפתח API</translation>
     </message>
@@ -87,47 +87,62 @@ Every device action still requires your explicit per-call approval in the chat, 
         <translation type="vanished">עוזר AI דורש רישיון Pro</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="170"/>
+        <location filename="../../src/AI/Conversation.cpp" line="171"/>
         <source>AI Assistant is not available in this build</source>
         <translation>עוזר ה-AI אינו זמין בגרסה זו</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="177"/>
         <source>AI subsystem not initialized</source>
         <translation>תת-מערכת AI לא אותחלה</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="182"/>
+        <location filename="../../src/AI/Conversation.cpp" line="183"/>
         <source>Already busy with a previous request</source>
         <translation>עסוק כבר בבקשה קודמת</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="582"/>
+        <location filename="../../src/AI/Conversation.cpp" line="647"/>
         <source>Tool-call budget reached for this turn; no further tools will run.</source>
         <translation>תקציב קריאות הכלים הושג עבור תור זה; לא יופעלו כלים נוספים.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1196"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>ממתין לתגובה מ־%1. טעינת המודל ועיבוד הפרומפט עשויים לקחת זמן על חומרה מקומית...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2034"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 פעולה/פעולות נכשלה/נכשלו</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2180"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <source>Source list read-back failed</source>
+        <translation>קריאת רשימת המקורות נכשלה</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <source>Source %1 not found after update</source>
+        <translation>מקור %1 לא נמצא לאחר העדכון</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <source>Fields did not round-trip: %1</source>
+        <translation>השדות לא חזרו בעגול: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>הגעת לתקציב קריאות הכלים עבור תור זה. אל תבקש כלים נוספים. סכם את מה שמצאת עד כה, ואם המשימה לא הושלמה, ציין אילו שלבים נותרו כדי שהמשתמש יוכל להורות לך להמשיך.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2913"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>המודל הפסיק לשחזר את שורת שלמות ההקשר שלו. שיחות ארוכות מתדרדרות בשקט; תגובות אחרונות עשויות להיות פחות אמינות.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2916"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>המודל שינה את שורת שלמות ההקשר שלו (קטע סוטה: %1). שיחות ארוכות מתדרדרות בשקט; תגובות אחרונות עשויות להיות פחות אמינות.</translation>
     </message>
@@ -136,17 +151,17 @@ Every device action still requires your explicit per-call approval in the chat, 
         <translation type="vanished">תקציב קריאות כלים חרג מהמותר</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1037"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(המודל החזיר תגובה ריקה. נסה לנסח מחדש, לעבור למודל אחר, או לבדוק שהבקשה מותרת על-ידי מסנני הבטיחות של הספק.)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1200"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
         <source>Sending request to %1...</source>
         <translation>שולח בקשה אל %1...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1218"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
         <source>Provider returned no reply</source>
         <translation>הספק לא החזיר תשובה</translation>
     </message>
@@ -1247,22 +1262,27 @@ Only enable this on trusted networks. Untrusted clients may read live data or se
         <translation>התעלם</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="984"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="935"/>
+        <source>Continuing from your previous chat. Its recent context was carried over.</source>
+        <translation>ממשיך מהצ'אט הקודם שלך. ההקשר האחרון שלו הועבר.</translation>
+    </message>
+    <message>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1014"/>
         <source>Ask Serial Studio anything…</source>
         <translation>שאל את Serial Studio כל דבר…</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1004"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1034"/>
         <source>Clear conversation</source>
         <translation>נקה שיחה</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1048"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1078"/>
         <source>Stop generating</source>
         <translation>עצור יצירה</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1049"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1079"/>
         <source>Send message (Enter)</source>
         <translation>שלח הודעה (Enter)</translation>
     </message>
@@ -4538,7 +4558,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="575"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="845"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1396"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1409"/>
         <source>General Information</source>
         <translation>מידע כללי</translation>
     </message>
@@ -4625,7 +4645,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="686"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1455"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1468"/>
         <source>Text Encoding</source>
         <translation>קידוד טקסט</translation>
     </message>
@@ -4761,48 +4781,63 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>יחידת מדידה, כגון וולט או אמפר (אופציונלי)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="933"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="922"/>
+        <source>Automatic</source>
+        <translation>אוטומטי</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="923"/>
+        <source>Widget Color</source>
+        <translation>צבע Widget</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="924"/>
+        <source>Custom display color for this dataset; automatic uses the theme palette</source>
+        <translation>צבע תצוגה מותאם אישית עבור מערך נתונים זה; אוטומטי משתמש בפלטת הערכת הנושא</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
         <source>Lower bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>גבול תחתון של טווח ערכי מערך הנתונים; ווידג'טים ו-FFT חוזרים אליו כאשר הטווח שלהם עצמם לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
         <source>Upper bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>גבול עליון של טווח ערכי מערך הנתונים; ווידג'טים ו-FFT חוזרים אליו כאשר הטווח שלהם עצמם לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="972"/>
         <source>Plot Settings</source>
         <translation>הגדרות גרף</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="982"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="995"/>
         <source>Enable Plot Widget</source>
         <translation>הפעלת ווידג'ט גרף</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="984"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="997"/>
         <source>Plot data in real-time</source>
         <translation>הצגת נתונים בזמן אמת בגרף</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1108"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
         <source>FFT Window Function</source>
         <translation>פונקציית חלון FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1109"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
         <source>Window applied before the transform to reduce spectral leakage; affects both the FFT plot and the waterfall</source>
         <translation>חלון המוחל לפני הטרנספורמציה כדי להפחית דליפה ספקטרלית; משפיע גם על עלילת FFT וגם על המפל</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1291"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1304"/>
         <source>Fixed decimal places for the value display; overrides the format (-1 = auto)</source>
         <translation>מספר מקומות עשרוניים קבוע לתצוגת הערך; דורס את הפורמט (1- = אוטומטי)</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="250"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1003"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1016"/>
         <source>X-Axis Source</source>
         <translation>מקור ציר X</translation>
     </message>
@@ -4827,57 +4862,57 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">גבול עליון לטווח התצוגה של הגרף</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1030"/>
         <source>Frequency Analysis</source>
         <translation>ניתוח תדרים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1028"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1041"/>
         <source>Enable FFT Analysis</source>
         <translation>הפעל ניתוח FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1029"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1042"/>
         <source>Perform frequency-domain analysis of the dataset</source>
         <translation>בצע ניתוח בתחום התדר של מערך הנתונים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1039"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1052"/>
         <source>Enable Waterfall Plot</source>
         <translation>הפעל גרף מפל</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1040"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1053"/>
         <source>Show a scrolling spectrogram of frequency content over time (Pro)</source>
         <translation>הצג ספקטרוגרמה גוללת של תוכן תדרים לאורך זמן (Pro)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1063"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1076"/>
         <source>Waterfall Y Axis</source>
         <translation>ציר Y של מפל</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1064"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1077"/>
         <source>Choose Time (default) or any dataset whose value drives the Y axis -- produces a Campbell diagram when bound to e.g. RPM</source>
         <translation>בחר זמן (ברירת מחדל) או כל מערך נתונים שערכו מניע את ציר Y -- מייצר דיאגרמת Campbell כאשר מקושר למשל ל-RPM</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1091"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1104"/>
         <source>FFT Window Size</source>
         <translation>גודל חלון FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1092"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1105"/>
         <source>Number of samples used for each FFT calculation window</source>
         <translation>מספר הדגימות המשמשות לכל חלון חישוב FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1134"/>
         <source>FFT Sampling Rate (Hz, required)</source>
         <translation>קצב דגימה FFT (Hz, נדרש)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1135"/>
         <source>Sampling frequency used for FFT (in Hz)</source>
         <translation>תדר הדגימה המשמש ל-FFT (ב-Hz)</translation>
     </message>
@@ -4898,17 +4933,17 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">גבול עליון לנורמליזציה של נתונים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1171"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1184"/>
         <source>Widget Settings</source>
         <translation>הגדרות Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1194"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1207"/>
         <source>Widget</source>
         <translation>Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1195"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1208"/>
         <source>Select the visual widget used to display this dataset</source>
         <translation>בחירת ה-widget החזותי המשמש להצגת מערך נתונים זה</translation>
     </message>
@@ -4930,28 +4965,28 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1251"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1286"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1264"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1299"/>
         <source>Auto</source>
         <translation>אוטומטי</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1252"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1265"/>
         <source>Tick Count</source>
         <translation>מספר סימונים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1256"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1269"/>
         <source>Major-tick count on the dial scale (0 = auto-fit to widget size)</source>
         <translation>מספר הסימונים הראשיים על סולם החוגה (0 = התאמה אוטומטית לגודל הווידג'ט)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1275"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1288"/>
         <source>Label Format</source>
         <translation>עיצוב תווית</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1276"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1289"/>
         <source>Decimal places or notation used on tick labels and the value display</source>
         <translation>מספר המקומות העשרוניים או הסימון המשמש בתוויות הסימונים ובתצוגת הערך</translation>
     </message>
@@ -4992,22 +5027,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">מפעיל התראה חזותית כאשר הערך עולה על סף זה</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1351"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1364"/>
         <source>LED Display Settings</source>
         <translation>הגדרות תצוגת LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1362"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1375"/>
         <source>Show in LED Panel</source>
         <translation>הצג בלוח LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1363"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1376"/>
         <source>Enable visual status monitoring using an LED display</source>
         <translation>הפעלת ניטור מצב חזותי באמצעות תצוגת LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1377"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1390"/>
         <source>LED On Threshold (required)</source>
         <translation>סף הדלקת LED (נדרש)</translation>
     </message>
@@ -5332,48 +5367,48 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>מעורב</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1406"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1419"/>
         <source>Label</source>
         <translation>תווית</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1407"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1420"/>
         <source>Display label</source>
         <translation>הצג תווית</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1417"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1430"/>
         <source>Button Icon</source>
         <translation>סמל כפתור</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1426"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1439"/>
         <source>Colorize Icon</source>
         <translation>צבע סמל</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1427"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1440"/>
         <source>Tint the icon with the button color</source>
         <translation>צביעת הסמל בצבע הכפתור</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1444"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1457"/>
         <source>Initial Value</source>
         <translation>ערך התחלתי</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1456"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1469"/>
         <source>Character encoding used when transmit() returns a string value</source>
         <translation>קידוד תווים המשמש כאשר transmit() מחזירה ערך מחרוזת</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1474"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1487"/>
         <source>Value Range</source>
         <translation>טווח ערכים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="932"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1484"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1497"/>
         <source>Minimum Value</source>
         <translation>ערך מינימלי</translation>
     </message>
@@ -5391,50 +5426,50 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>לולאת בקרה</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1493"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="958"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1506"/>
         <source>Maximum Value</source>
         <translation>ערך מקסימלי</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1004"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
         <source>Choose Time or a dataset to drive the X-Axis in plots</source>
         <translation>בחר זמן או מערך נתונים להנעת ציר ה-X בגרפים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1132"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1221"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
         <source>Minimum Value (optional)</source>
         <translation>ערך מינימלי (אופציונלי)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1133"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
         <source>Lower bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>גבול תחתון לנורמליזציה של נתונים; ברירת מחדל לטווח הערכים של מערך הנתונים כאשר לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1158"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1247"/>
         <source>Maximum Value (optional)</source>
         <translation>ערך מקסימלי (אופציונלי)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1159"/>
         <source>Upper bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>גבול עליון לנורמליזציה של נתונים; ברירת מחדל לטווח הערכים של מערך הנתונים כאשר לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1222"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
         <source>Lower bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>גבול תחתון של טווח המחוון או העמודה; ברירת מחדל לטווח הערכים של מערך הנתונים כאשר לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1248"/>
         <source>Upper bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>גבול עליון של טווח המחוון או העמודה; ברירת מחדל לטווח הערכים של מערך הנתונים כאשר לא מוגדר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1287"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1300"/>
         <source>Decimal Points</source>
         <translation>נקודות עשרוניות</translation>
     </message>
@@ -5443,17 +5478,17 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">מספר המקומות העשרוניים המוצגים בעמודת הערכים ברשת הנתונים (1- = אוטומטי)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1334"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1347"/>
         <source>On</source>
         <translation>דולק</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1378"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1391"/>
         <source>LED lights up when value meets or exceeds this threshold; define alarm bands for multi-state colors</source>
         <translation>נורית LED נדלקת כאשר הערך מגיע לסף זה או עולה עליו; הגדרת טווחי אזעקה עבור צבעים מרובי מצבים</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1502"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1515"/>
         <source>Step Size</source>
         <translation>גודל צעד</translation>
     </message>
@@ -5649,15 +5684,15 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>שמירת פרויקט Serial Studio</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>קבצי פרויקט Serial Studio (*.ssproj)</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>פרויקט ללא שם</translation>
     </message>
@@ -5912,9 +5947,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>סביבת עבודה</translation>
     </message>
@@ -5941,6 +5976,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -5953,8 +5990,6 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>שם:</translation>
     </message>
@@ -5994,10 +6029,10 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>שינוי שם רגיסטר</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
         <source>This action cannot be undone.</source>
         <translation>לא ניתן לבטל פעולה זו.</translation>
     </message>
@@ -6007,9 +6042,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>פעולה זו תסיר %1 רגיסטר(ים) יחד עם הטבלה. לא ניתן לבטל פעולה זו.</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>למחוק את "%1"?</translation>
     </message>
@@ -6040,8 +6075,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>ייבא טבלה</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>סביבת עבודה חדשה</translation>
     </message>
@@ -12208,8 +12243,8 @@ Would you like to open the download page?</source>
         <translation>לא ניתן ליצור את מבנה התיקיות של bundle מסוג .app.</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>כותב קיצורי דרך של Windows אינו זמין בפלטפורמה זו.</translation>
     </message>
@@ -12240,8 +12275,8 @@ Would you like to open the download page?</source>
         <translation>שמירת קובץ .lnk נכשלה (HRESULT 0x%1).</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>כותב קיצורי דרך של macOS אינו זמין בפלטפורמה זו.</translation>
     </message>
@@ -14989,8 +15024,8 @@ Click Refresh to update the list.</source>
         <translation>Serial Studio משמיט מסגרות כדי לשמור על היענות האפליקציה. יש לפשט או לייעל את סקריפט מנתח המסגרות כדי להפחית את עומס העבודה שלו.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>מנתח מסגרות מושבת</translation>
     </message>
@@ -15032,8 +15067,8 @@ Most likely cause: an infinite loop or extremely slow operation in the script bo
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>פונקציית Parse חסרה</translation>
     </message>
@@ -15049,8 +15084,8 @@ function parse(frame) ... end</source>
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>שגיאת זמן ריצה בפונקציית Parse</translation>
     </message>
@@ -15929,57 +15964,57 @@ function parse(%1) { ... }
         <translation>ווידג'טי ציור</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1037"/>
+        <location filename="../../src/SerialStudio.cpp" line="1069"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1038"/>
+        <location filename="../../src/SerialStudio.cpp" line="1070"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1039"/>
+        <location filename="../../src/SerialStudio.cpp" line="1071"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1040"/>
+        <location filename="../../src/SerialStudio.cpp" line="1072"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1041"/>
+        <location filename="../../src/SerialStudio.cpp" line="1073"/>
         <source>System</source>
         <translation>מערכת</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1042"/>
+        <location filename="../../src/SerialStudio.cpp" line="1074"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1043"/>
+        <location filename="../../src/SerialStudio.cpp" line="1075"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1044"/>
+        <location filename="../../src/SerialStudio.cpp" line="1076"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1045"/>
+        <location filename="../../src/SerialStudio.cpp" line="1077"/>
         <source>Shift-JIS</source>
         <translation>Shift-JIS</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1046"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1047"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -17947,33 +17982,43 @@ function parse(%1) { ... }
 <context>
     <name>TableDelegate</name>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="130"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="131"/>
         <source>Parameter</source>
         <translation>פרמטר</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="151"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="152"/>
         <source>Value</source>
         <translation>ערך</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="537"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="538"/>
         <source>(Custom Icon)</source>
         <translation>(סמל מותאם אישית)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="662"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="668"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="623"/>
+        <source>Choose Dataset Color</source>
+        <translation>בחר צבע מערך נתונים</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="643"/>
+        <source>Automatic</source>
+        <translation>אוטומטי</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
         <source>Auto</source>
         <translation>אוטומטי</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>No</source>
         <translation>לא</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>Yes</source>
         <translation>כן</translation>
     </message>
@@ -18104,67 +18149,67 @@ function parse(%1) { ... }
         <translation>השהה</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="953"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="976"/>
         <source>Unfreeze Dashboard</source>
         <translation>בטל הקפאת לוח בקרה</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="954"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
         <source>Freeze Dashboard</source>
         <translation>הקפא לוח בקרה</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1026"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1049"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT: מחובר אל %1</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1027"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT: לא מחובר</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1074"/>
         <source>MQTT Publisher</source>
         <translation>מפרסם MQTT</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1061"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1084"/>
         <source>Status:</source>
         <translation>מצב:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1069"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1092"/>
         <source>Connected</source>
         <translation>מחובר</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1070"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
         <source>Disconnected</source>
         <translation>מנותק</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1077"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1100"/>
         <source>Broker:</source>
         <translation>Broker:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1090"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1113"/>
         <source>Mode:</source>
         <translation>מצב:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1103"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1126"/>
         <source>Messages sent:</source>
         <translation>הודעות שנשלחו:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1117"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1140"/>
         <source>Open MQTT Settings</source>
         <translation>פתח הגדרות MQTT</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1163"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1186"/>
         <source>Remove from Workspace</source>
         <translation>הסר ממרחב העבודה</translation>
     </message>
@@ -19719,7 +19764,7 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
 <context>
     <name>WidgetDelegate</name>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="350"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="416"/>
         <source>Device Disconnected</source>
         <translation>התקן מנותק</translation>
     </message>
@@ -19911,7 +19956,7 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
 <context>
     <name>Widgets::Plot3D</name>
     <message>
-        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1111"/>
+        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1113"/>
         <source>Grid Interval: %1 unit(s)</source>
         <translation>מרווח רשת: %1 יחידות</translation>
     </message>

@@ -553,6 +553,9 @@ void DataModel::ProjectEditor::onDatasetCommonItemChanged(QStandardItem* item,
     case kDatasetView_Units:
       dataset.units = value.toString();
       break;
+    case kDatasetView_Color:
+      dataset.color = value.toString().simplified();
+      break;
     case kDatasetView_TransformCode:
       dataset.transformCode = value.toString();
       break;

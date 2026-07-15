@@ -51,22 +51,22 @@ Every device action still requires your explicit per-call approval in the chat, 
 Otomatik onay etkinleştirildiğinde bile her cihaz eylemi sohbette açık çağrı başına onayınızı gerektirir. Bunu yalnızca yapılandırılmış AI sağlayıcısına donanım erişimi konusunda güveniyorsanız etkinleştirin.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="621"/>
+        <location filename="../../src/AI/Assistant.cpp" line="630"/>
         <source>Switch AI provider?</source>
         <translation>AI sağlayıcısı değiştirilsin mi?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="622"/>
+        <location filename="../../src/AI/Assistant.cpp" line="631"/>
         <source>Switching to a different provider clears the current conversation. Do you want to continue?</source>
         <translation>Farklı bir sağlayıcıya geçiş mevcut konuşmayı temizler. Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="625"/>
+        <location filename="../../src/AI/Assistant.cpp" line="634"/>
         <source>Assistant</source>
         <translation>Asistan</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="662"/>
+        <location filename="../../src/AI/Assistant.cpp" line="671"/>
         <source>AI Assistant is not available in this build</source>
         <translation>AI Asistanı bu derlemede mevcut değil</translation>
     </message>
@@ -75,7 +75,7 @@ Otomatik onay etkinleştirildiğinde bile her cihaz eylemi sohbette açık çağ
         <translation type="vanished">AI Asistanı Pro lisansı gerektirir</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="667"/>
+        <location filename="../../src/AI/Assistant.cpp" line="676"/>
         <source>Set an API key first</source>
         <translation>Önce bir API anahtarı ayarlayın</translation>
     </message>
@@ -87,47 +87,62 @@ Otomatik onay etkinleştirildiğinde bile her cihaz eylemi sohbette açık çağ
         <translation type="vanished">AI Asistanı Pro lisansı gerektirir</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="170"/>
+        <location filename="../../src/AI/Conversation.cpp" line="171"/>
         <source>AI Assistant is not available in this build</source>
         <translation>AI Asistanı bu derlemede mevcut değil</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="177"/>
         <source>AI subsystem not initialized</source>
         <translation>AI alt sistemi başlatılmadı</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="182"/>
+        <location filename="../../src/AI/Conversation.cpp" line="183"/>
         <source>Already busy with a previous request</source>
         <translation>Önceki istek ile meşgul</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="582"/>
+        <location filename="../../src/AI/Conversation.cpp" line="647"/>
         <source>Tool-call budget reached for this turn; no further tools will run.</source>
         <translation>Bu tur için araç çağrısı bütçesine ulaşıldı; başka araç çalıştırılmayacak.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1196"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>%1 yanıt vermesi bekleniyor. Modelin yüklenmesi ve komutun işlenmesi yerel donanımda biraz zaman alabilir...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2034"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 işlem başarısız oldu</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2180"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <source>Source list read-back failed</source>
+        <translation>Kaynak listesi geri okuması başarısız</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <source>Source %1 not found after update</source>
+        <translation>Güncelleme sonrası kaynak %1 bulunamadı</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <source>Fields did not round-trip: %1</source>
+        <translation>Alanlar gidiş-dönüş yapmadı: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>Bu tur için araç çağrısı bütçesine ulaştınız. Daha fazla araç talep etmeyin. Şimdiye kadar bulduklarınızı özetleyin ve görev tamamlanmadıysa, devam etmenizi söyleyebilmesi için kullanıcıya hangi adımların kaldığını belirtin.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2913"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Model bağlam-bütünlük satırını yeniden üretmeyi durdurdu. Uzun konuşmalar sessizce bozulur; son yanıtlar daha az güvenilir olabilir.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2916"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Model bağlam-bütünlük satırını değiştirdi (sapan segment: %1). Uzun konuşmalar sessizce bozulur; son yanıtlar daha az güvenilir olabilir.</translation>
     </message>
@@ -136,17 +151,17 @@ Otomatik onay etkinleştirildiğinde bile her cihaz eylemi sohbette açık çağ
         <translation type="vanished">Araç çağrısı bütçesi aşıldı</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1037"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(Model boş bir yanıt döndürdü. Yeniden ifade etmeyi, farklı bir modele geçmeyi veya isteğin sağlayıcının güvenlik filtreleri tarafından izin verildiğini kontrol etmeyi deneyin.)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1200"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
         <source>Sending request to %1...</source>
         <translation>%1 adresine istek gönderiliyor...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1218"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
         <source>Provider returned no reply</source>
         <translation>Sağlayıcı yanıt döndürmedi</translation>
     </message>
@@ -1259,22 +1274,27 @@ Bunu yalnızca güvenilir ağlarda etkinleştirin. Güvenilmeyen istemciler canl
         <translation>Kapat</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="984"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="935"/>
+        <source>Continuing from your previous chat. Its recent context was carried over.</source>
+        <translation>Önceki sohbetinizden devam ediliyor. Yakın zamandaki bağlamı aktarıldı.</translation>
+    </message>
+    <message>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1014"/>
         <source>Ask Serial Studio anything…</source>
         <translation>Serial Studio'ya herhangi bir şey sorun…</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1004"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1034"/>
         <source>Clear conversation</source>
         <translation>Konuşmayı temizle</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1048"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1078"/>
         <source>Stop generating</source>
         <translation>Oluşturmayı durdur</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1049"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1079"/>
         <source>Send message (Enter)</source>
         <translation>Mesaj gönder (Enter)</translation>
     </message>
@@ -4217,7 +4237,7 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Sanal veri kümeleri değerlerini dönüşümler ve veri tablolarından hesaplar, çerçeve indeksi gerektirmez</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1291"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1304"/>
         <source>Fixed decimal places for the value display; overrides the format (-1 = auto)</source>
         <translation>Değer gösterimi için sabit ondalık basamaklar; formatı geçersiz kılar (-1 = otomatik)</translation>
     </message>
@@ -4651,7 +4671,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="575"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="845"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1396"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1409"/>
         <source>General Information</source>
         <translation>Genel Bilgiler</translation>
     </message>
@@ -4738,7 +4758,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="686"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1455"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1468"/>
         <source>Text Encoding</source>
         <translation>Metin Kodlaması</translation>
     </message>
@@ -4839,74 +4859,89 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Bu veri kümesinin bağımsız pano kutucuğunu gizle; painter widget değerlerini okumaya devam edebilir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="933"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="922"/>
+        <source>Automatic</source>
+        <translation>Otomatik</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="923"/>
+        <source>Widget Color</source>
+        <translation>Widget Rengi</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="924"/>
+        <source>Custom display color for this dataset; automatic uses the theme palette</source>
+        <translation>Bu veri kümesi için özel görüntüleme rengi; otomatik seçeneği tema paletini kullanır</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
         <source>Lower bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Veri kümesi değer aralığının alt sınırı; widget'lar ve FFT kendi aralıkları ayarlanmadığında buna geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
         <source>Upper bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Veri kümesi değer aralığının üst sınırı; widget'lar ve FFT kendi aralıkları ayarlanmadığında buna geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1004"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
         <source>Choose Time or a dataset to drive the X-Axis in plots</source>
         <translation>Grafiklerde X eksenini sürmek için Zaman veya bir veri kümesi seçin</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1030"/>
         <source>Frequency Analysis</source>
         <translation>Frekans Analizi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1064"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1077"/>
         <source>Choose Time (default) or any dataset whose value drives the Y axis -- produces a Campbell diagram when bound to e.g. RPM</source>
         <translation>Zaman (varsayılan) veya Y eksenini yönlendiren herhangi bir veri kümesi seçin -- örneğin RPM'e bağlandığında Campbell diyagramı üretir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1108"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
         <source>FFT Window Function</source>
         <translation>FFT Pencere Fonksiyonu</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1109"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
         <source>Window applied before the transform to reduce spectral leakage; affects both the FFT plot and the waterfall</source>
         <translation>Spektral sızıntıyı azaltmak için dönüşümden önce uygulanan pencere; hem FFT grafiğini hem de şelale görünümünü etkiler</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1132"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1221"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
         <source>Minimum Value (optional)</source>
         <translation>Maksimum Değer (isteğe bağlı)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1133"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
         <source>Lower bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Veri normalizasyonu için alt sınır; ayarlanmadığında veri kümesi değer aralığına geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1158"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1247"/>
         <source>Maximum Value (optional)</source>
         <translation>Minimum Değer (isteğe bağlı)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1159"/>
         <source>Upper bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Veri normalizasyonu için üst sınır; ayarlanmadığında veri kümesi değer aralığına geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1222"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
         <source>Lower bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Gösterge veya çubuk aralığının alt sınırı; ayarlanmadığında veri kümesi değer aralığına geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1248"/>
         <source>Upper bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Gösterge veya çubuk aralığının üst sınırı; ayarlanmadığında veri kümesi değer aralığına geri döner</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1287"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1300"/>
         <source>Decimal Points</source>
         <translation>Ondalık Noktalar</translation>
     </message>
@@ -4915,12 +4950,12 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Veri tablosu değer sütununda gösterilen ondalık basamaklar (-1 = otomatik)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1334"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1347"/>
         <source>On</source>
         <translation>Açık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1378"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1391"/>
         <source>LED lights up when value meets or exceeds this threshold; define alarm bands for multi-state colors</source>
         <translation>LED, değer bu eşiği karşıladığında veya aştığında yanar; çok durumlu renkler için alarm aralıkları tanımlayın</translation>
     </message>
@@ -5003,23 +5038,23 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Volt veya amper gibi ölçüm birimi (isteğe bağlı)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="972"/>
         <source>Plot Settings</source>
         <translation>Grafik Ayarları</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="982"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="995"/>
         <source>Enable Plot Widget</source>
         <translation>Grafik Widget'ını Etkinleştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="984"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="997"/>
         <source>Plot data in real-time</source>
         <translation>Verileri gerçek zamanlı olarak grafikle</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="250"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1003"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1016"/>
         <source>X-Axis Source</source>
         <translation>X Ekseni Kaynağı</translation>
     </message>
@@ -5048,27 +5083,27 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">FFT Yapılandırması</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1028"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1041"/>
         <source>Enable FFT Analysis</source>
         <translation>FFT Analizini Etkinleştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1029"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1042"/>
         <source>Perform frequency-domain analysis of the dataset</source>
         <translation>Veri kümesinin frekans-alanı analizini gerçekleştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1039"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1052"/>
         <source>Enable Waterfall Plot</source>
         <translation>Waterfall Grafiğini Etkinleştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1040"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1053"/>
         <source>Show a scrolling spectrogram of frequency content over time (Pro)</source>
         <translation>Zaman içinde frekans içeriğinin kayan spektrogramını göster (Pro)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1063"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1076"/>
         <source>Waterfall Y Axis</source>
         <translation>Waterfall Y Ekseni</translation>
     </message>
@@ -5077,22 +5112,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Zaman (varsayılan) veya Y eksenini yönlendiren herhangi bir veri kümesi seçin — örneğin RPM'e bağlandığında Campbell diyagramı üretir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1091"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1104"/>
         <source>FFT Window Size</source>
         <translation>FFT Pencere Boyutu</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1092"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1105"/>
         <source>Number of samples used for each FFT calculation window</source>
         <translation>Her FFT hesaplama penceresi için kullanılan örnek sayısı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1134"/>
         <source>FFT Sampling Rate (Hz, required)</source>
         <translation>FFT Örnekleme Hızı (Hz, gerekli)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1135"/>
         <source>Sampling frequency used for FFT (in Hz)</source>
         <translation>FFT için kullanılan örnekleme frekansı (Hz cinsinden)</translation>
     </message>
@@ -5113,17 +5148,17 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Veri normalizasyonu için üst sınır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1171"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1184"/>
         <source>Widget Settings</source>
         <translation>Widget Ayarları</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1194"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1207"/>
         <source>Widget</source>
         <translation>Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1195"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1208"/>
         <source>Select the visual widget used to display this dataset</source>
         <translation>Bu veri kümesini görüntülemek için kullanılan görsel widget'ı seçin</translation>
     </message>
@@ -5145,28 +5180,28 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1251"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1286"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1264"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1299"/>
         <source>Auto</source>
         <translation>Otomatik</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1252"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1265"/>
         <source>Tick Count</source>
         <translation>İşaret Sayısı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1256"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1269"/>
         <source>Major-tick count on the dial scale (0 = auto-fit to widget size)</source>
         <translation>Kadran ölçeğindeki ana işaret sayısı (0 = widget boyutuna otomatik sığdır)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1275"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1288"/>
         <source>Label Format</source>
         <translation>Etiket Biçimi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1276"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1289"/>
         <source>Decimal places or notation used on tick labels and the value display</source>
         <translation>İşaret etiketlerinde ve değer gösteriminde kullanılan ondalık basamak veya gösterim</translation>
     </message>
@@ -5207,22 +5242,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Değer bu eşiği aştığında görsel bir alarm tetikler</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1351"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1364"/>
         <source>LED Display Settings</source>
         <translation>LED Ekran Ayarları</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1362"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1375"/>
         <source>Show in LED Panel</source>
         <translation>LED Panelinde Göster</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1363"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1376"/>
         <source>Enable visual status monitoring using an LED display</source>
         <translation>LED ekran kullanarak görsel durum izlemeyi etkinleştir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1377"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1390"/>
         <source>LED On Threshold (required)</source>
         <translation>LED Açık Eşiği (gerekli)</translation>
     </message>
@@ -5527,59 +5562,59 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Karışık</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1406"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1419"/>
         <source>Label</source>
         <translation>Etiket</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1407"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1420"/>
         <source>Display label</source>
         <translation>Görüntüleme etiketi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1417"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1430"/>
         <source>Button Icon</source>
         <translation>Düğme Simgesi</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1426"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1439"/>
         <source>Colorize Icon</source>
         <translation>Simgeyi Renklendir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1427"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1440"/>
         <source>Tint the icon with the button color</source>
         <translation>Simgeyi düğme rengiyle boyayın</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1444"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1457"/>
         <source>Initial Value</source>
         <translation>Başlangıç Değeri</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1456"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1469"/>
         <source>Character encoding used when transmit() returns a string value</source>
         <translation>Transmit() bir string değeri döndürdüğünde kullanılan karakter kodlaması</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1474"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1487"/>
         <source>Value Range</source>
         <translation>Değer Aralığı</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="932"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1484"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1497"/>
         <source>Minimum Value</source>
         <translation>Minimum Değer</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1493"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="958"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1506"/>
         <source>Maximum Value</source>
         <translation>Maksimum Değer</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1502"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1515"/>
         <source>Step Size</source>
         <translation>Adım Boyutu</translation>
     </message>
@@ -5745,15 +5780,15 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Serial Studio Projesini Kaydet</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Serial Studio Proje Dosyaları (*.ssproj)</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>Adsız Proje</translation>
     </message>
@@ -6008,9 +6043,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>Çalışma Alanı</translation>
     </message>
@@ -6037,6 +6072,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -6049,8 +6086,6 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>Ad:</translation>
     </message>
@@ -6090,10 +6125,10 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Kaydı Yeniden Adlandır</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
         <source>This action cannot be undone.</source>
         <translation>Bu işlem geri alınamaz.</translation>
     </message>
@@ -6103,9 +6138,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Bu işlem %1 kayıt(lar)ı tabloyla birlikte kaldırır. Bu işlem geri alınamaz.</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>"%1" Silinsin Mi?</translation>
     </message>
@@ -6136,8 +6171,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Tabloyu İçe Aktar</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>Yeni Çalışma Alanı</translation>
     </message>
@@ -12706,8 +12741,8 @@ Would you like to open the download page?</source>
         <translation>Info.plist yazılamadı: %1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>Windows kısayol yazıcısı bu platformda kullanılamıyor.</translation>
     </message>
@@ -12738,8 +12773,8 @@ Would you like to open the download page?</source>
         <translation>.lnk dosyası kaydedilemedi (HRESULT 0x%1).</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>MacOS kısayol yazıcısı bu platformda kullanılamıyor.</translation>
     </message>
@@ -15421,8 +15456,8 @@ Listeyi güncellemek için Yenile'ye tıklayın.</translation>
         <translation>Genel G/Ç hatası</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>Frame Ayrıştırıcı Devre Dışı</translation>
     </message>
@@ -15464,8 +15499,8 @@ Muhtemel neden: betik gövdesinde sonsuz döngü veya son derece yavaş işlem. 
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>Eksik Parse Fonksiyonu</translation>
     </message>
@@ -15481,8 +15516,8 @@ Lütfen kodunuzun şunu içerdiğinden emin olun:
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>Parse Fonksiyonu Çalışma Zamanı Hatası</translation>
     </message>
@@ -16459,57 +16494,57 @@ Ayırıcı parametresine artık gerek yok.</translation>
         <translation>Painter Widget'ları</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1037"/>
+        <location filename="../../src/SerialStudio.cpp" line="1069"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1038"/>
+        <location filename="../../src/SerialStudio.cpp" line="1070"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1039"/>
+        <location filename="../../src/SerialStudio.cpp" line="1071"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1040"/>
+        <location filename="../../src/SerialStudio.cpp" line="1072"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1041"/>
+        <location filename="../../src/SerialStudio.cpp" line="1073"/>
         <source>System</source>
         <translation>Sistem</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1042"/>
+        <location filename="../../src/SerialStudio.cpp" line="1074"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1043"/>
+        <location filename="../../src/SerialStudio.cpp" line="1075"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1044"/>
+        <location filename="../../src/SerialStudio.cpp" line="1076"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1045"/>
+        <location filename="../../src/SerialStudio.cpp" line="1077"/>
         <source>Shift-JIS</source>
         <translation>Shift-jis</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1046"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1047"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -18595,33 +18630,43 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
 <context>
     <name>TableDelegate</name>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="130"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="131"/>
         <source>Parameter</source>
         <translation>Parametre</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="151"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="152"/>
         <source>Value</source>
         <translation>Değer</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="537"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="538"/>
         <source>(Custom Icon)</source>
         <translation>(Özel Simge)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="662"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="668"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="623"/>
+        <source>Choose Dataset Color</source>
+        <translation>Veri Kümesi Rengini Seç</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="643"/>
+        <source>Automatic</source>
+        <translation>Otomatik</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
         <source>Auto</source>
         <translation>Otomatik</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>No</source>
         <translation>Hayır</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>Yes</source>
         <translation>Evet</translation>
     </message>
@@ -18747,62 +18792,62 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
         <translation>Duraklat</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="953"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="976"/>
         <source>Unfreeze Dashboard</source>
         <translation>Gösterge Panelini Dondur</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="954"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
         <source>Freeze Dashboard</source>
         <translation>Gösterge Panelini Dondur</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1026"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1049"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT: %1 adresine bağlandı</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1027"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT: Bağlı değil</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1074"/>
         <source>MQTT Publisher</source>
         <translation>MQTT Yayıncı</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1061"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1084"/>
         <source>Status:</source>
         <translation>Durum:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1069"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1092"/>
         <source>Connected</source>
         <translation>Bağlı</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1070"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
         <source>Disconnected</source>
         <translation>Bağlantı Kesildi</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1077"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1100"/>
         <source>Broker:</source>
         <translation>Broker:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1090"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1113"/>
         <source>Mode:</source>
         <translation>Mod:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1103"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1126"/>
         <source>Messages sent:</source>
         <translation>Gönderilen mesajlar:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1117"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1140"/>
         <source>Open MQTT Settings</source>
         <translation>MQTT Ayarlarını Aç</translation>
     </message>
@@ -18816,7 +18861,7 @@ Orijinal dosya taşınsa veya silinse bile kısayolun çalışmaya devam etmesi 
         <translation type="vanished">Widget'ları ara…</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1163"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1186"/>
         <source>Remove from Workspace</source>
         <translation>Çalışma Alanından Kaldır</translation>
     </message>
@@ -20407,7 +20452,7 @@ Deneme sona erdiğinde lisans satın almam veya GPLv3 sürümünü derlemem gere
         <translation type="vanished">Çalışma Alanından Kaldır</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="350"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="416"/>
         <source>Device Disconnected</source>
         <translation>Cihaz Bağlantısı Kesildi</translation>
     </message>
@@ -20599,7 +20644,7 @@ Deneme sona erdiğinde lisans satın almam veya GPLv3 sürümünü derlemem gere
 <context>
     <name>Widgets::Plot3D</name>
     <message>
-        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1111"/>
+        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1113"/>
         <source>Grid Interval: %1 unit(s)</source>
         <translation>Izgara Aralığı: %1 birim</translation>
     </message>

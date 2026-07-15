@@ -26,6 +26,7 @@
 #include "AI/Redactor.h"
 #include "AI/SkillRouter.h"
 #include "AI/ToolDispatcher.h"
+#include "DataModel/Frame.h"
 #include "DataModel/ProjectModel.h"
 #include "Licensing/CommercialToken.h"
 
@@ -203,6 +204,7 @@ void AI::Conversation::start(const QString& userText)
 
   appendUserMessage(trimmed);
   injectRoutedSkill(trimmed);
+  maybeProposeMemory(trimmed);
   setBusy(true);
   issueRequest();
 }
@@ -276,6 +278,69 @@ void AI::Conversation::injectRoutedSkill(const QString& userText)
   Q_EMIT messagesChanged();
 
   qCDebug(serialStudioAI) << "SkillRouter: injected" << skill << "for this turn";
+}
+
+/**
+ * @brief Deterministic memory proposal: remember-phrasing in the user's message surfaces
+ *        the confirmation chip directly, because weak models never volunteer the
+ *        assistant.memory.propose call (observed 2026-07-14); nothing persists without the
+ *        user's click, and the store's secret scrub still gates the write.
+ */
+void AI::Conversation::maybeProposeMemory(const QString& userText)
+{
+  static auto& assistant = Assistant::instance();
+  if (!assistant.memoryEnabled())
+    return;
+
+  static const QStringList kTriggers = {
+    QStringLiteral("remember that"),
+    QStringLiteral("remember this"),
+    QStringLiteral("remember my"),
+    QStringLiteral("please remember"),
+    QStringLiteral("don't forget"),
+    QStringLiteral("do not forget"),
+    QStringLiteral("keep in mind"),
+    QStringLiteral("from now on"),
+    QStringLiteral("i always"),
+    QStringLiteral("i never"),
+    QStringLiteral("i prefer"),
+    QStringLiteral("always use"),
+    QStringLiteral("never use"),
+    QStringLiteral("my preference"),
+  };
+
+  const auto lower = userText.toLower();
+  bool matched     = false;
+  for (const auto& trigger : kTriggers) {
+    if (lower.contains(trigger)) {
+      matched = true;
+      break;
+    }
+  }
+
+  if (!matched)
+    return;
+
+  static const QStringList kCorrectionCues = {
+    QStringLiteral("never"),
+    QStringLiteral("don't"),
+    QStringLiteral("do not"),
+    QStringLiteral("stop "),
+    QStringLiteral("instead"),
+  };
+
+  QString category = QStringLiteral("user");
+  for (const auto& cue : kCorrectionCues) {
+    if (lower.contains(cue)) {
+      category = QStringLiteral("feedback");
+      break;
+    }
+  }
+
+  const auto fact = userText.simplified().left(400);
+  Q_EMIT memoryProposed(category, fact);
+  qCDebug(serialStudioAI) << "MemoryTrigger: deterministic proposal surfaced, category="
+                          << category;
 }
 
 /**
@@ -756,6 +821,7 @@ void AI::Conversation::runMetaLoadSkill(const QString& callId,
     reply[QStringLiteral("ok")]    = true;
     reply[QStringLiteral("skill")] = skillId;
     reply[QStringLiteral("body")]  = body;
+    m_loadedSkills.insert(skillId);
     recordToolResult(callId, name, reply);
     updateToolCallCard(callId, CallStatus::Done, reply);
   }
@@ -2022,6 +2088,7 @@ QJsonObject AI::Conversation::runAutoVerify(const QString& name,
     QJsonObject v;
     v[QStringLiteral("ok")]     = true;
     v[QStringLiteral("method")] = QStringLiteral("internal dry-run");
+    qCDebug(serialStudioAI) << "AutoVerify:" << name << "via internal dry-run ok= true";
     return v;
   }
 
@@ -2033,8 +2100,13 @@ QJsonObject AI::Conversation::runAutoVerify(const QString& name,
     if (failures > 0)
       v[QStringLiteral("detail")] = tr("%1 operation(s) failed").arg(failures);
 
+    qCDebug(serialStudioAI) << "AutoVerify:" << name
+                            << "via batch failure scan ok=" << (failures == 0);
     return v;
   }
+
+  if (name == QStringLiteral("project.source.update"))
+    return verifySourceUpdate(arguments);
 
   QString cmd;
   QJsonObject args;
@@ -2063,6 +2135,66 @@ QJsonObject AI::Conversation::runAutoVerify(const QString& name,
       QString::fromUtf8(QJsonDocument(check).toJson(QJsonDocument::Compact)).left(300);
 
   qCDebug(serialStudioAI) << "AutoVerify:" << name << "via" << cmd << "ok=" << check_ok;
+  return v;
+}
+
+/**
+ * @brief Read-back verification for project.source.update: fetches the Safe-tier source
+ *        list and confirms every requested field actually round-tripped, because generic
+ *        CRUD patches are where weak models misfire most (observed 2026-07-14).
+ */
+QJsonObject AI::Conversation::verifySourceUpdate(const QJsonObject& arguments)
+{
+  QJsonObject v;
+  v[QStringLiteral("method")] = QStringLiteral("project.source.list");
+
+  const auto check =
+    m_dispatcher->executeCommand(QStringLiteral("project.source.list"), QJsonObject(), true);
+  if (!check.value(QStringLiteral("ok")).toBool()) {
+    v[QStringLiteral("ok")]     = false;
+    v[QStringLiteral("detail")] = tr("Source list read-back failed");
+    qCDebug(serialStudioAI) << "AutoVerify: project.source.update via project.source.list "
+                               "ok= false (list failed)";
+    return v;
+  }
+
+  const int source_id = arguments.value(Keys::SourceId).toInt(-1);
+  const auto rows =
+    check.value(QStringLiteral("result")).toObject().value(QStringLiteral("sources")).toArray();
+
+  QJsonObject row;
+  for (const auto& r : rows) {
+    const auto obj = r.toObject();
+    if (obj.value(Keys::SourceId).toInt(-1) == source_id) {
+      row = obj;
+      break;
+    }
+  }
+
+  if (row.isEmpty()) {
+    v[QStringLiteral("ok")]     = false;
+    v[QStringLiteral("detail")] = tr("Source %1 not found after update").arg(source_id);
+    qCDebug(serialStudioAI) << "AutoVerify: project.source.update via project.source.list "
+                               "ok= false (source missing)";
+    return v;
+  }
+
+  QStringList mismatched;
+  for (auto it = arguments.constBegin(); it != arguments.constEnd(); ++it) {
+    if (it.key() == Keys::SourceId || !row.contains(it.key()))
+      continue;
+
+    if (row.value(it.key()) != it.value())
+      mismatched.append(it.key());
+  }
+
+  v[QStringLiteral("ok")] = mismatched.isEmpty();
+  if (!mismatched.isEmpty())
+    v[QStringLiteral("detail")] =
+      tr("Fields did not round-trip: %1").arg(mismatched.join(QStringLiteral(", ")));
+
+  qCDebug(serialStudioAI) << "AutoVerify: project.source.update via project.source.list ok="
+                          << mismatched.isEmpty();
   return v;
 }
 

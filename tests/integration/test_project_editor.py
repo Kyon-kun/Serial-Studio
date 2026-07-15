@@ -44,6 +44,17 @@ def _last_action_id(api_client) -> int:
     return actions[-1]["actionId"]
 
 
+def _exported_dataset(exported: dict, group_id: int, dataset_id: int) -> dict:
+    for group in exported.get("groups", []):
+        for ds in group.get("datasets", []):
+            if ds.get("groupId") == group_id and ds.get("datasetId") == dataset_id:
+                return ds
+
+    raise AssertionError(
+        f"Dataset ({group_id}, {dataset_id}) not found in exported config"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Group CRUD
 # ---------------------------------------------------------------------------
@@ -257,6 +268,53 @@ def test_dataset_update_field_patch(api_client, clean_state):
     datasets = {(x["groupId"], x["datasetId"]): x for x in api_client.list_datasets()}
     assert datasets[(g, d)]["title"] == "Renamed"
     assert datasets[(g, d)]["units"] == "rpm"
+
+
+@pytest.mark.project
+def test_dataset_color_round_trip(api_client, clean_state):
+    """A dataset color override survives exportJson -> loadJson."""
+    gid = api_client.add_group("G")
+    api_client.add_dataset(gid)
+    g, d = _last_dataset(api_client)
+
+    api_client.update_dataset(g, d, color="#ff0000")
+
+    exported = api_client.command("project.exportJson")["config"]
+    assert _exported_dataset(exported, g, d)["color"] == "#ff0000"
+
+    api_client.create_new_project()
+    time.sleep(0.2)
+
+    api_client.command("project.loadJson", {"config": exported})
+    time.sleep(0.3)
+
+    reloaded = api_client.command("project.exportJson")["config"]
+    assert _exported_dataset(reloaded, g, d)["color"] == "#ff0000"
+
+
+@pytest.mark.project
+def test_dataset_color_clear_restores_automatic(api_client, clean_state):
+    """Setting color to an empty string reverts the dataset to automatic."""
+    gid = api_client.add_group("G")
+    api_client.add_dataset(gid)
+    g, d = _last_dataset(api_client)
+
+    api_client.update_dataset(g, d, color="#00ff00")
+    api_client.update_dataset(g, d, color="")
+
+    exported = api_client.command("project.exportJson")["config"]
+    assert "color" not in _exported_dataset(exported, g, d)
+
+
+@pytest.mark.project
+def test_dataset_without_color_is_automatic(api_client, clean_state):
+    """Datasets never given a color export without a color key (automatic state)."""
+    gid = api_client.add_group("G")
+    api_client.add_dataset(gid)
+    g, d = _last_dataset(api_client)
+
+    exported = api_client.command("project.exportJson")["config"]
+    assert "color" not in _exported_dataset(exported, g, d)
 
 
 @pytest.mark.project

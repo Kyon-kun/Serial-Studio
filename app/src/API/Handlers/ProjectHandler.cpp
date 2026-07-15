@@ -883,8 +883,10 @@ void API::Handlers::ProjectHandler::registerParserConfigCommands()
 
   registry.registerCommand(
     QStringLiteral("project.frameParser.update"),
-    QStringLiteral("Configure frame parser settings (params: startSequence, endSequence, "
-                   "checksumAlgorithm, frameDetection, operationMode)"),
+    QStringLiteral("Configure frame extraction settings on a source (params: startSequence, "
+                   "endSequence, checksumAlgorithm, frameDetection, decoderMethod, "
+                   "hexadecimalDelimiters, operationMode). This is the persist path for "
+                   "delimiters -- parser code alone (setCode) never changes them."),
     makeSchema(
       {
   },
@@ -903,6 +905,12 @@ void API::Handlers::ProjectHandler::registerParserConfigCommands()
        {QString(Keys::FrameDetection),
         QStringLiteral("integer"),
         QStringLiteral("Frame detection mode (0-3)")},
+       {QString(Keys::DecoderMethod),
+        QStringLiteral("integer"),
+        QStringLiteral("Decoder method (0=PlainText, 1=Hex, 2=Base64, 3=Binary)")},
+       {QString(Keys::HexadecimalDelimiters),
+        QStringLiteral("boolean"),
+        QStringLiteral("Treat startSequence/endSequence as hex byte sequences")},
        {QStringLiteral("operationMode"),
         QStringLiteral("integer"),
         QStringLiteral("Operation mode (0-2)")}}),
@@ -1167,6 +1175,7 @@ void API::Handlers::ProjectHandler::registerEntityUpdateCommands()
     QStringLiteral("project.dataset.update"),
     QStringLiteral("Patch dataset fields by id (params: groupId, datasetId, plus any of "
                    "title, units, widget, index, sourceId, graph, fft, led, waterfall, "
+                   "color ('#rrggbb' or any Qt color name; empty = automatic theme color), "
                    "log, overviewDisplay, hideOnDashboard, xAxisId, "
                    "waterfallYAxis, fftSamples, fftSamplingRate, "
                    "fftWindow (0=Rectangular, 1=Bartlett, 2=Hann, 3=Hamming, 4=Blackman, "

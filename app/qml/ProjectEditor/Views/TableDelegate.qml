@@ -22,6 +22,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
+import QtQuick.Dialogs
 import QtQuick.Controls
 
 import SerialStudio
@@ -567,6 +568,123 @@ ColumnLayout {
               Layout.alignment: Qt.AlignVCenter
               icon.color: Cpp_ThemeManager.colors["table_text"]
               icon.source: "qrc:/icons/project-editor/open.svg"
+
+              background: Item {}
+            }
+
+            Item {
+              width: 2
+            }
+          }
+        }
+
+        //
+        // Color picker (empty value = automatic theme color)
+        //
+        Loader {
+          id: colorPickerLoader
+
+          Layout.fillWidth: true
+          Layout.alignment: Qt.AlignVCenter
+          active: model.widgetType === ProjectEditor.ColorPicker
+          visible: model.widgetType === ProjectEditor.ColorPicker
+
+          property int modelRow: row
+          property int modelColumn: column
+          property var modelActive: model.active
+          property var editableValue: model.editableValue
+          property var modelPlaceholder: model.placeholderValue
+
+          sourceComponent: RowLayout {
+            id: colorPickerRow
+
+            enabled: colorPickerLoader.modelActive
+            opacity: colorPickerLoader.modelActive ? 1 : 0.5
+
+            readonly property bool isAutomatic: !colorPickerLoader.editableValue
+
+            function hexFromColor(c) {
+              const r = Math.round(c.r * 255).toString(16).padStart(2, '0')
+              const g = Math.round(c.g * 255).toString(16).padStart(2, '0')
+              const b = Math.round(c.b * 255).toString(16).padStart(2, '0')
+              return "#" + r + g + b
+            }
+
+            function commit(value) {
+              root.modelPointer.setData(
+                    view.index(colorPickerLoader.modelRow, colorPickerLoader.modelColumn),
+                    value,
+                    ProjectEditor.EditableValue)
+            }
+
+            ColorDialog {
+              id: datasetColorDialog
+
+              title: qsTr("Choose Dataset Color")
+              onAccepted: colorPickerRow.commit(colorPickerRow.hexFromColor(selectedColor))
+            }
+
+            Rectangle {
+              radius: 2
+              implicitWidth: 16
+              implicitHeight: 16
+              border.width: 1
+              visible: !colorPickerRow.isAutomatic
+              Layout.alignment: Qt.AlignVCenter
+              border.color: Cpp_ThemeManager.colors["table_separator"]
+              color: colorPickerRow.isAutomatic ? "transparent"
+                                                : colorPickerLoader.editableValue
+            }
+
+            TextField {
+              enabled: colorPickerLoader.modelActive
+              opacity: colorPickerLoader.modelActive ? 1 : 0.5
+              text: colorPickerRow.isAutomatic ? "" : colorPickerLoader.editableValue
+              placeholderText: colorPickerLoader.modelPlaceholder ?? qsTr("Automatic")
+
+              readOnly: true
+              background: Item {}
+              Layout.fillWidth: true
+              Layout.alignment: Qt.AlignVCenter
+              font: Cpp_Misc_CommonFonts.monoFont
+              color: Cpp_ThemeManager.colors["table_text"]
+              horizontalAlignment: TextInput.AlignLeft
+            }
+
+            Item {
+              width: 2
+            }
+
+            Widgets.IconButton {
+              iconSize: 16
+              enabled: colorPickerLoader.modelActive
+              opacity: colorPickerLoader.modelActive ? 1 : 0.5
+
+              onClicked: {
+                if (!colorPickerRow.isAutomatic)
+                  datasetColorDialog.selectedColor = colorPickerLoader.editableValue
+
+                datasetColorDialog.open()
+              }
+              Layout.maximumWidth: 32
+              Layout.alignment: Qt.AlignVCenter
+              icon.color: Cpp_ThemeManager.colors["table_text"]
+              icon.source: "qrc:/icons/project-editor/open.svg"
+
+              background: Item {}
+            }
+
+            Widgets.IconButton {
+              iconSize: 16
+              visible: !colorPickerRow.isAutomatic
+              enabled: colorPickerLoader.modelActive
+              opacity: colorPickerLoader.modelActive ? 1 : 0.5
+
+              onClicked: colorPickerRow.commit("")
+              Layout.maximumWidth: 32
+              Layout.alignment: Qt.AlignVCenter
+              icon.color: Cpp_ThemeManager.colors["table_text"]
+              icon.source: "qrc:/icons/project-editor/actions/clear.svg"
 
               background: Item {}
             }

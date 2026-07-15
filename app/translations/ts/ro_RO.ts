@@ -51,22 +51,22 @@ Every device action still requires your explicit per-call approval in the chat, 
 Fiecare acțiune asupra dispozitivului necesită în continuare aprobarea dvs. explicită per apel în chat, chiar și când auto-aprobarea este activată. Activați această opțiune doar dacă aveți încredere în furnizorul AI configurat cu acces la hardware.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="621"/>
+        <location filename="../../src/AI/Assistant.cpp" line="630"/>
         <source>Switch AI provider?</source>
         <translation>Schimbați furnizorul AI?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="622"/>
+        <location filename="../../src/AI/Assistant.cpp" line="631"/>
         <source>Switching to a different provider clears the current conversation. Do you want to continue?</source>
         <translation>Schimbarea furnizorului șterge conversația curentă. Doriți să continuați?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="625"/>
+        <location filename="../../src/AI/Assistant.cpp" line="634"/>
         <source>Assistant</source>
         <translation>Asistent</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="662"/>
+        <location filename="../../src/AI/Assistant.cpp" line="671"/>
         <source>AI Assistant is not available in this build</source>
         <translation>Asistentul AI nu este disponibil în această versiune</translation>
     </message>
@@ -75,7 +75,7 @@ Fiecare acțiune asupra dispozitivului necesită în continuare aprobarea dvs. e
         <translation type="vanished">Asistentul AI necesită o licență Pro</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="667"/>
+        <location filename="../../src/AI/Assistant.cpp" line="676"/>
         <source>Set an API key first</source>
         <translation>Setați mai întâi o cheie API</translation>
     </message>
@@ -87,47 +87,62 @@ Fiecare acțiune asupra dispozitivului necesită în continuare aprobarea dvs. e
         <translation type="vanished">Asistentul AI necesită o licență Pro</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="170"/>
+        <location filename="../../src/AI/Conversation.cpp" line="171"/>
         <source>AI Assistant is not available in this build</source>
         <translation>Asistentul AI nu este disponibil în această versiune</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="177"/>
         <source>AI subsystem not initialized</source>
         <translation>Subsistemul AI nu este inițializat</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="182"/>
+        <location filename="../../src/AI/Conversation.cpp" line="183"/>
         <source>Already busy with a previous request</source>
         <translation>Deja ocupat cu o cerere anterioară</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="582"/>
+        <location filename="../../src/AI/Conversation.cpp" line="647"/>
         <source>Tool-call budget reached for this turn; no further tools will run.</source>
         <translation>Bugetul de apeluri de instrumente a fost atins pentru această rundă; nu vor mai fi executate instrumente.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1196"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>Se așteaptă răspunsul de la %1. Încărcarea modelului și procesarea promptului pot dura ceva timp pe hardware local...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2034"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 operațiune(i) eșuată(e)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2180"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <source>Source list read-back failed</source>
+        <translation>Citirea listei de surse a eșuat</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <source>Source %1 not found after update</source>
+        <translation>Sursa %1 nu a fost găsită după actualizare</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <source>Fields did not round-trip: %1</source>
+        <translation>Câmpurile nu s-au sincronizat: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>Ați atins bugetul de apeluri de instrumente pentru această rundă. Nu mai solicitați instrumente. Rezumați ceea ce ați găsit până acum și, dacă sarcina este incompletă, menționați ce pași rămân pentru ca utilizatorul să vă poată spune să continuați.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2913"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Modelul a încetat să reproducă linia de integritate a contextului. Conversațiile lungi se degradează silențios; răspunsurile recente pot fi mai puțin fiabile.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2916"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Modelul a modificat linia de integritate a contextului (segment deviat: %1). Conversațiile lungi se degradează silențios; răspunsurile recente pot fi mai puțin fiabile.</translation>
     </message>
@@ -136,17 +151,17 @@ Fiecare acțiune asupra dispozitivului necesită în continuare aprobarea dvs. e
         <translation type="vanished">Bugetul de apeluri de instrumente depășit</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1037"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(Modelul a returnat un răspuns gol. Încercați să reformulați, să treceți la un alt model sau să verificați dacă cererea este permisă de filtrele de siguranță ale furnizorului.)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1200"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
         <source>Sending request to %1...</source>
         <translation>Se trimite cererea către %1...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1218"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
         <source>Provider returned no reply</source>
         <translation>Furnizorul nu a returnat niciun răspuns</translation>
     </message>
@@ -1259,22 +1274,27 @@ Activați doar în rețele de încredere. Clienții nesiguri pot citi date live 
         <translation>Renunță</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="984"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="935"/>
+        <source>Continuing from your previous chat. Its recent context was carried over.</source>
+        <translation>Se continuă de la conversația anterioară. Contextul recent a fost preluat.</translation>
+    </message>
+    <message>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1014"/>
         <source>Ask Serial Studio anything…</source>
         <translation>Întreabă Serial Studio orice…</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1004"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1034"/>
         <source>Clear conversation</source>
         <translation>Șterge conversația</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1048"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1078"/>
         <source>Stop generating</source>
         <translation>Oprește generarea</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1049"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1079"/>
         <source>Send message (Enter)</source>
         <translation>Trimite mesaj (Enter)</translation>
     </message>
@@ -4217,7 +4237,7 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Seturile de date virtuale își calculează valoarea din transformări și tabele de date, nu necesită un index de cadru</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1291"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1304"/>
         <source>Fixed decimal places for the value display; overrides the format (-1 = auto)</source>
         <translation>Zecimale fixe pentru afișajul valorii; suprascrie formatul (-1 = auto)</translation>
     </message>
@@ -4651,7 +4671,7 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="575"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="845"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1396"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1409"/>
         <source>General Information</source>
         <translation>Informații Generale</translation>
     </message>
@@ -4738,7 +4758,7 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="686"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1455"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1468"/>
         <source>Text Encoding</source>
         <translation>Codificare Text</translation>
     </message>
@@ -4839,74 +4859,89 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Suprimă caseta de tablou de bord independentă a acestui set de date; widget-ul painter poate citi în continuare valorile sale</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="933"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="922"/>
+        <source>Automatic</source>
+        <translation>Automat</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="923"/>
+        <source>Widget Color</source>
+        <translation>Culoare Widget</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="924"/>
+        <source>Custom display color for this dataset; automatic uses the theme palette</source>
+        <translation>Culoare de afișare personalizată pentru acest set de date; automat folosește paleta temei</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
         <source>Lower bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Limita inferioară a intervalului de valori al setului de date; widget-urile și FFT revin la aceasta când propriul interval este lăsat nesetat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
         <source>Upper bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Limita superioară a intervalului de valori al setului de date; widget-urile și FFT revin la aceasta când propriul interval este lăsat nesetat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1004"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
         <source>Choose Time or a dataset to drive the X-Axis in plots</source>
         <translation>Alegeți Timp sau un set de date pentru a controla Axa X în grafice</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1030"/>
         <source>Frequency Analysis</source>
         <translation>Analiză de Frecvență</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1064"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1077"/>
         <source>Choose Time (default) or any dataset whose value drives the Y axis -- produces a Campbell diagram when bound to e.g. RPM</source>
         <translation>Alege Timp (implicit) sau orice set de date a cărui valoare controlează axa Y -- produce o diagramă Campbell când este legat de ex. RPM</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1108"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
         <source>FFT Window Function</source>
         <translation>Funcție Fereastră FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1109"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
         <source>Window applied before the transform to reduce spectral leakage; affects both the FFT plot and the waterfall</source>
         <translation>Fereastră aplicată înainte de transformare pentru a reduce scurgerea spectrală; afectează atât graficul FFT, cât și cascada</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1132"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1221"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
         <source>Minimum Value (optional)</source>
         <translation>Valoare Maximă (opțional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1133"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
         <source>Lower bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Limită superioară pentru normalizarea datelor; revine la intervalul de valori al setului de date când nu este setată</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1158"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1247"/>
         <source>Maximum Value (optional)</source>
         <translation>Valoare Minimă (opțional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1159"/>
         <source>Upper bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Limită inferioară pentru normalizarea datelor; revine la intervalul de valori al setului de date când nu este setată</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1222"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
         <source>Lower bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Limită inferioară a intervalului pentru indicator sau bară; revine la intervalul de valori al setului de date când nu este setată</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1248"/>
         <source>Upper bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Limită superioară a intervalului pentru indicator sau bară; revine la intervalul de valori al setului de date când nu este setată</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1287"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1300"/>
         <source>Decimal Points</source>
         <translation>Puncte Zecimale</translation>
     </message>
@@ -4915,12 +4950,12 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation type="vanished">Zecimale afișate în coloana de valori a grilei de date (-1 = auto)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1334"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1347"/>
         <source>On</source>
         <translation>Pornit</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1378"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1391"/>
         <source>LED lights up when value meets or exceeds this threshold; define alarm bands for multi-state colors</source>
         <translation>LED-ul se aprinde când valoarea atinge sau depășește acest prag; definește benzi de alarmă pentru culori multi-stare</translation>
     </message>
@@ -5003,23 +5038,23 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Unitate de măsură, cum ar fi volți sau amperi (opțional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="972"/>
         <source>Plot Settings</source>
         <translation>Setări Grafic</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="982"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="995"/>
         <source>Enable Plot Widget</source>
         <translation>Activează Widget Grafic</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="984"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="997"/>
         <source>Plot data in real-time</source>
         <translation>Afișează date în timp real</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="250"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1003"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1016"/>
         <source>X-Axis Source</source>
         <translation>Sursă Axa X</translation>
     </message>
@@ -5048,27 +5083,27 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation type="vanished">Configurare FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1028"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1041"/>
         <source>Enable FFT Analysis</source>
         <translation>Activează Analiza FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1029"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1042"/>
         <source>Perform frequency-domain analysis of the dataset</source>
         <translation>Efectuează analiza în domeniul frecvenței pentru setul de date</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1039"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1052"/>
         <source>Enable Waterfall Plot</source>
         <translation>Activează Grafic Waterfall</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1040"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1053"/>
         <source>Show a scrolling spectrogram of frequency content over time (Pro)</source>
         <translation>Afișează o spectrogramă derulantă a conținutului de frecvență în timp (Pro)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1063"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1076"/>
         <source>Waterfall Y Axis</source>
         <translation>Axa Y Waterfall</translation>
     </message>
@@ -5077,22 +5112,22 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation type="vanished">Alege Timp (implicit) sau orice set de date a cărui valoare controlează axa Y — produce o diagramă Campbell când este legat de ex. RPM</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1091"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1104"/>
         <source>FFT Window Size</source>
         <translation>Dimensiune Fereastră FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1092"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1105"/>
         <source>Number of samples used for each FFT calculation window</source>
         <translation>Numărul de eșantioane utilizate pentru fiecare fereastră de calcul FFT</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1134"/>
         <source>FFT Sampling Rate (Hz, required)</source>
         <translation>Rată de Eșantionare FFT (Hz, obligatoriu)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1135"/>
         <source>Sampling frequency used for FFT (in Hz)</source>
         <translation>Frecvența de eșantionare utilizată pentru FFT (în Hz)</translation>
     </message>
@@ -5113,17 +5148,17 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation type="vanished">Limită superioară pentru normalizarea datelor</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1171"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1184"/>
         <source>Widget Settings</source>
         <translation>Setări Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1194"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1207"/>
         <source>Widget</source>
         <translation>Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1195"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1208"/>
         <source>Select the visual widget used to display this dataset</source>
         <translation>Selectează widget-ul vizual utilizat pentru afișarea acestui set de date</translation>
     </message>
@@ -5145,28 +5180,28 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1251"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1286"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1264"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1299"/>
         <source>Auto</source>
         <translation>Automat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1252"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1265"/>
         <source>Tick Count</source>
         <translation>Număr de Marcaje</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1256"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1269"/>
         <source>Major-tick count on the dial scale (0 = auto-fit to widget size)</source>
         <translation>Numărul de marcaje majore pe scala cadranului (0 = ajustare automată la dimensiunea widget-ului)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1275"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1288"/>
         <source>Label Format</source>
         <translation>Format Etichetă</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1276"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1289"/>
         <source>Decimal places or notation used on tick labels and the value display</source>
         <translation>Zecimale sau notație utilizată pe etichetele de marcaj și afișajul valorii</translation>
     </message>
@@ -5207,22 +5242,22 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation type="vanished">Declanșează o alarmă vizuală când valoarea depășește acest prag</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1351"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1364"/>
         <source>LED Display Settings</source>
         <translation>Setări Afișaj LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1362"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1375"/>
         <source>Show in LED Panel</source>
         <translation>Afișează în Panoul LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1363"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1376"/>
         <source>Enable visual status monitoring using an LED display</source>
         <translation>Activează monitorizarea vizuală a stării folosind un afișaj LED</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1377"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1390"/>
         <source>LED On Threshold (required)</source>
         <translation>Prag de Aprindere LED (obligatoriu)</translation>
     </message>
@@ -5527,59 +5562,59 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Mixt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1406"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1419"/>
         <source>Label</source>
         <translation>Etichetă</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1407"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1420"/>
         <source>Display label</source>
         <translation>Afișează Eticheta</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1417"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1430"/>
         <source>Button Icon</source>
         <translation>Pictogramă Buton</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1426"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1439"/>
         <source>Colorize Icon</source>
         <translation>Colorează Pictograma</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1427"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1440"/>
         <source>Tint the icon with the button color</source>
         <translation>Nuanțează pictograma cu culoarea butonului</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1444"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1457"/>
         <source>Initial Value</source>
         <translation>Valoare Inițială</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1456"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1469"/>
         <source>Character encoding used when transmit() returns a string value</source>
         <translation>Codificarea caracterelor utilizată când transmit() returnează o valoare de tip șir</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1474"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1487"/>
         <source>Value Range</source>
         <translation>Interval de Valori</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="932"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1484"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1497"/>
         <source>Minimum Value</source>
         <translation>Valoare Minimă</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1493"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="958"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1506"/>
         <source>Maximum Value</source>
         <translation>Valoare Maximă</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1502"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1515"/>
         <source>Step Size</source>
         <translation>Pas de Incrementare</translation>
     </message>
@@ -5745,15 +5780,15 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Salvează Proiect Serial Studio</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Fișiere Proiect Serial Studio (*.ssproj)</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>Proiect Fără Titlu</translation>
     </message>
@@ -6008,9 +6043,9 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>Spațiu de Lucru</translation>
     </message>
@@ -6037,6 +6072,8 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -6049,8 +6086,6 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>Nume:</translation>
     </message>
@@ -6090,10 +6125,10 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Redenumește Registru</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
         <source>This action cannot be undone.</source>
         <translation>Această acțiune nu poate fi anulată.</translation>
     </message>
@@ -6103,9 +6138,9 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Aceasta elimină %1 registru(e) împreună cu tabelul. Această acțiune nu poate fi anulată.</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>Șterge "%1"?</translation>
     </message>
@@ -6136,8 +6171,8 @@ Adaugă %4 set(uri) de date folosind valorile implicite ale șablonului?</transl
         <translation>Importă Tabel</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>Spațiu de Lucru Nou</translation>
     </message>
@@ -12706,8 +12741,8 @@ Doriți să deschideți pagina de descărcare?</translation>
         <translation>Nu s-a putut scrie Info.plist: %1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>Scrierea de comenzi rapide Windows nu este disponibilă pe această platformă.</translation>
     </message>
@@ -12738,8 +12773,8 @@ Doriți să deschideți pagina de descărcare?</translation>
         <translation>Salvarea fișierului .lnk a eșuat (HRESULT 0x%1).</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>Scrierea de comenzi rapide macOS nu este disponibilă pe această platformă.</translation>
     </message>
@@ -15421,8 +15456,8 @@ Faceți clic pe Reîmprospătare pentru a actualiza lista.</translation>
         <translation>Eroare generală de I/O</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>Analizor de Trame Dezactivat</translation>
     </message>
@@ -15464,8 +15499,8 @@ Cauza cea mai probabilă: o buclă infinită sau o operație extrem de lentă î
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>Funcție Parse Lipsă</translation>
     </message>
@@ -15481,8 +15516,8 @@ Asigurați-vă că codul include:
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>Eroare de Execuție A Funcției Parse</translation>
     </message>
@@ -16459,57 +16494,57 @@ Parametrul separator nu mai este necesar.</translation>
         <translation>Widget-uri Painter</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1037"/>
+        <location filename="../../src/SerialStudio.cpp" line="1069"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1038"/>
+        <location filename="../../src/SerialStudio.cpp" line="1070"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1039"/>
+        <location filename="../../src/SerialStudio.cpp" line="1071"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1040"/>
+        <location filename="../../src/SerialStudio.cpp" line="1072"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1041"/>
+        <location filename="../../src/SerialStudio.cpp" line="1073"/>
         <source>System</source>
         <translation>Sistem</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1042"/>
+        <location filename="../../src/SerialStudio.cpp" line="1074"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1043"/>
+        <location filename="../../src/SerialStudio.cpp" line="1075"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1044"/>
+        <location filename="../../src/SerialStudio.cpp" line="1076"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1045"/>
+        <location filename="../../src/SerialStudio.cpp" line="1077"/>
         <source>Shift-JIS</source>
         <translation>Shift-jis</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1046"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1047"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -18595,33 +18630,43 @@ Activează Încorporează Proiectul pentru a integra proiectul în scurtătură,
 <context>
     <name>TableDelegate</name>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="130"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="131"/>
         <source>Parameter</source>
         <translation>Parametru</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="151"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="152"/>
         <source>Value</source>
         <translation>Valoare</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="537"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="538"/>
         <source>(Custom Icon)</source>
         <translation>(Pictogramă Personalizată)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="662"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="668"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="623"/>
+        <source>Choose Dataset Color</source>
+        <translation>Alege Culoarea Setului de Date</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="643"/>
+        <source>Automatic</source>
+        <translation>Automat</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
         <source>Auto</source>
         <translation>Automat</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>No</source>
         <translation>Nu</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>Yes</source>
         <translation>Da</translation>
     </message>
@@ -18747,62 +18792,62 @@ Activează Încorporează Proiectul pentru a integra proiectul în scurtătură,
         <translation>Pauză</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="953"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="976"/>
         <source>Unfreeze Dashboard</source>
         <translation>Deblochează Tabloul de Bord</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="954"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
         <source>Freeze Dashboard</source>
         <translation>Blochează Tabloul de Bord</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1026"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1049"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT: Conectat la %1</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1027"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT: Neconectat</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1074"/>
         <source>MQTT Publisher</source>
         <translation>Publisher MQTT</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1061"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1084"/>
         <source>Status:</source>
         <translation>Stare:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1069"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1092"/>
         <source>Connected</source>
         <translation>Conectat</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1070"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
         <source>Disconnected</source>
         <translation>Deconectat</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1077"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1100"/>
         <source>Broker:</source>
         <translation>Broker:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1090"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1113"/>
         <source>Mode:</source>
         <translation>Mod:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1103"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1126"/>
         <source>Messages sent:</source>
         <translation>Mesaje trimise:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1117"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1140"/>
         <source>Open MQTT Settings</source>
         <translation>Deschide Setări MQTT</translation>
     </message>
@@ -18816,7 +18861,7 @@ Activează Încorporează Proiectul pentru a integra proiectul în scurtătură,
         <translation type="vanished">Căutare widget-uri…</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1163"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1186"/>
         <source>Remove from Workspace</source>
         <translation>Elimină din Spațiul de Lucru</translation>
     </message>
@@ -20407,7 +20452,7 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
         <translation type="vanished">Elimină din Spațiul de Lucru</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="350"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="416"/>
         <source>Device Disconnected</source>
         <translation>Dispozitiv Deconectat</translation>
     </message>
@@ -20599,7 +20644,7 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
 <context>
     <name>Widgets::Plot3D</name>
     <message>
-        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1111"/>
+        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1113"/>
         <source>Grid Interval: %1 unit(s)</source>
         <translation>Interval Grilă: %1 unitate/unități</translation>
     </message>

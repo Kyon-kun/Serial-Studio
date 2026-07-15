@@ -104,6 +104,9 @@ class Assistant : public QObject {
   Q_PROPERTY(QString degradationDetail
              READ degradationDetail
              NOTIFY contextHealthChanged)
+  Q_PROPERTY(bool activeChatSeeded
+             READ activeChatSeeded
+             NOTIFY activeChatChanged)
   // clang-format on
 
 signals:
@@ -160,6 +163,7 @@ public:
   [[nodiscard]] bool autoVerifyEnabled() const noexcept;
   [[nodiscard]] bool contextDegraded() const;
   [[nodiscard]] QString degradationDetail() const;
+  [[nodiscard]] bool activeChatSeeded() const;
   [[nodiscard]] QString memoryIndex() const;
   [[nodiscard]] QString handoffSeedText() const;
 

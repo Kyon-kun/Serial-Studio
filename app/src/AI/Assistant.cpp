@@ -379,6 +379,15 @@ QString AI::Assistant::degradationDetail() const
 }
 
 /**
+ * @brief Returns true when the active chat carries a handoff seed from a previous chat;
+ *        drives the advisory "continued from" chip so a successful seed is observable.
+ */
+bool AI::Assistant::activeChatSeeded() const
+{
+  return m_conversation && !m_conversation->handoffSeed().isEmpty();
+}
+
+/**
  * @brief Returns the capped memory index for the system-prompt tail; empty when the
  *        feature is off or nothing applies, so a disabled feature costs zero tokens.
  */
@@ -767,6 +776,7 @@ void AI::Assistant::newChatFromHandoff(const QString& id)
   newChat();
   if (m_conversation && !digest.isEmpty()) {
     m_conversation->setHandoffSeed(digest);
+    Q_EMIT activeChatChanged();
     qCDebug(serialStudioAI) << "Handoff seed carried into new chat (" << digest.size() << "chars )";
   }
 }

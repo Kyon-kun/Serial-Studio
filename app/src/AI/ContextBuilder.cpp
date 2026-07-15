@@ -377,6 +377,13 @@ QString AI::ContextBuilder::roleBlock()
                         "\n"
                         "Concise. No filler. Match the user's register. When unsure, list/"
                         "describe/load skill before acting.\n")
+       + (assistantRef().memoryEnabled()
+            ? QStringLiteral("\n"
+                             "When the user states a durable preference, project convention, or "
+                             "corrects you, call assistant.memory.propose{category, text} so "
+                             "they can choose to keep it for future chats. It never stores "
+                             "anything by itself.\n")
+            : QString())
        + (assistantRef().contextProbeEnabled() ? SentinelProbe::instructionBlock() : QString());
 }
 

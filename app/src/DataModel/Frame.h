@@ -438,6 +438,7 @@ struct alignas(8) Dataset {
   QString title;           ///< Human-readable title
   QString units;           ///< Measurement units (e.g., degC)
   QString widget;          ///< Widget type (bar, gauge, etc.)
+  QString color;           ///< Optional hex override; empty -> automatic (theme palette)
   QString transformCode;   ///< Optional per-dataset transform script
   QString displayFormat =
     QStringLiteral("0d");  ///< Tick/value label format on analog widgets ("0d" = integer)
@@ -1128,6 +1129,9 @@ void read_io_settings(QByteArray& frameStart,
 
   if (d.decimalPoints >= 0)
     obj.insert(Keys::DecimalPoints, d.decimalPoints);
+
+  if (!d.color.isEmpty())
+    obj.insert(Keys::Color, d.color);
 
   obj.insert(Keys::GroupId, d.groupId);
   obj.insert(Keys::DatasetId, d.datasetId);

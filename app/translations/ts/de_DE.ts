@@ -51,22 +51,22 @@ Every device action still requires your explicit per-call approval in the chat, 
 Jede Geräteaktion erfordert weiterhin Ihre ausdrückliche Genehmigung pro Aufruf im Chat, auch wenn die automatische Genehmigung aktiviert ist. Aktivieren Sie dies nur, wenn Sie dem konfigurierten KI-Anbieter den Hardwarezugriff zutrauen.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="621"/>
+        <location filename="../../src/AI/Assistant.cpp" line="630"/>
         <source>Switch AI provider?</source>
         <translation>KI-Anbieter wechseln?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="622"/>
+        <location filename="../../src/AI/Assistant.cpp" line="631"/>
         <source>Switching to a different provider clears the current conversation. Do you want to continue?</source>
         <translation>Der Wechsel zu einem anderen Anbieter löscht die aktuelle Konversation. Möchten Sie fortfahren?</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="625"/>
+        <location filename="../../src/AI/Assistant.cpp" line="634"/>
         <source>Assistant</source>
         <translation>Assistent</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="662"/>
+        <location filename="../../src/AI/Assistant.cpp" line="671"/>
         <source>AI Assistant is not available in this build</source>
         <translation>KI-Assistent ist in diesem Build nicht verfügbar</translation>
     </message>
@@ -75,7 +75,7 @@ Jede Geräteaktion erfordert weiterhin Ihre ausdrückliche Genehmigung pro Aufru
         <translation type="vanished">KI-Assistent erfordert eine Pro-Lizenz</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Assistant.cpp" line="667"/>
+        <location filename="../../src/AI/Assistant.cpp" line="676"/>
         <source>Set an API key first</source>
         <translation>Zuerst einen API-Schlüssel festlegen</translation>
     </message>
@@ -87,47 +87,62 @@ Jede Geräteaktion erfordert weiterhin Ihre ausdrückliche Genehmigung pro Aufru
         <translation type="vanished">KI-Assistent erfordert eine Pro-Lizenz</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="170"/>
+        <location filename="../../src/AI/Conversation.cpp" line="171"/>
         <source>AI Assistant is not available in this build</source>
         <translation>KI-Assistent ist in diesem Build nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="177"/>
         <source>AI subsystem not initialized</source>
         <translation>KI-Subsystem nicht initialisiert</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="182"/>
+        <location filename="../../src/AI/Conversation.cpp" line="183"/>
         <source>Already busy with a previous request</source>
         <translation>Bereits mit einer vorherigen Anfrage beschäftigt</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="582"/>
+        <location filename="../../src/AI/Conversation.cpp" line="647"/>
         <source>Tool-call budget reached for this turn; no further tools will run.</source>
         <translation>Budget für Tool-Aufrufe in diesem Durchgang erreicht; es werden keine weiteren Tools ausgeführt.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1196"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>Warte auf Antwort von %1. Das Laden des Modells und die Verarbeitung der Eingabe kann auf lokaler Hardware eine Weile dauern...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2034"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 Operation(en) fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2180"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <source>Source list read-back failed</source>
+        <translation>Quell-Listenlesen fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <source>Source %1 not found after update</source>
+        <translation>Quelle %1 nach Aktualisierung nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <source>Fields did not round-trip: %1</source>
+        <translation>Felder haben Round-Trip nicht bestanden: %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>Sie haben das Budget für Tool-Aufrufe in diesem Durchgang erreicht. Fordern Sie keine weiteren Tools an. Fassen Sie zusammen, was Sie bisher gefunden haben, und geben Sie an, welche Schritte noch ausstehen, falls die Aufgabe unvollständig ist, damit der Benutzer Ihnen sagen kann, fortzufahren.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2913"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Das Modell hat seine Kontextintegritätszeile nicht mehr reproduziert. Lange Konversationen verschlechtern sich unbemerkt; aktuelle Antworten sind möglicherweise weniger zuverlässig.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2916"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Das Modell hat seine Kontextintegritätszeile verändert (abgewichenes Segment: %1). Lange Konversationen verschlechtern sich unbemerkt; aktuelle Antworten sind möglicherweise weniger zuverlässig.</translation>
     </message>
@@ -136,17 +151,17 @@ Jede Geräteaktion erfordert weiterhin Ihre ausdrückliche Genehmigung pro Aufru
         <translation type="vanished">Tool-Call-Budget überschritten</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1037"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(Das Modell hat eine leere Antwort zurückgegeben. Versuchen Sie, die Anfrage umzuformulieren, zu einem anderen Modell zu wechseln oder zu prüfen, ob die Anfrage von den Sicherheitsfiltern des Anbieters zugelassen wird.)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1200"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
         <source>Sending request to %1...</source>
         <translation>Anfrage wird an %1 gesendet…</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1218"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
         <source>Provider returned no reply</source>
         <translation>Anbieter hat keine Antwort zurückgegeben</translation>
     </message>
@@ -1259,22 +1274,27 @@ Nur in vertrauenswürdigen Netzwerken aktivieren. Nicht vertrauenswürdige Clien
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="984"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="935"/>
+        <source>Continuing from your previous chat. Its recent context was carried over.</source>
+        <translation>Fortsetzung Ihres vorherigen Chats. Der aktuelle Kontext wurde übernommen.</translation>
+    </message>
+    <message>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1014"/>
         <source>Ask Serial Studio anything…</source>
         <translation>Fragen Sie Serial Studio beliebig…</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1004"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1034"/>
         <source>Clear conversation</source>
         <translation>Konversation löschen</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1048"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1078"/>
         <source>Stop generating</source>
         <translation>Generierung stoppen</translation>
     </message>
     <message>
-        <location filename="../../qml/AI/AssistantPanel.qml" line="1049"/>
+        <location filename="../../qml/AI/AssistantPanel.qml" line="1079"/>
         <source>Send message (Enter)</source>
         <translation>Nachricht senden (Eingabe)</translation>
     </message>
@@ -4217,7 +4237,7 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Virtuelle Datensätze berechnen ihren Wert aus Transformationen und Datentabellen, sie benötigen keinen Frame-Index</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1291"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1304"/>
         <source>Fixed decimal places for the value display; overrides the format (-1 = auto)</source>
         <translation>Feste Dezimalstellen für die Wertanzeige; überschreibt das Format (-1 = automatisch)</translation>
     </message>
@@ -4651,7 +4671,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="575"/>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="845"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1396"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1409"/>
         <source>General Information</source>
         <translation>Allgemeine Informationen</translation>
     </message>
@@ -4738,7 +4758,7 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="686"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1455"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1468"/>
         <source>Text Encoding</source>
         <translation>Textkodierung</translation>
     </message>
@@ -4839,74 +4859,89 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Eigenständige Dashboard-Kachel dieses Datensatzes unterdrücken; das Painter-Widget kann seine Werte weiterhin lesen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="933"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="922"/>
+        <source>Automatic</source>
+        <translation>Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="923"/>
+        <source>Widget Color</source>
+        <translation>Widget-farbe</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="924"/>
+        <source>Custom display color for this dataset; automatic uses the theme palette</source>
+        <translation>Benutzerdefinierte Anzeigefarbe für diesen Datensatz; automatisch verwendet die Themenpalette</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
         <source>Lower bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Untere Grenze des Datensatz-Wertebereichs; Widgets und FFT verwenden diesen Wert, wenn ihr eigener Bereich nicht festgelegt ist</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="946"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
         <source>Upper bound of the dataset value range; widgets and FFT fall back to it when their own range is left unset</source>
         <translation>Obere Grenze des Datensatz-Wertebereichs; Widgets und FFT verwenden diesen Wert, wenn ihr eigener Bereich nicht festgelegt ist</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1004"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
         <source>Choose Time or a dataset to drive the X-Axis in plots</source>
         <translation>Zeit oder einen Datensatz für die X-Achse in Diagrammen wählen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1017"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1030"/>
         <source>Frequency Analysis</source>
         <translation>Frequenzanalyse</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1064"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1077"/>
         <source>Choose Time (default) or any dataset whose value drives the Y axis -- produces a Campbell diagram when bound to e.g. RPM</source>
         <translation>Wählen Sie Zeit (Standard) oder einen beliebigen Datensatz, dessen Wert die Y-Achse steuert -- erzeugt ein Campbell-Diagramm, wenn z. B. an Drehzahl gebunden</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1108"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
         <source>FFT Window Function</source>
         <translation>FFT-fensterfunktion</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1109"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
         <source>Window applied before the transform to reduce spectral leakage; affects both the FFT plot and the waterfall</source>
         <translation>Fenster, das vor der Transformation angewendet wird, um spektrale Leckage zu reduzieren; betrifft sowohl das FFT-Diagramm als auch das Wasserfall-Diagramm</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1132"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1221"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
         <source>Minimum Value (optional)</source>
         <translation>Minimalwert (optional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1133"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
         <source>Lower bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Untere Grenze für die Datennormalisierung; verwendet den Wertebereich des Datensatzes, wenn nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1145"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1234"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1158"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1247"/>
         <source>Maximum Value (optional)</source>
         <translation>Maximalwert (optional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1146"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1159"/>
         <source>Upper bound for data normalization; falls back to the dataset value range when left unset</source>
         <translation>Obere Grenze für die Datennormalisierung; verwendet den Wertebereich des Datensatzes, wenn nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1222"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
         <source>Lower bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Untere Grenze des Messgerät- oder Balkenbereichs; verwendet den Wertebereich des Datensatzes, wenn nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1235"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1248"/>
         <source>Upper bound of the gauge or bar range; falls back to the dataset value range when left unset</source>
         <translation>Obere Grenze des Messgerät- oder Balkenbereichs; verwendet den Wertebereich des Datensatzes, wenn nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1287"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1300"/>
         <source>Decimal Points</source>
         <translation>Dezimalstellen</translation>
     </message>
@@ -4915,12 +4950,12 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Dezimalstellen im Datenraster-Wertespalte (-1 = automatisch)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1334"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1347"/>
         <source>On</source>
         <translation>Ein</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1378"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1391"/>
         <source>LED lights up when value meets or exceeds this threshold; define alarm bands for multi-state colors</source>
         <translation>LED leuchtet, wenn der Wert diese Schwelle erreicht oder überschreitet; definieren Sie Alarmbänder für mehrfarbige Zustände</translation>
     </message>
@@ -5003,23 +5038,23 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Maßeinheit, z. B. Volt oder Ampere (optional)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="959"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="972"/>
         <source>Plot Settings</source>
         <translation>Plot-einstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="982"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="995"/>
         <source>Enable Plot Widget</source>
         <translation>Plot-widget Aktivieren</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="984"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="997"/>
         <source>Plot data in real-time</source>
         <translation>Daten in Echtzeit plotten</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="250"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1003"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1016"/>
         <source>X-Axis Source</source>
         <translation>X-achsen-quelle</translation>
     </message>
@@ -5048,27 +5083,27 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">FFT-konfiguration</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1028"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1041"/>
         <source>Enable FFT Analysis</source>
         <translation>FFT-analyse Aktivieren</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1029"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1042"/>
         <source>Perform frequency-domain analysis of the dataset</source>
         <translation>Frequenzbereichsanalyse des Datensatzes durchführen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1039"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1052"/>
         <source>Enable Waterfall Plot</source>
         <translation>Wasserfall-plot Aktivieren</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1040"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1053"/>
         <source>Show a scrolling spectrogram of frequency content over time (Pro)</source>
         <translation>Zeigt ein scrollendes Spektrogramm des Frequenzinhalts über die Zeit (Pro)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1063"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1076"/>
         <source>Waterfall Y Axis</source>
         <translation>Wasserfall-y-achse</translation>
     </message>
@@ -5077,22 +5112,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="obsolete">Wählen Sie Zeit (Standard) oder einen beliebigen Datensatz, dessen Wert die Y-Achse steuert — erzeugt ein Campbell-Diagramm, wenn z. B. an Drehzahl gebunden</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1091"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1104"/>
         <source>FFT Window Size</source>
         <translation>FFT-fenstergröße</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1092"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1105"/>
         <source>Number of samples used for each FFT calculation window</source>
         <translation>Anzahl der Samples pro FFT-Berechnungsfenster</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1121"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1134"/>
         <source>FFT Sampling Rate (Hz, required)</source>
         <translation>FFT-Abtastrate (Hz, erforderlich)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1122"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1135"/>
         <source>Sampling frequency used for FFT (in Hz)</source>
         <translation>Abtastfrequenz für FFT (in Hz)</translation>
     </message>
@@ -5113,17 +5148,17 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Obere Grenze für Datennormalisierung</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1171"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1184"/>
         <source>Widget Settings</source>
         <translation>Widget-einstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1194"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1207"/>
         <source>Widget</source>
         <translation>Widget</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1195"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1208"/>
         <source>Select the visual widget used to display this dataset</source>
         <translation>Wählen Sie das visuelle Widget zur Anzeige dieses Datensatzes</translation>
     </message>
@@ -5145,28 +5180,28 @@ Add %4 dataset(s) using the template's defaults?</source>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectEditor.cpp" line="716"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1251"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1286"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1264"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1299"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1252"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1265"/>
         <source>Tick Count</source>
         <translation>Anzahl der Teilstriche</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1256"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1269"/>
         <source>Major-tick count on the dial scale (0 = auto-fit to widget size)</source>
         <translation>Anzahl der Haupt-Teilstriche auf der Skala (0 = automatische Anpassung an Widget-Größe)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1275"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1288"/>
         <source>Label Format</source>
         <translation>Beschriftungsformat</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1276"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1289"/>
         <source>Decimal places or notation used on tick labels and the value display</source>
         <translation>Dezimalstellen oder Notation für Teilstrich-Beschriftungen und Wertanzeige</translation>
     </message>
@@ -5207,22 +5242,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation type="vanished">Löst einen visuellen Alarm aus, wenn der Wert diese Schwelle überschreitet</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1351"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1364"/>
         <source>LED Display Settings</source>
         <translation>LED-anzeigeeinstellungen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1362"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1375"/>
         <source>Show in LED Panel</source>
         <translation>In LED-Panel Anzeigen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1363"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1376"/>
         <source>Enable visual status monitoring using an LED display</source>
         <translation>Aktiviert visuelle Statusüberwachung mittels LED-Anzeige</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1377"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1390"/>
         <source>LED On Threshold (required)</source>
         <translation>LED-Einschaltschwelle (erforderlich)</translation>
     </message>
@@ -5527,59 +5562,59 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Gemischt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1406"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1419"/>
         <source>Label</source>
         <translation>Beschriftung</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1407"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1420"/>
         <source>Display label</source>
         <translation>Beschriftung anzeigen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1417"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1430"/>
         <source>Button Icon</source>
         <translation>Schaltflächensymbol</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1426"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1439"/>
         <source>Colorize Icon</source>
         <translation>Symbol Einfärben</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1427"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1440"/>
         <source>Tint the icon with the button color</source>
         <translation>Symbol mit der Schaltflächenfarbe einfärben</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1444"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1457"/>
         <source>Initial Value</source>
         <translation>Anfangswert</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1456"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1469"/>
         <source>Character encoding used when transmit() returns a string value</source>
         <translation>Zeichenkodierung, die verwendet wird, wenn transmit() einen String-Wert zurückgibt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1474"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1487"/>
         <source>Value Range</source>
         <translation>Wertebereich</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="932"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1484"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1497"/>
         <source>Minimum Value</source>
         <translation>Minimalwert</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="945"/>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1493"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="958"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1506"/>
         <source>Maximum Value</source>
         <translation>Maximalwert</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1502"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorForms.cpp" line="1515"/>
         <source>Step Size</source>
         <translation>Schrittgröße</translation>
     </message>
@@ -5745,15 +5780,15 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Serial Studio-projekt Speichern</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Serial Studio-Projektdateien (*.ssproj)</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>Unbenanntes Projekt</translation>
     </message>
@@ -6008,9 +6043,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>Arbeitsbereich</translation>
     </message>
@@ -6037,6 +6072,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
         <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -6049,8 +6086,6 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -6090,10 +6125,10 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Register Umbenennen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2230"/>
         <source>This action cannot be undone.</source>
         <translation>Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
@@ -6103,9 +6138,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Dadurch werden %1 Register zusammen mit der Tabelle entfernt. Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>„%1" Löschen?</translation>
     </message>
@@ -6136,8 +6171,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Tabelle Importieren</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>Neuer Arbeitsbereich</translation>
     </message>
@@ -12706,8 +12741,8 @@ Download-Seite öffnen?</translation>
         <translation>Info.plist konnte nicht geschrieben werden: %1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>Windows-Verknüpfungsschreiber ist auf dieser Plattform nicht verfügbar.</translation>
     </message>
@@ -12738,8 +12773,8 @@ Download-Seite öffnen?</translation>
         <translation>Speichern der .lnk-Datei fehlgeschlagen (HRESULT 0x%1).</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>MacOS-Verknüpfungsschreiber ist auf dieser Plattform nicht verfügbar.</translation>
     </message>
@@ -15421,8 +15456,8 @@ Aktualisieren klicken, um die Liste zu aktualisieren.</translation>
         <translation>Allgemeiner E/A-Fehler</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>Frame-parser Deaktiviert</translation>
     </message>
@@ -15464,8 +15499,8 @@ Wahrscheinlichste Ursache: eine Endlosschleife oder extrem langsame Operation im
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>Fehlende Parse-funktion</translation>
     </message>
@@ -15481,8 +15516,8 @@ Bitte stellen Sie sicher, dass Ihr Code Folgendes enthält:
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>Laufzeitfehler der Parse-funktion</translation>
     </message>
@@ -16459,57 +16494,57 @@ Der Trennzeichen-Parameter wird nicht mehr benötigt.</translation>
         <translation>Painter-widgets</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1037"/>
+        <location filename="../../src/SerialStudio.cpp" line="1069"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1038"/>
+        <location filename="../../src/SerialStudio.cpp" line="1070"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1039"/>
+        <location filename="../../src/SerialStudio.cpp" line="1071"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1040"/>
+        <location filename="../../src/SerialStudio.cpp" line="1072"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1041"/>
+        <location filename="../../src/SerialStudio.cpp" line="1073"/>
         <source>System</source>
         <translation>System</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1042"/>
+        <location filename="../../src/SerialStudio.cpp" line="1074"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1043"/>
+        <location filename="../../src/SerialStudio.cpp" line="1075"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1044"/>
+        <location filename="../../src/SerialStudio.cpp" line="1076"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1045"/>
+        <location filename="../../src/SerialStudio.cpp" line="1077"/>
         <source>Shift-JIS</source>
         <translation>Shift-jis</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1046"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1047"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -18595,33 +18630,43 @@ Projekt Einbetten aktivieren, um das Projekt in die Verknüpfung einzubetten, so
 <context>
     <name>TableDelegate</name>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="130"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="131"/>
         <source>Parameter</source>
         <translation>Parameter</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="151"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="152"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="537"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="538"/>
         <source>(Custom Icon)</source>
         <translation>(Benutzerdefiniertes Symbol)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="662"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="668"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="623"/>
+        <source>Choose Dataset Color</source>
+        <translation>Datensatzfarbe Wählen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="643"/>
+        <source>Automatic</source>
+        <translation>Automatisch</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="836"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -18747,62 +18792,62 @@ Projekt Einbetten aktivieren, um das Projekt in die Verknüpfung einzubetten, so
         <translation>Pausieren</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="953"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="976"/>
         <source>Unfreeze Dashboard</source>
         <translation>Dashboard Entsperren</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="954"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
         <source>Freeze Dashboard</source>
         <translation>Dashboard Sperren</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1026"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1049"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT: Verbunden mit %1</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1027"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT: Nicht verbunden</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1074"/>
         <source>MQTT Publisher</source>
         <translation>MQTT-publisher</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1061"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1084"/>
         <source>Status:</source>
         <translation>Status:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1069"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1092"/>
         <source>Connected</source>
         <translation>Verbunden</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1070"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
         <source>Disconnected</source>
         <translation>Getrennt</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1077"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1100"/>
         <source>Broker:</source>
         <translation>Broker:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1090"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1113"/>
         <source>Mode:</source>
         <translation>Modus:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1103"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1126"/>
         <source>Messages sent:</source>
         <translation>Gesendete Nachrichten:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1117"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1140"/>
         <source>Open MQTT Settings</source>
         <translation>MQTT-einstellungen Öffnen</translation>
     </message>
@@ -18816,7 +18861,7 @@ Projekt Einbetten aktivieren, um das Projekt in die Verknüpfung einzubetten, so
         <translation type="vanished">Widgets suchen…</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1163"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1186"/>
         <source>Remove from Workspace</source>
         <translation>Aus Arbeitsbereich entfernen</translation>
     </message>
@@ -20407,7 +20452,7 @@ Es ist klar, dass nach Ablauf eine Lizenz erworben oder die GPLv3-Version erstel
         <translation type="vanished">Aus Arbeitsbereich entfernen</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="350"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="416"/>
         <source>Device Disconnected</source>
         <translation>Gerät Getrennt</translation>
     </message>
@@ -20599,7 +20644,7 @@ Es ist klar, dass nach Ablauf eine Lizenz erworben oder die GPLv3-Version erstel
 <context>
     <name>Widgets::Plot3D</name>
     <message>
-        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1111"/>
+        <location filename="../../src/UI/Widgets/Plot3D.cpp" line="1113"/>
         <source>Grid Interval: %1 unit(s)</source>
         <translation>Rasterintervall: %1 Einheit(en)</translation>
     </message>

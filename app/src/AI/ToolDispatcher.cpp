@@ -416,7 +416,11 @@ static QVector<detail::AssistantToolDef> assistantToolDefs()
      makeObjectSchema(scriptProps, QJsonArray{QStringLiteral("kind")})},
     {QStringLiteral("assistant.script.apply"),
      QStringLiteral("Dry-run script code first, then apply it to the correct project target. "
-                    "Use for frame parsers, dataset transforms, and painter widgets."),
+                    "Use for frame parsers, dataset transforms, and painter widgets. For "
+                    "frame parsers, any frameDetection / frameStart / frameEnd / "
+                    "decoderMethod / hexadecimalDelimiters / checksumAlgorithm args are also "
+                    "persisted to the source configuration on success (reply carries the "
+                    "outcome under frameConfig)."),
      makeObjectSchema(scriptProps, QJsonArray{QStringLiteral("kind"), QStringLiteral("code")})},
     {QStringLiteral("assistant.project.bulkApply"),
      QStringLiteral("Validate and execute a project.batch mutation, rejecting nested batches and "
@@ -1300,7 +1304,41 @@ static QJsonObject applyTransformScript(const QJsonObject& args,
 }
 
 /**
- * @brief Applies a frame-parser script, forwarding optional sourceId to the API.
+ * @brief Maps frame-detection args from assistant.script.apply onto project.frameParser.update
+ *        params; returns an empty object when the request carried no frame config.
+ */
+static QJsonObject frameConfigArgsFor(const QJsonObject& args)
+{
+  QJsonObject config;
+  if (args.contains(Keys::FrameStart))
+    config[QStringLiteral("startSequence")] = args.value(Keys::FrameStart).toString();
+
+  if (args.contains(Keys::FrameEnd))
+    config[QStringLiteral("endSequence")] = args.value(Keys::FrameEnd).toString();
+
+  if (args.contains(Keys::FrameDetection))
+    config[Keys::FrameDetection] = args.value(Keys::FrameDetection).toInt();
+
+  if (args.contains(Keys::DecoderMethod))
+    config[Keys::DecoderMethod] = args.value(Keys::DecoderMethod).toInt();
+
+  if (args.contains(Keys::HexadecimalDelimiters))
+    config[Keys::HexadecimalDelimiters] = args.value(Keys::HexadecimalDelimiters).toBool();
+
+  if (args.contains(Keys::ChecksumAlgorithm))
+    config[Keys::ChecksumAlgorithm] = args.value(Keys::ChecksumAlgorithm).toString();
+
+  if (!config.isEmpty() && args.contains(Keys::SourceId))
+    config[Keys::SourceId] = args.value(Keys::SourceId).toInt();
+
+  return config;
+}
+
+/**
+ * @brief Applies a frame-parser script, forwarding optional sourceId to the API. Frame
+ *        config args (delimiters, detection, decoder, checksum) are persisted to the source
+ *        via project.frameParser.update -- the dry run alone never changes the project, and
+ *        silently dropping them here shipped a model-visible trap once (2026-07-14).
  */
 static QJsonObject applyFrameParserScript(const QJsonObject& args,
                                           const QJsonObject& dryRun,
@@ -1315,6 +1353,22 @@ static QJsonObject applyFrameParserScript(const QJsonObject& args,
   const QString command                = QStringLiteral("project.frameParser.setCode");
   auto applyReply                      = runCommand(command, applyArgs);
   applyReply[QStringLiteral("dryRun")] = dryRun;
+
+  const auto configArgs = frameConfigArgsFor(args);
+  if (applyReply.value(QStringLiteral("ok")).toBool() && !configArgs.isEmpty()) {
+    const auto configReply = runCommand(QStringLiteral("project.frameParser.update"), configArgs);
+    applyReply[QStringLiteral("frameConfig")] = configReply;
+    if (!configReply.value(QStringLiteral("ok")).toBool()) {
+      applyReply[QStringLiteral("ok")]    = false;
+      applyReply[QStringLiteral("error")] = QJsonObject{
+        {   QStringLiteral("code"),QStringLiteral("frame_config_failed")                    },
+        {QStringLiteral("message"),
+         QStringLiteral("Parser code applied, but persisting the frame detection config "
+         "failed; see frameConfig for the underlying error.")}
+      };
+    }
+  }
+
   return attachRepairHint(applyReply, command);
 }
 

@@ -137,7 +137,7 @@ QColor UI::DashboardWidget::widgetColor() const
   if (VALIDATE_WIDGET(m_widgetType, m_relativeIndex)) {
     if (SerialStudio::isDatasetWidget(m_widgetType)) {
       const auto& dataset = GET_DATASET(m_widgetType, m_relativeIndex);
-      return QColor(SerialStudio::getDatasetColor(dataset.index));
+      return SerialStudio::getDatasetColor(dataset);
     }
   }
 

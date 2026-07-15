@@ -581,16 +581,18 @@ void Widgets::Plot3D::updateData()
 }
 
 /**
- * @brief Updates plot colors based on the current theme.
+ * @brief Updates plot colors based on the current theme; a valid per-dataset override in the
+ *        group is drawn verbatim as the head color, with only the tail derived from it.
  */
 void Widgets::Plot3D::onThemeChanged()
 {
-  const auto color = SerialStudio::getDatasetColor(m_index + 1);
-  m_lineHeadColor  = color;
+  QColor custom;
+  if (VALIDATE_WIDGET(SerialStudio::DashboardPlot3D, m_index))
+    custom = SerialStudio::getGroupColorOverride(GET_GROUP(SerialStudio::DashboardPlot3D, m_index));
 
-  QColor midCurve(m_lineHeadColor);
-  m_lineHeadColor = midCurve.darker(130);
-  m_lineTailColor = midCurve.lighter(130);
+  const QColor base = custom.isValid() ? custom : SerialStudio::getDatasetColor(m_index + 1);
+  m_lineHeadColor   = custom.isValid() ? base : base.darker(130);
+  m_lineTailColor   = base.lighter(130);
   m_lineTailColor.setAlpha(156);
 
   // clang-format off

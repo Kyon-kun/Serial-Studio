@@ -204,12 +204,31 @@ Item {
       opacity: SwipeView.isCurrentItem ? 1.0 : 0.0
       Behavior on opacity { NumberAnimation { duration: 150 } }
 
+      //
+      // Title strip for faces too small to carry labels; page-geometry gated so the
+      // strip height cannot feed back into the face size and loop
+      //
+      WidgetTitleBar {
+        id: gaugeTitleBar
+
+        text: root.model.title
+        active: root.height >= 110
+                && Math.min(parent.width - 16, parent.height - 40) * 0.95 < 120
+
+        anchors {
+          top: parent.top
+          left: parent.left
+          right: parent.right
+        }
+      }
+
       Dial {
         id: control
 
         enabled: false
         anchors.margins: 8
         anchors.fill: parent
+        anchors.topMargin: gaugeTitleBar.height + 8
 
         value: model.value
         to: model.maxValue
@@ -964,6 +983,9 @@ Item {
   // Restore per-widget page from project settings, then persist on change.
   //
   Component.onCompleted: {
+    if (windowRoot && windowRoot.frozenPanel !== undefined)
+      windowRoot.frozenPanel = false
+
     root.restoringPage = true
     const s = Cpp_JSON_ProjectModel.widgetSettings(root.widgetId)
     if (s["page"] !== undefined)

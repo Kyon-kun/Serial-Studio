@@ -323,6 +323,8 @@ public:
   Q_INVOKABLE [[nodiscard]] static bool isAnyPlayerOpen();
   Q_INVOKABLE [[nodiscard]] static bool isFinalValuePlayerOpen();
   Q_INVOKABLE [[nodiscard]] static QColor getDatasetColor(const int index);
+  [[nodiscard]] static QColor getDatasetColor(const DataModel::Dataset& dataset);
+  [[nodiscard]] static QColor getGroupColorOverride(const DataModel::Group& group);
   Q_INVOKABLE [[nodiscard]] static QColor getDeviceColor(const int sourceId);
   Q_INVOKABLE [[nodiscard]] static QColor getDeviceTopColor(const int sourceId);
   Q_INVOKABLE [[nodiscard]] static QColor getDeviceBottomColor(const int sourceId);

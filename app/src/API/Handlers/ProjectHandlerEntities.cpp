@@ -24,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <QColor>
 #include <QFile>
 #include <QHash>
 #include <QJSEngine>
@@ -1413,12 +1414,13 @@ static bool takeParam(const QJsonObject& params, QSet<QString>& consumed, const 
 }
 
 /**
- * @brief Applies title/units/widget text fields and visualization toggles to @a d.
+ * @brief Applies title/units/widget text fields and visualization toggles to @a d; returns a
+ *        non-empty error string when a value is rejected.
  */
-static void applyDatasetTextAndToggleFields(DataModel::Dataset& d,
-                                            const QJsonObject& params,
-                                            bool& rebuildTree,
-                                            QSet<QString>& consumed)
+static QString applyDatasetTextAndToggleFields(DataModel::Dataset& d,
+                                               const QJsonObject& params,
+                                               bool& rebuildTree,
+                                               QSet<QString>& consumed)
 {
   if (takeParam(params, consumed, QStringLiteral("title"))) {
     d.title     = params.value(QStringLiteral("title")).toString();
@@ -1426,6 +1428,16 @@ static void applyDatasetTextAndToggleFields(DataModel::Dataset& d,
   }
   if (takeParam(params, consumed, QStringLiteral("units")))
     d.units = params.value(QStringLiteral("units")).toString();
+
+  if (takeParam(params, consumed, Keys::Color)) {
+    const auto color = params.value(Keys::Color).toString().simplified();
+    if (!color.isEmpty() && !QColor::fromString(color).isValid())
+      return QStringLiteral("Invalid color '%1': use '#rrggbb' or a valid color name; "
+                            "empty string restores the automatic theme color")
+        .arg(color);
+
+    d.color = color;
+  }
 
   if (takeParam(params, consumed, QStringLiteral("widget"))) {
     d.widget    = params.value(QStringLiteral("widget")).toString();
@@ -1448,6 +1460,8 @@ static void applyDatasetTextAndToggleFields(DataModel::Dataset& d,
     d.waterfall = params.value(Keys::Waterfall).toBool();
     rebuildTree = true;
   }
+
+  return QString();
 }
 
 /**
@@ -1605,7 +1619,8 @@ QString API::Handlers::ProjectHandler::applyDatasetUpdateParams(DataModel::Datas
                                                                 bool& rebuildTree,
                                                                 QSet<QString>& consumed)
 {
-  applyDatasetTextAndToggleFields(d, params, rebuildTree, consumed);
+  if (auto err = applyDatasetTextAndToggleFields(d, params, rebuildTree, consumed); !err.isEmpty())
+    return err;
 
   if (auto err = applyDatasetNumericFields(d, params, rebuildTree, consumed); !err.isEmpty())
     return err;

@@ -4,6 +4,7 @@
     "changeDrivenTransforms": false,
     "controlScriptCode": "/**\n * CAN Bus ECU Simulator - Control Loop\n *\n * Launches the bundled Python data generator (ecu_simulator.py) automatically just before\n * the connection opens (via onConnect), so the example works without running anything by\n * hand. The helper process is stopped by Serial Studio when the device is\n * disconnected, when the project changes, or when the app quits.\n *\n * The interpreter is resolved cross-platform: \"python3\" is tried first\n * (Linux/macOS), falling back to \"python\" (typical on Windows).\n */\n\nvar helperPid = -1;\n\nfunction startHelper() {\n  var dir = system.projectDir();\n  if (!dir.ok)\n    return;\n\n  var script = dir.result.directory + \"/ecu_simulator.py\";\n\n  var r = system.exec(\"python3\", { args: [\"-u\", script, \"--virtual\"], workingDir: dir.result.directory });\n  if (!r.ok)\n    r = system.exec(\"python\", { args: [\"-u\", script, \"--virtual\"], workingDir: dir.result.directory });\n\n  if (r.ok)\n    helperPid = r.result.processId;\n}\n\nfunction onConnect() {\n  startHelper();\n}\n\nfunction setup() {}\n\nfunction loop() {\n  delay(1000);\n}\n",
     "customizeWorkspaces": true,
+    "frozen": true,
     "groups": [
         {
             "datasets": [
@@ -16,6 +17,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 0,
                     "index": 1,
@@ -46,6 +48,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 0,
                     "index": 2,
@@ -83,6 +86,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 3,
@@ -113,6 +117,7 @@
                     "fftMin": -40,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 4,
@@ -143,6 +148,7 @@
                     "fftMin": -40,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 5,
@@ -180,6 +186,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 2,
                     "index": 6,
@@ -210,6 +217,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 2,
                     "index": 7,
@@ -247,6 +255,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 3,
                     "index": 8,
@@ -277,6 +286,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 3,
                     "index": 9,
@@ -307,6 +317,7 @@
                     "fftMin": -40,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 3,
                     "index": 10,
@@ -352,6 +363,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 11,
@@ -390,6 +402,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 12,
@@ -428,6 +441,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 13,
@@ -466,6 +480,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 14,
@@ -504,6 +519,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 15,
@@ -549,6 +565,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 5,
                     "index": 16,
@@ -587,6 +604,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 5,
                     "index": 17,
@@ -625,6 +643,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 5,
                     "index": 18,
@@ -663,6 +682,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 5,
                     "index": 19,
@@ -701,6 +721,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 5,
                     "index": 20,
@@ -738,6 +759,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 6,
                     "index": 21,
@@ -768,6 +790,7 @@
                     "fftMin": -500,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 6,
                     "index": 22,
@@ -805,6 +828,7 @@
                     "fftMin": -40,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 7,
                     "index": 23,
@@ -835,6 +859,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 7,
                     "index": 24,
@@ -872,6 +897,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 25,
@@ -902,6 +928,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 26,
@@ -932,6 +959,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 27,
@@ -962,6 +990,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 28,
@@ -992,6 +1021,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 29,
@@ -1022,6 +1052,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 30,
@@ -1052,6 +1083,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 31,
@@ -1082,6 +1114,7 @@
                     "fftMin": 3,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 8,
                     "index": 32,
@@ -1119,6 +1152,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 9,
                     "index": 33,
@@ -1149,6 +1183,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 9,
                     "index": 34,
@@ -1186,6 +1221,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 10,
                     "index": 35,
@@ -1216,6 +1252,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 10,
                     "index": 36,
@@ -1253,6 +1290,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 11,
                     "index": 37,
@@ -1283,6 +1321,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 11,
                     "index": 38,
@@ -1313,6 +1352,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 11,
                     "index": 39,
@@ -1343,6 +1383,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 11,
                     "index": 40,
@@ -1380,6 +1421,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 12,
                     "index": 41,
@@ -1417,6 +1459,7 @@
                     "fftMin": -720,
                     "fftSamples": 256,
                     "fftSamplingRate": 100,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 13,
                     "index": 42,
@@ -1881,11 +1924,17 @@
         "ECU Simulator/Workspaces/TRANSMISSION_GEAR": false
     },
     "widgetSettings": {
+        "10:1:3": {
+            "page": 0
+        },
+        "10:2:6": {
+            "page": 0
+        },
         "9:0:2": {
             "interpolationMode": 1,
             "showAreaUnderPlot": true
         },
-        "activeGroup": 5000,
+        "activeGroup": 5006,
         "externalWindows": {
             "data": [
             ]
@@ -1893,68 +1942,68 @@
         "layout:5000": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 1,
                         "relativeIndex": 0,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 331,
+                        "width": 348,
                         "x": 0,
                         "y": 0
                     },
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 3,
                         "relativeIndex": 2,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 331,
-                        "x": 330,
+                        "width": 348,
+                        "x": 347,
                         "y": 0
                     },
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 15,
                         "relativeIndex": 0,
                         "state": "normal",
                         "widgetType": 8,
-                        "width": 331,
-                        "x": 660,
+                        "width": 348,
+                        "x": 694,
                         "y": 0
                     },
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 4,
                         "relativeIndex": 3,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 331,
+                        "width": 348,
                         "x": 0,
-                        "y": 238
+                        "y": 268
                     },
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 2,
                         "relativeIndex": 1,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 331,
-                        "x": 330,
-                        "y": 238
+                        "width": 348,
+                        "x": 347,
+                        "y": 268
                     },
                     {
-                        "height": 239,
+                        "height": 269,
                         "id": 16,
                         "relativeIndex": 1,
                         "state": "normal",
                         "widgetType": 8,
-                        "width": 331,
-                        "x": 660,
-                        "y": 238
+                        "width": 348,
+                        "x": 694,
+                        "y": 268
                     }
                 ],
                 "userReordered": true,
@@ -1994,19 +2043,48 @@
                 ]
             }
         },
+        "layout:5001": {
+            "data": {
+                "autoLayout": true,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
+                "geometries": [
+                    {
+                        "height": 538,
+                        "id": 1,
+                        "relativeIndex": 0,
+                        "state": "normal",
+                        "widgetType": 1,
+                        "width": 1043,
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "userReordered": false,
+                "windowOrder": [
+                    1
+                ],
+                "windowOrderTyped": [
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 1
+                    }
+                ]
+            }
+        },
         "layout:5002": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 538,
                         "id": 2,
                         "relativeIndex": 1,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }
@@ -2026,16 +2104,16 @@
         "layout:5003": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 538,
                         "id": 3,
                         "relativeIndex": 2,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }
@@ -2055,16 +2133,16 @@
         "layout:5004": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 506,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 506,
                         "id": 4,
                         "relativeIndex": 3,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }
@@ -2077,6 +2155,50 @@
                     {
                         "relativeIndex": 3,
                         "widgetType": 1
+                    }
+                ]
+            }
+        },
+        "layout:5005": {
+            "data": {
+                "autoLayout": true,
+                "canvasHeight": 506,
+                "canvasWidth": 1043,
+                "geometries": [
+                    {
+                        "height": 506,
+                        "id": 5,
+                        "relativeIndex": 4,
+                        "state": "normal",
+                        "widgetType": 1,
+                        "width": 522,
+                        "x": 0,
+                        "y": 0
+                    },
+                    {
+                        "height": 506,
+                        "id": 15,
+                        "relativeIndex": 0,
+                        "state": "normal",
+                        "widgetType": 8,
+                        "width": 522,
+                        "x": 521,
+                        "y": 0
+                    }
+                ],
+                "userReordered": false,
+                "windowOrder": [
+                    5,
+                    15
+                ],
+                "windowOrderTyped": [
+                    {
+                        "relativeIndex": 4,
+                        "widgetType": 1
+                    },
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 8
                     }
                 ]
             }
@@ -2186,16 +2308,16 @@
         "layout:5010": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 538,
                         "id": 10,
                         "relativeIndex": 9,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }
@@ -2244,16 +2366,16 @@
         "layout:5012": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 538,
                         "id": 12,
                         "relativeIndex": 11,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }
@@ -2302,16 +2424,16 @@
         "layout:5014": {
             "data": {
                 "autoLayout": true,
-                "canvasHeight": 478,
-                "canvasWidth": 991,
+                "canvasHeight": 538,
+                "canvasWidth": 1043,
                 "geometries": [
                     {
-                        "height": 478,
+                        "height": 538,
                         "id": 14,
                         "relativeIndex": 13,
                         "state": "normal",
                         "widgetType": 1,
-                        "width": 991,
+                        "width": 1043,
                         "x": 0,
                         "y": 0
                     }

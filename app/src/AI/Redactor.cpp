@@ -24,7 +24,10 @@ struct Pattern {
 }  // namespace detail
 
 /**
- * @brief Returns the static pattern list. Built lazily on first use.
+ * @brief Returns the static pattern list. Built lazily on first use and intentionally
+ *        never destroyed: scrub() runs inside ~Assistant during static finalization
+ *        (snapshot -> handoff digest), and a stack-destroyed list crashed on quit there
+ *        (2026-07-14). The one-time heap allocation is released by the OS at exit.
  *
  * Patterns are ordered most-specific first to keep the redaction reason
  * informative for the model. JWT regex is anchored on the three-base64-
@@ -32,7 +35,7 @@ struct Pattern {
  */
 static const QList<detail::Pattern>& patterns()
 {
-  static const QList<detail::Pattern> kPatterns = {
+  static const auto* kPatterns = new QList<detail::Pattern>{
     {                               QRegularExpression(QStringLiteral("\\bsk-[A-Za-z0-9_\\-]{20,}\\b")),
      QStringLiteral("api_key")          },
     {                               QRegularExpression(QStringLiteral("\\bpk-[A-Za-z0-9_\\-]{20,}\\b")),
@@ -64,7 +67,7 @@ QStringLiteral("\\beyJ[A-Za-z0-9_\\-]{8,}\\.[A-Za-z0-9_\\-]{8,}\\.[A-Za-z0-9_\\-
                                                                 "KEY-----")),
      QStringLiteral("private_key")      },
   };
-  return kPatterns;
+  return *kPatterns;
 }
 
 /**

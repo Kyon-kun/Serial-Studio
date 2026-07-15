@@ -452,6 +452,113 @@ API::CommandResponse API::Handlers::ProjectHandler::parserSetTemplate(const QStr
 }
 
 /**
+ * @brief Applies frame extraction params to the primary source: live manager + model in
+ *        lockstep so the running reader and the persisted project stay consistent.
+ */
+static bool configurePrimarySourceFrame(const QJsonObject& params)
+{
+  static auto& model   = DataModel::ProjectModel::instance();
+  static auto& manager = IO::ConnectionManager::instance();
+  bool updated         = false;
+
+  if (params.contains(QStringLiteral("startSequence"))) {
+    const QString start = params.value(QStringLiteral("startSequence")).toString();
+    manager.setStartSequence(start.toUtf8());
+    model.setFrameStartSequence(start);
+    updated = true;
+  }
+
+  if (params.contains(QStringLiteral("endSequence"))) {
+    const QString end = params.value(QStringLiteral("endSequence")).toString();
+    manager.setFinishSequence(end.toUtf8());
+    model.setFrameEndSequence(end);
+    updated = true;
+  }
+
+  if (params.contains(Keys::ChecksumAlgorithm)) {
+    const QString checksumName = params.value(Keys::ChecksumAlgorithm).toString();
+    manager.setChecksumAlgorithm(checksumName);
+    model.setChecksumAlgorithm(checksumName);
+    updated = true;
+  }
+
+  if (params.contains(Keys::FrameDetection)) {
+    const int detectionIdx = params.value(Keys::FrameDetection).toInt();
+    if (detectionIdx >= 0 && detectionIdx <= 3) {
+      model.setFrameDetection(static_cast<SerialStudio::FrameDetection>(detectionIdx));
+      updated = true;
+    }
+  }
+
+  if (params.contains(Keys::DecoderMethod)) {
+    const int decoderIdx = params.value(Keys::DecoderMethod).toInt();
+    if (decoderIdx >= 0 && decoderIdx <= 3) {
+      model.setDecoderMethod(static_cast<SerialStudio::DecoderMethod>(decoderIdx));
+      updated = true;
+    }
+  }
+
+  if (params.contains(Keys::HexadecimalDelimiters)) {
+    model.setHexadecimalDelimiters(params.value(Keys::HexadecimalDelimiters).toBool());
+    updated = true;
+  }
+
+  return updated;
+}
+
+/**
+ * @brief Applies frame extraction params to a secondary source by patching its Source row;
+ *        commits via updateSource only when something actually changed.
+ */
+static bool configureSecondarySourceFrame(const QJsonObject& params, int sourceId)
+{
+  static auto& model    = DataModel::ProjectModel::instance();
+  DataModel::Source src = model.sources()[sourceId];
+  bool updated          = false;
+
+  if (params.contains(QStringLiteral("startSequence"))) {
+    src.frameStart = params.value(QStringLiteral("startSequence")).toString();
+    updated        = true;
+  }
+
+  if (params.contains(QStringLiteral("endSequence"))) {
+    src.frameEnd = params.value(QStringLiteral("endSequence")).toString();
+    updated      = true;
+  }
+
+  if (params.contains(Keys::ChecksumAlgorithm)) {
+    src.checksumAlgorithm = params.value(Keys::ChecksumAlgorithm).toString();
+    updated               = true;
+  }
+
+  if (params.contains(Keys::FrameDetection)) {
+    const int detectionIdx = params.value(Keys::FrameDetection).toInt();
+    if (detectionIdx >= 0 && detectionIdx <= 3) {
+      src.frameDetection = detectionIdx;
+      updated            = true;
+    }
+  }
+
+  if (params.contains(Keys::DecoderMethod)) {
+    const int decoderIdx = params.value(Keys::DecoderMethod).toInt();
+    if (decoderIdx >= 0 && decoderIdx <= 3) {
+      src.decoderMethod = decoderIdx;
+      updated           = true;
+    }
+  }
+
+  if (params.contains(Keys::HexadecimalDelimiters)) {
+    src.hexadecimalDelimiters = params.value(Keys::HexadecimalDelimiters).toBool();
+    updated                   = true;
+  }
+
+  if (updated)
+    model.updateSource(sourceId, src);
+
+  return updated;
+}
+
+/**
  * @brief Configure frame parser settings for a specific source.
  */
 API::CommandResponse API::Handlers::ProjectHandler::frameParserConfigure(const QString& id,
@@ -477,64 +584,10 @@ API::CommandResponse API::Handlers::ProjectHandler::frameParserConfigure(const Q
     }
   }
 
-  if (sourceId == 0) {
-    if (params.contains(QStringLiteral("startSequence"))) {
-      const QString start = params.value(QStringLiteral("startSequence")).toString();
-      manager.setStartSequence(start.toUtf8());
-      model.setFrameStartSequence(start);
-      updated = true;
-    }
-
-    if (params.contains(QStringLiteral("endSequence"))) {
-      const QString end = params.value(QStringLiteral("endSequence")).toString();
-      manager.setFinishSequence(end.toUtf8());
-      model.setFrameEndSequence(end);
-      updated = true;
-    }
-
-    if (params.contains(Keys::ChecksumAlgorithm)) {
-      const QString checksumName = params.value(Keys::ChecksumAlgorithm).toString();
-      manager.setChecksumAlgorithm(checksumName);
-      model.setChecksumAlgorithm(checksumName);
-      updated = true;
-    }
-
-    if (params.contains(Keys::FrameDetection)) {
-      const int detectionIdx = params.value(Keys::FrameDetection).toInt();
-      if (detectionIdx >= 0 && detectionIdx <= 3) {
-        model.setFrameDetection(static_cast<SerialStudio::FrameDetection>(detectionIdx));
-        updated = true;
-      }
-    }
-  } else {
-    DataModel::Source src = model.sources()[sourceId];
-
-    if (params.contains(QStringLiteral("startSequence"))) {
-      src.frameStart = params.value(QStringLiteral("startSequence")).toString();
-      updated        = true;
-    }
-
-    if (params.contains(QStringLiteral("endSequence"))) {
-      src.frameEnd = params.value(QStringLiteral("endSequence")).toString();
-      updated      = true;
-    }
-
-    if (params.contains(Keys::ChecksumAlgorithm)) {
-      src.checksumAlgorithm = params.value(Keys::ChecksumAlgorithm).toString();
-      updated               = true;
-    }
-
-    if (params.contains(Keys::FrameDetection)) {
-      const int detectionIdx = params.value(Keys::FrameDetection).toInt();
-      if (detectionIdx >= 0 && detectionIdx <= 3) {
-        src.frameDetection = detectionIdx;
-        updated            = true;
-      }
-    }
-
-    if (updated)
-      model.updateSource(sourceId, src);
-  }
+  if (sourceId == 0)
+    updated = configurePrimarySourceFrame(params) || updated;
+  else
+    updated = configureSecondarySourceFrame(params, sourceId) || updated;
 
   if (updated && sourceId == 0)
     manager.resetFrameReader();

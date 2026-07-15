@@ -1,8 +1,10 @@
 {
     "actions": [
     ],
+    "changeDrivenTransforms": false,
     "controlScriptCode": "/**\n * Vibration Test Rig - Control Loop\n *\n * Launches the bundled Python data generator (vibration_test_rig.py) automatically when\n * the connection opens, so the example works without running anything by\n * hand. The helper process is stopped by Serial Studio when the device is\n * disconnected, when the project changes, or when the app quits.\n *\n * The interpreter is resolved cross-platform: \"python3\" is tried first\n * (Linux/macOS), falling back to \"python\" (typical on Windows).\n */\n\nvar helperPid = -1;\n\nfunction startHelper() {\n  var dir = system.projectDir();\n  if (!dir.ok)\n    return;\n\n  var script = dir.result.directory + \"/vibration_test_rig.py\";\n\n  var r = system.exec(\"python3\", { args: [\"-u\", script], workingDir: dir.result.directory });\n  if (!r.ok)\n    r = system.exec(\"python\", { args: [\"-u\", script], workingDir: dir.result.directory });\n\n  if (r.ok)\n    helperPid = r.result.processId;\n}\n\nfunction setup() {\n  startHelper();\n}\n\nfunction loop() {\n  delay(1000);\n}\n",
     "customizeWorkspaces": true,
+    "frozen": true,
     "groups": [
         {
             "datasets": [
@@ -15,6 +17,7 @@
                     "fftMin": -3,
                     "fftSamples": 512,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 0,
                     "index": 1,
@@ -51,6 +54,7 @@
                     "fftMin": -60,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 3,
@@ -78,6 +82,7 @@
                     "fftMin": -60,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": true,
                     "groupId": 1,
                     "index": 4,
@@ -113,6 +118,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 2,
                     "index": 1,
@@ -149,6 +155,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 3,
                     "index": 2,
@@ -183,6 +190,7 @@
                     "fftMin": -3,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 1,
@@ -210,6 +218,7 @@
                     "fftMin": 0,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 2,
@@ -237,6 +246,7 @@
                     "fftMin": -60,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 3,
@@ -264,6 +274,7 @@
                     "fftMin": -60,
                     "fftSamples": 256,
                     "fftSamplingRate": 1000,
+                    "fftWindow": 5,
                     "graph": false,
                     "groupId": 4,
                     "index": 4,
@@ -801,64 +812,59 @@
         "layout:5000": {
             "data": {
                 "autoLayout": true,
+                "canvasHeight": 538,
+                "canvasWidth": 1051,
                 "geometries": [
                     {
-                        "height": 247,
-                        "id": 3,
+                        "height": 538,
+                        "id": 12,
+                        "relativeIndex": 0,
                         "state": "normal",
-                        "width": 340,
-                        "x": 4,
-                        "y": 4
+                        "widgetType": 21,
+                        "width": 525,
+                        "x": 0,
+                        "y": 0
                     },
                     {
-                        "height": 247,
-                        "id": 2,
-                        "state": "normal",
-                        "width": 340,
-                        "x": 343,
-                        "y": 4
-                    },
-                    {
-                        "height": 247,
+                        "height": 269,
                         "id": 5,
+                        "relativeIndex": 1,
                         "state": "normal",
-                        "width": 340,
-                        "x": 682,
-                        "y": 4
+                        "widgetType": 22,
+                        "width": 527,
+                        "x": 524,
+                        "y": 0
                     },
                     {
-                        "height": 247,
-                        "id": 6,
-                        "state": "normal",
-                        "width": 340,
-                        "x": 4,
-                        "y": 250
-                    },
-                    {
-                        "height": 247,
-                        "id": 7,
-                        "state": "normal",
-                        "width": 340,
-                        "x": 343,
-                        "y": 250
-                    },
-                    {
-                        "height": 247,
+                        "height": 269,
                         "id": 4,
+                        "relativeIndex": 0,
                         "state": "normal",
-                        "width": 340,
-                        "x": 682,
-                        "y": 250
+                        "widgetType": 22,
+                        "width": 527,
+                        "x": 524,
+                        "y": 268
                     }
                 ],
                 "userReordered": true,
                 "windowOrder": [
-                    3,
-                    2,
+                    12,
                     5,
-                    6,
-                    7,
                     4
+                ],
+                "windowOrderTyped": [
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 21
+                    },
+                    {
+                        "relativeIndex": 1,
+                        "widgetType": 22
+                    },
+                    {
+                        "relativeIndex": 0,
+                        "widgetType": 22
+                    }
                 ]
             }
         },
@@ -940,7 +946,7 @@
                     "widgetType": 21
                 }
             ],
-            "workspaceId": 1000
+            "workspaceId": 5000
         },
         {
             "icon": "qrc:/icons/panes/dashboard.svg",
@@ -992,7 +998,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1001
+            "workspaceId": 5001
         },
         {
             "title": "Vibration (Campbell)",
@@ -1013,7 +1019,7 @@
                     "widgetType": 21
                 }
             ],
-            "workspaceId": 1002
+            "workspaceId": 5002
         },
         {
             "title": "VU Meter",
@@ -1034,7 +1040,7 @@
                     "widgetType": 9
                 }
             ],
-            "workspaceId": 1003
+            "workspaceId": 5003
         },
         {
             "title": "Vibration Gauge",
@@ -1045,7 +1051,7 @@
                     "widgetType": 11
                 }
             ],
-            "workspaceId": 1004
+            "workspaceId": 5004
         },
         {
             "title": "RPM trend",
@@ -1056,7 +1062,7 @@
                     "widgetType": 11
                 }
             ],
-            "workspaceId": 1005
+            "workspaceId": 5005
         },
         {
             "title": "System Schematic",
@@ -1067,7 +1073,7 @@
                     "widgetType": 22
                 }
             ],
-            "workspaceId": 1006
+            "workspaceId": 5006
         }
     ],
     "writerVersion": "4.0.3",

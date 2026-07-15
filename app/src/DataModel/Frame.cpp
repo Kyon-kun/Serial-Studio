@@ -21,6 +21,8 @@
 
 #include "DataModel/Frame.h"
 
+#include <QColor>
+
 #include "AppInfo.h"
 #include "SerialStudio.h"
 
@@ -300,19 +302,23 @@ bool DataModel::read(Dataset& d, const QJsonObject& obj)
   d.waterfallYAxis = ss_jsr(obj, Keys::WaterfallYAxis, 0).toInt();
   d.xAxisId        = ss_jsr(obj, Keys::XAxis, kXAxisTime).toInt();
 
-  d.fftMin            = SerialStudio::toDouble(ss_jsr(obj, Keys::FFTMin, 0));
-  d.fftMax            = SerialStudio::toDouble(ss_jsr(obj, Keys::FFTMax, 0));
-  d.pltMin            = SerialStudio::toDouble(ss_jsr(obj, Keys::PltMin, 0));
-  d.pltMax            = SerialStudio::toDouble(ss_jsr(obj, Keys::PltMax, 0));
-  d.wgtMin            = SerialStudio::toDouble(ss_jsr(obj, Keys::WgtMin, 0));
-  d.wgtMax            = SerialStudio::toDouble(ss_jsr(obj, Keys::WgtMax, 0));
-  d.fftSamples        = ss_jsr(obj, Keys::FFTSamples, -1).toInt();
-  d.title             = ss_jsr(obj, Keys::Title, "").toString().simplified();
-  d.value             = ss_jsr(obj, Keys::Value, "").toString().simplified();
-  d.units             = ss_jsr(obj, Keys::Units, "").toString().simplified();
-  d.overviewDisplay   = ss_jsr(obj, Keys::Overview, false).toBool();
-  d.ledHigh           = SerialStudio::toDouble(ss_jsr(obj, Keys::LedHigh, 0));
-  d.widget            = ss_jsr(obj, Keys::Widget, "").toString().simplified();
+  d.fftMin          = SerialStudio::toDouble(ss_jsr(obj, Keys::FFTMin, 0));
+  d.fftMax          = SerialStudio::toDouble(ss_jsr(obj, Keys::FFTMax, 0));
+  d.pltMin          = SerialStudio::toDouble(ss_jsr(obj, Keys::PltMin, 0));
+  d.pltMax          = SerialStudio::toDouble(ss_jsr(obj, Keys::PltMax, 0));
+  d.wgtMin          = SerialStudio::toDouble(ss_jsr(obj, Keys::WgtMin, 0));
+  d.wgtMax          = SerialStudio::toDouble(ss_jsr(obj, Keys::WgtMax, 0));
+  d.fftSamples      = ss_jsr(obj, Keys::FFTSamples, -1).toInt();
+  d.title           = ss_jsr(obj, Keys::Title, "").toString().simplified();
+  d.value           = ss_jsr(obj, Keys::Value, "").toString().simplified();
+  d.units           = ss_jsr(obj, Keys::Units, "").toString().simplified();
+  d.overviewDisplay = ss_jsr(obj, Keys::Overview, false).toBool();
+  d.ledHigh         = SerialStudio::toDouble(ss_jsr(obj, Keys::LedHigh, 0));
+  d.widget          = ss_jsr(obj, Keys::Widget, "").toString().simplified();
+  d.color           = ss_jsr(obj, Keys::Color, "").toString().simplified();
+  if (!d.color.isEmpty() && !QColor::fromString(d.color).isValid())
+    d.color.clear();
+
   d.fftSamplingRate   = ss_jsr(obj, Keys::FFTSamplingRate, -1).toInt();
   d.fftWindow         = ss_jsr(obj, Keys::FFTWindow, SerialStudio::FFTWindowBlackmanHarris).toInt();
   d.displayTickCount  = ss_jsr(obj, Keys::DisplayTickCount, 5).toInt();

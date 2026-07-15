@@ -11,8 +11,7 @@
     "ask": [
       "Bash(git commit *)",
       "Bash(git push *)",
-      "Edit(app/translations/**)",
-      "Write(app/translations/**)"
+      "Edit(app/translations/**)"
     ],
     "deny": [
       "Bash(cmake *)",

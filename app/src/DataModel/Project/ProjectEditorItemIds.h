@@ -70,6 +70,7 @@ typedef enum {
   kDatasetView_DisplayTickCount,
   kDatasetView_DisplayFormat,
   kDatasetView_DecimalPoints,
+  kDatasetView_Color,
 } DatasetItem;
 
 /**

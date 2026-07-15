@@ -732,10 +732,22 @@ Item {
       Layout.alignment: Qt.AlignVCenter
 
       //
-      // The C++ model only notifies when the workspace list actually changes, so binding to it
-      // directly no longer reassigns (and closes) the popup on unrelated widget-count churn.
+      // Model updates are deferred while the popup is open: reassigning a ComboBox model
+      // closes its popup, so a real list change arriving mid-browse is applied on close.
       //
-      model: taskBar ? taskBar.workspaceSwitcherModel : []
+      property bool modelDirty: false
+
+      function refreshModel() {
+        if (!taskBar)
+          return
+
+        if (popup.opened) {
+          modelDirty = true
+          return
+        }
+
+        model = taskBar.workspaceSwitcherModel
+      }
 
       function syncCurrentIndex() {
         if (!taskBar)
@@ -752,11 +764,22 @@ Item {
           taskBar.selectWorkspaceById(currentValue)
       }
 
-      Component.onCompleted: syncCurrentIndex()
+      Component.onCompleted: refreshModel()
 
       Connections {
         target: taskBar
         function onActiveGroupIdChanged() { _switcher.syncCurrentIndex() }
+        function onWorkspaceSwitcherModelChanged() { _switcher.refreshModel() }
+      }
+
+      Connections {
+        target: _switcher.popup
+        function onClosed() {
+          if (_switcher.modelDirty) {
+            _switcher.modelDirty = false
+            _switcher.refreshModel()
+          }
+        }
       }
 
       //

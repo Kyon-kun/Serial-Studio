@@ -58,9 +58,9 @@ Item {
   //
   readonly property bool isHorizontal: root.width > 1.5 * root.height
   readonly property bool showLabels: isHorizontal ? root.width >= 200 : root.height >= 160
-  readonly property real fontSize: Math.max(10, Math.min(28, Math.min(root.width, root.height) / 22))
+  readonly property real fontSize: Math.max(10, Math.min(16, Math.min(root.width, root.height) / 22))
                                    * Cpp_Misc_CommonFonts.widgetFontScale
-  readonly property real digitalFontSize: Math.max(11, Math.min(36, Math.min(root.width, root.height) / 16))
+  readonly property real digitalFontSize: Math.max(11, Math.min(20, Math.min(root.width, root.height) / 16))
                                           * Cpp_Misc_CommonFonts.widgetFontScale
   readonly property int tickCount: {
     if (model.displayTickCount > 0) return model.displayTickCount
@@ -146,11 +146,22 @@ Item {
       GridLayout {
         id: barLayout
 
-        rows: 2
+        rows: 3
         columns: 1
         rowSpacing: 4
         anchors.margins: 8
         anchors.fill: parent
+
+        //
+        // Channel title (bold, on top, instrument-panel style)
+        //
+        WidgetTitleBar {
+          Layout.row: 0
+          Layout.column: 0
+          Layout.fillWidth: true
+          text: root.model.title
+          active: root.height >= 110
+        }
 
         //
         // Bar widget
@@ -158,7 +169,7 @@ Item {
         Item {
           id: barContainer
 
-          Layout.row: 0
+          Layout.row: 1
           Layout.column: 0
           Layout.fillWidth: true
           Layout.fillHeight: true
@@ -195,9 +206,9 @@ Item {
             anchors.centerIn: parent
             width: isHorizontal
                    ? Math.max(40, parent.width - (showLabels ? labelMetrics.width + 12 : 8))
-                   : Math.max(28, Math.min(parent.width * 0.55, 220))
+                   : Math.max(28, Math.min(parent.width * 0.55, parent.height * 0.30, 96))
             height: isHorizontal
-                    ? Math.max(28, Math.min(parent.height * 0.65, 220))
+                    ? Math.max(28, Math.min(parent.height * 0.65, parent.width * 0.30, 96))
                     : Math.max(40, parent.height - (showLabels ? labelMetrics.height * 2 + 8 : 8))
 
             readonly property real wellInset: 4
@@ -478,68 +489,27 @@ Item {
         }
 
         //
-        // Label row: channel name + flashing value box (matches Gauge and Meter)
+        // Label row: flashing value box (title moved to the top strip)
         //
         Item {
           id: labelRow
 
-          Layout.row: 1
+          Layout.row: 2
           Layout.column: 0
           Layout.fillWidth: true
           visible: root.height >= 110
           Layout.preferredHeight: visible ? Math.round(digitalFontSize * 2.0 + 12) : 0
 
           //
-          // Hide the title and let the value box span the full row when either the
-          // title would elide or the value text would overflow its half-row slot.
+          // Value readout row: the channel title lives in the top strip, so the value
+          // box gets the full row width.
           //
-          readonly property real rowInnerWidth: width - 12
-          readonly property real halfWidth: (rowInnerWidth - 4) / 2
-          readonly property bool titleFits: titleTextMetrics.width <= halfWidth - 8
-          readonly property bool valueFits: valueBoxMetrics.width + 18 <= halfWidth
-          readonly property bool showTitle: root.model.title.length > 0
-                                            && titleFits && valueFits
-
-          TextMetrics {
-            id: titleTextMetrics
-
-            font.bold: true
-            text: root.model.title
-            font.pixelSize: digitalFontSize
-            font.family: Cpp_Misc_CommonFonts.widgetFontFamily
-          }
-
           RowLayout {
             spacing: 4
             anchors.fill: parent
             anchors.leftMargin: 6
             anchors.rightMargin: 6
 
-            Item {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              visible: labelRow.showTitle
-
-              Text {
-                id: titleText
-
-                font.bold: true
-                elide: Text.ElideRight
-                anchors.fill: parent
-                anchors.leftMargin: 4
-                anchors.rightMargin: 4
-                text: root.model.title
-                font.pixelSize: digitalFontSize
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                color: Cpp_ThemeManager.colors["widget_text"]
-                font.family: Cpp_Misc_CommonFonts.widgetFontFamily
-              }
-            }
-
-            //
-            // Value readout
-            //
             Item {
               Layout.fillWidth: true
               Layout.fillHeight: true
@@ -759,6 +729,9 @@ Item {
   // Restore per-widget page from project settings, then persist on change.
   //
   Component.onCompleted: {
+    if (windowRoot && windowRoot.frozenPanel !== undefined)
+      windowRoot.frozenPanel = false
+
     root.restoringPage = true
     const s = Cpp_JSON_ProjectModel.widgetSettings(root.widgetId)
     if (s["page"] !== undefined)

@@ -236,6 +236,7 @@ public:
     AutoIntField,
     Button,
     NavRow,
+    ColorPicker,
   };
   Q_ENUM(EditorWidget)
 

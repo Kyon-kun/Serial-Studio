@@ -301,19 +301,16 @@ const QMap<QString, IO::ChecksumFunc>& IO::checksumFunctionMap()
 {
   // clang-format off
   static const QMap<QString, IO::ChecksumFunc> map = {
-    {QLatin1String(""),            [](const char*, int) { return QByteArray(); }},
-
-    {QStringLiteral("XOR-8"),    [](const char* d, int l) { return packByte(xor8(d, l)); }},
-    {QStringLiteral("MOD-256"),  [](const char* d, int l) { return packByte(mod256(d, l)); }},
-    {QStringLiteral("CRC-8"),    [](const char* d, int l) { return packByte(crc8(d, l)); }},
-
+    {QLatin1String(""),               [](const char*, int)     { return QByteArray(); }},
+    {QStringLiteral("XOR-8"),         [](const char* d, int l) { return packByte(xor8(d, l)); }},
+    {QStringLiteral("MOD-256"),       [](const char* d, int l) { return packByte(mod256(d, l)); }},
+    {QStringLiteral("CRC-8"),         [](const char* d, int l) { return packByte(crc8(d, l)); }},
     {QStringLiteral("CRC-16"),        [](const char* d, int l) { return packU16BE(crc16(d, l)); }},
     {QStringLiteral("CRC-16-MODBUS"), [](const char* d, int l) { return packU16LE(crc16_modbus(d, l)); }},
     {QStringLiteral("CRC-16-CCITT"),  [](const char* d, int l) { return packU16BE(crc16_ccitt(d, l)); }},
     {QStringLiteral("Fletcher-16"),   [](const char* d, int l) { return packU16BE(fletcher16(d, l)); }},
-
-    {QStringLiteral("CRC-32"),   [](const char* d, int l) { return packU32BE(crc32(d, l)); }},
-    {QStringLiteral("Adler-32"), [](const char* d, int l) { return packU32BE(adler32(d, l)); }},
+    {QStringLiteral("CRC-32"),        [](const char* d, int l) { return packU32BE(crc32(d, l)); }},
+    {QStringLiteral("Adler-32"),      [](const char* d, int l) { return packU32BE(adler32(d, l)); }},
   };
   // clang-format on
 

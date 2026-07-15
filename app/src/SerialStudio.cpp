@@ -768,6 +768,38 @@ QColor SerialStudio::getDatasetColor(const int index)
 }
 
 /**
+ * @brief Resolves a dataset's display color: valid explicit override wins, else the
+ *        automatic theme-palette color for the dataset's index.
+ */
+QColor SerialStudio::getDatasetColor(const DataModel::Dataset& dataset)
+{
+  if (!dataset.color.isEmpty()) {
+    const auto color = QColor::fromString(dataset.color);
+    if (color.isValid())
+      return color;
+  }
+
+  return getDatasetColor(dataset.index);
+}
+
+/**
+ * @brief Returns the first valid per-dataset color override in @p group; invalid when none.
+ */
+QColor SerialStudio::getGroupColorOverride(const DataModel::Group& group)
+{
+  for (const auto& dataset : group.datasets) {
+    if (dataset.color.isEmpty())
+      continue;
+
+    const auto color = QColor::fromString(dataset.color);
+    if (color.isValid())
+      return color;
+  }
+
+  return {};
+}
+
+/**
  * @brief Returns the top gradient color for the given device source index.
  */
 QColor SerialStudio::getDeviceTopColor(const int sourceId)

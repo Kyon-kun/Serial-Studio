@@ -49,6 +49,23 @@ Widgets.MiniWindow {
   // Effective freeze state: WidgetToolbar instances read this via windowRoot
   //
   readonly property bool frozen: Cpp_UI_Dashboard.frozen
+
+  //
+  // Panel-style freeze chrome (title header + kept border), on by default; instrument
+  // widgets that paint their own title (Bar, Gauge, Meter) opt out via windowRoot
+  //
+  property bool frozenPanel: true
+  readonly property bool frozenHeaderVisible: root.frozen && root.frozenPanel
+                                              && root.title.length > 0
+  readonly property real frozenHeaderHeight: frozenHeaderVisible
+      ? Math.max(32, frozenHeaderMetrics.height + 14) : 0
+
+  TextMetrics {
+    id: frozenHeaderMetrics
+
+    text: "0"
+    font: Cpp_Misc_CommonFonts.customUiFont(1, true)
+  }
   visible: root.state === "normal" || root.state === "maximized"
            || root.hideAnimationRunning
 
@@ -212,9 +229,9 @@ Widgets.MiniWindow {
   //
   Rectangle {
     clip: true
-    border.width: 1
     radius: root.radius
     anchors.fill: parent
+    border.width: root.frozen && !root.frozenPanel ? 0 : 1
     color: Cpp_ThemeManager.colors["widget_window"]
     border.color: Cpp_ThemeManager.colors["window_border"]
     anchors.topMargin: Math.max(0, root.captionHeight + (root.hasToolbar ? 48 : 0) - 1)
@@ -231,6 +248,55 @@ Widgets.MiniWindow {
 
       color: parent.color
       height: root.radius
+    }
+  }
+
+  //
+  // Frozen-mode panel header: gradient title bar in place of the hidden caption
+  //
+  Rectangle {
+    id: frozenHeader
+
+    visible: root.frozenHeaderVisible
+    height: visible ? root.frozenHeaderHeight : 0
+    anchors {
+      margins: 1
+      top: parent.top
+      left: parent.left
+      right: parent.right
+    }
+
+    gradient: Gradient {
+      GradientStop {
+        position: 0
+        color: Cpp_ThemeManager.colors["table_bg_header_top"]
+      }
+
+      GradientStop {
+        position: 1
+        color: Cpp_ThemeManager.colors["table_bg_header_bottom"]
+      }
+    }
+
+    Rectangle {
+      height: 1
+      color: Cpp_ThemeManager.colors["table_border_header"]
+      anchors {
+        left: parent.left
+        right: parent.right
+        bottom: parent.bottom
+      }
+    }
+
+    Label {
+      text: root.title
+      elide: Label.ElideRight
+      anchors.centerIn: parent
+      verticalAlignment: Label.AlignVCenter
+      horizontalAlignment: Label.AlignHCenter
+      color: Cpp_ThemeManager.colors["table_fg_header"]
+      width: Math.min(implicitWidth, parent.width - 16)
+      font: Cpp_Misc_CommonFonts.customUiFont(1, true)
     }
   }
 
@@ -278,7 +344,7 @@ Widgets.MiniWindow {
     clip: true
     anchors.margins: 1
     anchors.fill: parent
-    anchors.topMargin: Math.max(1, root.captionHeight)
+    anchors.topMargin: Math.max(1, root.captionHeight + root.frozenHeaderHeight)
     LayoutMirroring.enabled: false
     LayoutMirroring.childrenInherit: true
     Component.onCompleted: widgetLoader.createObject(container, {windowRoot: root})

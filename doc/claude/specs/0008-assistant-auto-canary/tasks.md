@@ -260,6 +260,76 @@ updated: 2026-07-14
 - **Deps:** T12
 - [x] done
 
+## Follow-up round — 2026-07-14 field test
+
+First maintainer run (Haiku, real device task) surfaced five defects; chat export and log
+analysis live in the session notes. Fixes landed as T21-T25.
+
+### T21 — script.apply persists frame-detection config
+
+- **Files:** `app/src/AI/ToolDispatcher.cpp`, `app/src/API/Handlers/ProjectHandlerParser.cpp`,
+  `app/src/API/Handlers/ProjectHandler.cpp`
+- **Does:** `assistant.script.apply{kind:frame_parser}` accepted frameDetection/frameStart/
+  frameEnd/decoderMethod/hexadecimalDelimiters/checksumAlgorithm, used them in the dry run,
+  then silently dropped them on apply — the model reasonably believed it had configured the
+  source. Apply now forwards them to `project.frameParser.update` (extended with
+  decoderMethod + hexadecimalDelimiters; the alternative `project.source.update` is
+  Pro-gated) and reports the outcome under `frameConfig`, failing the apply when persist
+  fails. `frameParserConfigure` split into per-branch helpers to stay under the length cap.
+- [x] done
+
+### T22 — deterministic memory proposal
+
+- **Files:** `app/src/AI/Conversation.{h,cpp}`, `app/src/AI/ContextBuilder.cpp`
+- **Does:** The propose flow was model-orchestrated (no prompt guidance anywhere; one tool
+  description among 60) — Haiku never called it, violating the spec's "the model never
+  self-orchestrates" constraint. `maybeProposeMemory()` in `start()` now surfaces the
+  confirmation chip app-side on remember-phrasing (consent unchanged: nothing persists
+  without the click; Redactor scrub still gates the write), and `roleBlock()` gains one
+  reinforcement sentence when memory is on.
+- [x] done
+
+### T23 — handoff seeding made visible
+
+- **Files:** `app/src/AI/Assistant.{h,cpp}`, `app/qml/AI/AssistantPanel.qml`
+- **Does:** Seeding worked but was invisible and undiscoverable (right-click "Continue in
+  new chat"; no indication in the seeded chat). New `activeChatSeeded` property (re-emits
+  `activeChatChanged` after the seed lands, since `newChat()` notifies before
+  `setHandoffSeed`) drives an advisory "Continuing from your previous chat" chip.
+- [x] done
+
+### T24 — auto-verify observability + source.update read-back
+
+- **Files:** `app/src/AI/Conversation.{h,cpp}`
+- **Does:** The script.apply/bulkApply early returns skipped the `AutoVerify:` log line
+  (R10/AC7 hole) — now logged. `project.source.update` (the mutation the field test
+  actually fumbled, twice) gains a field round-trip read-back via Safe-tier
+  `project.source.list`.
+- [x] done
+
+### T25 — cross-domain routing fixes
+
+- **Files:** `app/rcc/ai/skills/frame_parsers.md`, `app/rcc/ai/skill_triggers.json`,
+  `app/src/AI/Conversation.cpp`
+- **Does:** The flailing root cause was architecture blindness: delimiters live on the
+  source, and nothing said so. Skill body now has a "Delimiters live on the SOURCE" section
+  naming `project.frameParser.update` as the works-everywhere path; trigger vocabulary gains
+  frame start/end/sequence/detection phrases; `runMetaLoadSkill` records model-initiated
+  loads in `m_loadedSkills` so the router cannot re-inject an already-loaded skill.
+- [x] done
+
+### T26 — quit crash: Redactor regexes died before ~Assistant
+
+- **Files:** `app/src/AI/Redactor.cpp`
+- **Does:** `~Assistant` persists the active chat during static finalization; that path runs
+  `snapshot() -> buildHandoffDigest() -> Redactor::scrub()`, whose lazily-built function-local
+  `static QList<Pattern>` is constructed after the Assistant singleton and therefore destroyed
+  first -- `QString::replace` then touched dead `QRegularExpression`s and crashed in
+  `__cxa_finalize_ranges`. Pattern list is now heap-allocated and intentionally immortal
+  (same class as the 2026-06 DbWorker static-dtor crash). Latent since the T8 groundwork
+  commit; surfaced by the first real quit-after-chat.
+- [x] done
+
 ## Definition of Done
 
 - [ ] Every acceptance criterion in `spec.md` is met and checked off there (AC1-AC7 probe,

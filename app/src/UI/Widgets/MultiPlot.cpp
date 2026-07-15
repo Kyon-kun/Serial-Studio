@@ -892,7 +892,7 @@ void Widgets::MultiPlot::onThemeChanged()
     m_colors.resize(group.datasets.size());
     for (size_t i = 0; i < group.datasets.size(); ++i) {
       const auto& dataset = group.datasets[i];
-      const auto color    = SerialStudio::getDatasetColor(dataset.index);
+      const auto color    = SerialStudio::getDatasetColor(dataset);
       m_colors[i]         = color.name();
     }
 

@@ -133,6 +133,7 @@ private:
   void reconcileHistoryToolPairs();
   bool reconcileHistoryToolPairsAt(int& i);
   void injectRoutedSkill(const QString& userText);
+  void maybeProposeMemory(const QString& userText);
   void evaluateProbe();
   [[nodiscard]] QString probeComplianceKey() const;
   void fetchHelpPage(const QString& callId, const QString& path);
@@ -155,6 +156,7 @@ private:
   [[nodiscard]] QJsonObject runAutoVerify(const QString& name,
                                           const QJsonObject& arguments,
                                           const QJsonObject& reply);
+  [[nodiscard]] QJsonObject verifySourceUpdate(const QJsonObject& arguments);
   void recordToolResult(const QString& callId, const QString& name, const QJsonObject& payload);
   bool dispatchMetaTool(const QString& callId, const QString& name, const QJsonObject& arguments);
   void dispatchByCallSafety(const QString& callId,

@@ -38,6 +38,11 @@
       "csv frames",
       "delimiter",
       "binary frames",
+      "frame start",
+      "frame end",
+      "start sequence",
+      "end sequence",
+      "frame detection",
       "nmea",
       "mavlink"
     ],

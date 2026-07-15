@@ -640,16 +640,18 @@ void Widgets::GPS::precacheWorld()
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Updates colors based on the current theme.
+ * @brief Updates colors based on the current theme; a valid per-dataset override in the
+ *        group is drawn verbatim as the head color, with only the tail derived from it.
  */
 void Widgets::GPS::onThemeChanged()
 {
-  const auto color = SerialStudio::getDatasetColor(m_index + 1);
-  m_lineHeadColor  = color;
+  QColor custom;
+  if (VALIDATE_WIDGET(SerialStudio::DashboardGPS, m_index))
+    custom = SerialStudio::getGroupColorOverride(GET_GROUP(SerialStudio::DashboardGPS, m_index));
 
-  QColor midCurve(m_lineHeadColor);
-  m_lineTailColor = midCurve.darker(130);
-  m_lineHeadColor = midCurve.lighter(130);
+  const QColor base = custom.isValid() ? custom : SerialStudio::getDatasetColor(m_index + 1);
+  m_lineTailColor   = base.darker(130);
+  m_lineHeadColor   = custom.isValid() ? base : base.lighter(130);
   m_lineTailColor.setAlpha(156);
 }
 

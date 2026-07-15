@@ -1053,6 +1053,9 @@ Item {
   // Restore per-widget page from project settings, then persist on change.
   //
   Component.onCompleted: {
+    if (windowRoot && windowRoot.frozenPanel !== undefined)
+      windowRoot.frozenPanel = false
+
     root.restoringPage = true
     const s = Cpp_JSON_ProjectModel.widgetSettings(root.widgetId)
     if (s["page"] !== undefined)

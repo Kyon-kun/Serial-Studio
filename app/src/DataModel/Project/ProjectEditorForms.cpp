@@ -913,6 +913,19 @@ void DataModel::ProjectEditor::addGeneralSection(CustomModel* model,
                      ParameterDescription);
   model->appendRow(unitsItem);
 
+  auto* colorItem = new QStandardItem();
+  colorItem->setEditable(true);
+  colorItem->setData(true, Active);
+  colorItem->setData(ColorPicker, WidgetType);
+  colorItem->setData(dataset.color, EditableValue);
+  colorItem->setData(kDatasetView_Color, ParameterType);
+  colorItem->setData(tr("Automatic"), PlaceholderValue);
+  colorItem->setData(tr("Widget Color"), ParameterName);
+  colorItem->setData(tr("Custom display color for this dataset; automatic uses the theme "
+                        "palette"),
+                     ParameterDescription);
+  model->appendRow(colorItem);
+
   addDatasetRangeRows(model, dataset);
 }
 

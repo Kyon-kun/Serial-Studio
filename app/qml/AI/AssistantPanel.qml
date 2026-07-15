@@ -907,6 +907,36 @@ Widgets.SmartDialog {
         }
 
         //
+        // Handoff chip: advisory-only marker that this chat was seeded with the
+        // previous chat's context, so a successful handoff is visible.
+        //
+        Rectangle {
+          id: handoffSeedChip
+
+          radius: 8
+          border.width: 1
+          Layout.fillWidth: true
+          visible: Cpp_AI_Assistant.activeChatSeeded
+          implicitHeight: visible ? handoffSeedLabel.implicitHeight + 16 : 0
+          color: Cpp_ThemeManager.colors["groupbox_background"]
+          border.color: Cpp_ThemeManager.colors["highlight"]
+
+          Label {
+            id: handoffSeedLabel
+
+            anchors.margins: 8
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            wrapMode: Text.WordWrap
+            textFormat: Text.PlainText
+            font: Cpp_Misc_CommonFonts.uiFont
+            color: Cpp_ThemeManager.colors["text"]
+            text: qsTr("Continuing from your previous chat. Its recent context was carried over.")
+          }
+        }
+
+        //
         // Indeterminate progress stripe shown while the assistant is working
         //
         Item {

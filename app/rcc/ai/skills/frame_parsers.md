@@ -73,8 +73,24 @@ directly to `setCode` to flip and replace in one call.
 5. Push: `assistant.script.apply{kind:"frame_parser", code, language,
    sourceId, inputBytesHex, decoderMethod, ...}`. It dry-runs first,
    then calls `project.frameParser.setCode`. Without bytes, apply
-   falls back to dryCompile (syntax only).
+   falls back to dryCompile (syntax only). Any `frameDetection` /
+   `frameStart` / `frameEnd` / `decoderMethod` / `hexadecimalDelimiters`
+   / `checksumAlgorithm` args are ALSO persisted to the source config
+   on success (reply carries the outcome under `frameConfig`), so one
+   apply call configures both the code and the extraction settings.
 6. Auto-save will write to disk within ~1s.
+
+## Delimiters live on the SOURCE, not the parser
+
+Frame extraction settings (`frameDetection`, `frameStart`, `frameEnd`,
+`decoderMethod`, `hexadecimalDelimiters`, `checksumAlgorithm`) are
+source configuration -- `setCode` never touches them, and there is no
+`project.frameParser.setConfig`. To change them without re-applying
+code, call `project.frameParser.update{sourceId, startSequence,
+endSequence, frameDetection, decoderMethod, hexadecimalDelimiters,
+checksumAlgorithm}` (works on every build), or patch the source row
+with `project.source.update` (Pro builds). Verify with
+`project.source.list`.
 
 ## Read the stage outputs, not just the rows
 
