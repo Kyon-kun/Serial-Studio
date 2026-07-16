@@ -36,7 +36,7 @@
 #include <QThread>
 #include <QTimer>
 
-#include "IO/Drivers/CanBackends.h"
+#include "IO/Drivers/CANBus/CanBackends.h"
 
 struct libusb_context;
 struct libusb_device_handle;

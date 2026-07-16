@@ -73,6 +73,9 @@ if(PRODUCTION_OPTIMIZATION)
       set(DISABLE_LTO ON)
       set(ENABLE_HARDENING ON CACHE BOOL "Auto-enabled hardening for sandboxed builds" FORCE)
       message(STATUS "Sandboxed build detected, disabling LTO and enabling hardening")
+   elseif(APPLE)
+      set(DISABLE_LTO ON)
+      message(STATUS "macOS build: LTO force-disabled (Xcode ld unwind stripping, llvm-project#135888)")
    else()
       set(DISABLE_LTO OFF)
    endif()
@@ -231,16 +234,12 @@ if(PRODUCTION_OPTIMIZATION)
    elseif(APPLE)
       message(STATUS "Production branch: AppleClang (macOS)")
 
-      # LTO is safe again with pac-ret gated off Apple (Hardening.cmake): Xcode 26's ld only
-      # drops DWARF exception unwind under -flto for compact-unwind fallback functions
-      # (llvm/llvm-project#135888), and without PACIASP signing the app rides compact unwind.
-      # The Lua throw path stays out of LTO entirely (lib/lua/CMakeLists.txt). Frame pointers
-      # stay on: the Apple arm64 ABI walks x29 chains — but only non-leaf frames must keep
-      # them, so -momit-leaf-frame-pointer frees x29 in leaf loops (tokenizer/DSP). Hidden
-      # visibility + -fwhole-program-vtables mirror the clang-cl branch: the app is a single
-      # monolithic executable (no in-tree shared libs, no dlsym on own symbols), so LTO can
-      # devirtualize app-internal interfaces; lua54 negates -fwhole-program-vtables because
-      # it compiles -fno-lto (lib/lua/CMakeLists.txt) and the flag errors without LTO.
+      # LTO is force-disabled on macOS (DISABLE_LTO set above): Xcode's ld drops DWARF
+      # exception unwind under -flto for compact-unwind fallback functions
+      # (llvm/llvm-project#135888), so the -flto/-fwhole-program-vtables blocks below are
+      # skipped here. Frame pointers stay on: the Apple arm64 ABI walks x29 chains — but only
+      # non-leaf frames must keep them, so -momit-leaf-frame-pointer frees x29 in leaf loops
+      # (tokenizer/DSP). Hidden visibility stays on for tighter symbol binding.
       add_compile_options(
          -O3
          -funroll-loops

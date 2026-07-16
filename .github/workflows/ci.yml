@@ -2039,6 +2039,7 @@ jobs:
         done
 
     - name: '🧪 Run tests'
+      id: run_tests
       continue-on-error: ${{ env.REQUIRE_TESTS_TO_PUBLISH != 'true' }}
       env:
         PYTHONIOENCODING: utf-8
@@ -2048,6 +2049,28 @@ jobs:
           --deselect tests/integration/test_licensing.py::test_rapid_status_queries_no_crash \
           -m "${{ matrix.marker_expr }}" \
           -q --tb=line --timeout=60 --junit-xml=test-results.xml
+
+    - name: '🔬 Capture hung app (macOS)'
+      if: always() && matrix.os == 'macos' && steps.run_tests.outcome == 'failure'
+      continue-on-error: true
+      run: |
+        mkdir -p crash-reports
+        PID="$(cat ss_pid.txt 2>/dev/null)"
+        if [ -z "$PID" ]; then
+          echo 'no ss_pid.txt; nothing to sample' | tee crash-reports/hang-liveness.txt
+          exit 0
+        fi
+        if kill -0 "$PID" 2>/dev/null; then
+          echo "Serial Studio (pid $PID) still ALIVE after test failure -> HANG; sampling threads" \
+            | tee crash-reports/hang-liveness.txt
+          sample "$PID" 10 -mayDie -file crash-reports/hang-sample.txt || true
+          sudo spindump "$PID" 10 -file crash-reports/hang-spindump.txt >/dev/null 2>&1 || true
+        else
+          echo "Serial Studio (pid $PID) GONE after test failure -> crashed/exited, not a hang" \
+            | tee crash-reports/hang-liveness.txt
+        fi
+        echo '--- captured ---'
+        ls -la crash-reports || true
 
     - name: '🎙 Run audio loopback tests (Linux, non-blocking)'
       if: matrix.os == 'linux'

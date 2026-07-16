@@ -28,7 +28,7 @@
 #include <QString>
 #include <QStringList>
 
-#include "IO/Drivers/CanBackends.h"
+#include "IO/Drivers/CANBus/CanBackends.h"
 
 class QSerialPort;
 

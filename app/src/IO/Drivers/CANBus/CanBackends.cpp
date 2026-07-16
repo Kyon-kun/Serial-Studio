@@ -20,11 +20,11 @@
  * SPDX-License-Identifier: LicenseRef-SerialStudio-Commercial
  */
 
-#include "IO/Drivers/CanBackends.h"
+#include "IO/Drivers/CANBus/CanBackends.h"
 
-#include "IO/Drivers/GsUsbCanBackend.h"
-#include "IO/Drivers/SeeedCanBackend.h"
-#include "IO/Drivers/SlcanBackend.h"
+#include "IO/Drivers/CANBus/GsUsbCanBackend.h"
+#include "IO/Drivers/CANBus/SeeedCanBackend.h"
+#include "IO/Drivers/CANBus/SlcanBackend.h"
 
 /**
  * @brief Returns every synthetic CAN backend; add a row here to register a new one.

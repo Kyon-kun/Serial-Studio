@@ -20,7 +20,7 @@
  * SPDX-License-Identifier: LicenseRef-SerialStudio-Commercial
  */
 
-#include "IO/Drivers/SeeedCanBackend.h"
+#include "IO/Drivers/CANBus/SeeedCanBackend.h"
 
 #include <chrono>
 #include <QSerialPort>

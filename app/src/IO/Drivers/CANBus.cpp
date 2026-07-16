@@ -27,7 +27,7 @@
 #include <QLoggingCategory>
 #include <stdexcept>
 
-#include "IO/Drivers/CanBackends.h"
+#include "IO/Drivers/CANBus/CanBackends.h"
 #include "Misc/TimerEvents.h"
 #include "Misc/Utilities.h"
 

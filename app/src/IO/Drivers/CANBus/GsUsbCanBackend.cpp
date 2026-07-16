@@ -20,7 +20,7 @@
  * SPDX-License-Identifier: LicenseRef-SerialStudio-Commercial
  */
 
-#include "IO/Drivers/GsUsbCanBackend.h"
+#include "IO/Drivers/CANBus/GsUsbCanBackend.h"
 
 #include <libusb.h>
 

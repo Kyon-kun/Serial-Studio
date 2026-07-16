@@ -585,6 +585,7 @@ Popup {
       checked: Cpp_UI_Dashboard.frozen
       opacity: freezeAllowed ? 1 : 0.5
       icon.source: "qrc:/icons/start/freeze.svg"
+      visible: Cpp_AppState.operationMode === SerialStudio.ProjectFile
       onCheckedChanged: {
         if (checked === Cpp_UI_Dashboard.frozen)
           return
