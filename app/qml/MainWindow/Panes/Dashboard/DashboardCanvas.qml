@@ -603,7 +603,7 @@ Item {
           y: modelData.y
           width: Math.max(1, modelData.width)
           height: Math.max(1, modelData.height)
-          color: Cpp_ThemeManager.colors["alignment_guide"]
+          color: Cpp_ThemeManager.colors["highlight"]
         }
       }
 
@@ -623,13 +623,13 @@ Item {
           Rectangle {
             opacity: 0.2
             anchors.fill: parent
-            color: Cpp_ThemeManager.colors["alignment_guide"]
+            color: Cpp_ThemeManager.colors["highlight"]
           }
 
           Label {
             anchors.centerIn: parent
             text: _spacingDelegate.modelData.gap
-            color: Cpp_ThemeManager.colors["alignment_guide"]
+            color: Cpp_ThemeManager.colors["highlight"]
             font: Cpp_Misc_CommonFonts.customUiFont(0.9, true)
             visible: implicitWidth < _spacingDelegate.width - 2
                      || implicitWidth < _spacingDelegate.height - 2
@@ -645,7 +645,7 @@ Item {
         visible: _wm.sizeMatchVisible
         width: _wm.sizeMatchRect.width
         height: _wm.sizeMatchRect.height
-        border.color: Cpp_ThemeManager.colors["alignment_guide"]
+        border.color: Cpp_ThemeManager.colors["highlight"]
       }
 
       Rectangle {
@@ -655,8 +655,8 @@ Item {
         border.width: 1
         implicitWidth: _badgeLabel.implicitWidth + 12
         implicitHeight: _badgeLabel.implicitHeight + 6
-        color: Cpp_ThemeManager.colors["widget_window"]
-        border.color: Cpp_ThemeManager.colors["alignment_guide"]
+        color: Cpp_ThemeManager.colors["highlight"]
+        border.color: Cpp_ThemeManager.colors["highlight"]
 
         readonly property rect g: _wm.manualGestureGeometry
 
@@ -670,7 +670,7 @@ Item {
           id: _badgeLabel
 
           anchors.centerIn: parent
-          color: Cpp_ThemeManager.colors["text"]
+          color: Cpp_ThemeManager.colors["highlighted_text"]
           font: Cpp_Misc_CommonFonts.customUiFont(0.9, true)
           text: _gestureBadge.g.x + ", " + _gestureBadge.g.y + "   "
                 + _gestureBadge.g.width + " x " + _gestureBadge.g.height

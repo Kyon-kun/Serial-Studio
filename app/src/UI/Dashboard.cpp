@@ -219,6 +219,8 @@ UI::Dashboard::Dashboard()
 
     if (mode != SerialStudio::ProjectFile)
       resetData(true);
+
+    Q_EMIT frozenChanged();
   }, Qt::QueuedConnection);
   // clang-format on
 
@@ -307,12 +309,16 @@ bool UI::Dashboard::autoHideToolbar() const noexcept
 
 /**
  * @brief Returns the effective dashboard freeze state: the project's stored flag gated on an
- *        active Pro/Trial license; QML-binding-time only, never read on the frame path.
+ *        active Pro/Trial license and ProjectFile mode; QML-binding-time only, never read on
+ *        the frame path. QuickPlot/ConsoleOnly is always live so a frozen project cannot lock
+ *        the clean-slate dashboard.
  */
 bool UI::Dashboard::frozen() const
 {
+  static auto& appState     = AppState::instance();
   static auto& projectModel = DataModel::ProjectModel::instance();
-  return projectModel.frozen() && SerialStudio::proWidgetsEnabled();
+  return projectModel.frozen() && SerialStudio::proWidgetsEnabled()
+         && appState.operationMode() == SerialStudio::ProjectFile;
 }
 
 /**
@@ -1183,6 +1189,10 @@ void UI::Dashboard::setAutoLayoutSpacing(const int spacing)
  */
 void UI::Dashboard::setFrozen(const bool frozen)
 {
+  static auto& appState = AppState::instance();
+  if (appState.operationMode() != SerialStudio::ProjectFile)
+    return;
+
   static auto& projectModel = DataModel::ProjectModel::instance();
   projectModel.setFrozen(frozen);
 }

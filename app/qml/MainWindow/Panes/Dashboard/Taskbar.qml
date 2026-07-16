@@ -966,6 +966,7 @@ Item {
       Layout.preferredWidth: 24
       Layout.preferredHeight: 24
       Layout.alignment: Qt.AlignVCenter
+      visible: Cpp_AppState.operationMode === SerialStudio.ProjectFile
       opacity: freezeAllowed ? 1 : 0.5
       icon.source: "qrc:/icons/buttons/freeze.svg"
       icon.color: Cpp_UI_Dashboard.frozen ?

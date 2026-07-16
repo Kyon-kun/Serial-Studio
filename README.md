@@ -234,8 +234,10 @@ All C/C++ dependencies (zlib, expat, OpenSSL, KissFFT, and so on) are vendored i
 
 ```bash
 cmake -B build -DPRODUCTION_OPTIMIZATION=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j$(nproc)
+cmake --build build --config Release -j$(nproc)
 ```
+
+On Windows the default generator is Visual Studio, which is multi-config: it ignores `CMAKE_BUILD_TYPE` and builds `Debug` unless you pass `--config Release` to the build step (as shown above). Skipping it builds the Debug config, which mixes MSVC's `/RTC1` runtime checks with the production `/O2` flags and fails with `'/O2' and '/RTC1' command-line options are incompatible`. Alternatively, configure with the single-config Ninja generator (`cmake -B build -G Ninja ...`), which honors `CMAKE_BUILD_TYPE`.
 
 You can also open `CMakeLists.txt` in Qt Creator or any CMake-aware IDE without extra setup.
 

@@ -25,10 +25,11 @@
 #include <optional>
 #include <QtGlobal>
 
-constexpr int kRankEdge    = 0;
-constexpr int kRankCenter  = 1;
-constexpr int kRankSize    = 1;
-constexpr int kRankSpacing = 2;
+constexpr int kRankEdge     = 0;
+constexpr int kRankCenter   = 1;
+constexpr int kRankSize     = 1;
+constexpr int kRankSpacing  = 2;
+constexpr int kRankFraction = 3;
 
 namespace detail {
 
@@ -120,8 +121,9 @@ static void appendIfViable(const Candidate& candidate,
 }
 
 /**
- * @brief Collects edge/center alignment candidates against every sibling and
- *        the canvas edges/centerline for one axis.
+ * @brief Collects edge/center alignment candidates against every sibling, the
+ *        canvas edges/centerline, and the canvas eighth fractions (1/8..7/8, the
+ *        aero-snap 1/2, 1/4 and 1/8 lines) for one axis.
  */
 static void appendAlignCandidates(const UI::Snap::SnapInput& input,
                                   const bool horiz,
@@ -147,6 +149,13 @@ static void appendAlignCandidates(const UI::Snap::SnapInput& input,
   appendIfViable({0 - lo, 0, kRankEdge, 0, true}, input, horiz, out);
   appendIfViable({extent - hi, extent, kRankEdge, 0, true}, input, horiz, out);
   appendIfViable({extent / 2 - mid, extent / 2, kRankCenter, 0, true}, input, horiz, out);
+
+  for (int eighth = 1; eighth < 8; ++eighth) {
+    const int frac = extent * eighth / 8;
+    appendIfViable({frac - lo, frac, kRankFraction, 0, true}, input, horiz, out);
+    appendIfViable({frac - hi, frac, kRankFraction, 0, true}, input, horiz, out);
+    appendIfViable({frac - mid, frac, kRankFraction, 0, true}, input, horiz, out);
+  }
 }
 
 /**
@@ -187,7 +196,7 @@ static void appendSpacingCandidates(const UI::Snap::SnapInput& input,
 
 /**
  * @brief Picks the winning candidate: nearest within threshold; ties prefer
- *        edges over centers, and either over spacing.
+ *        edges over centers, either over spacing, and all over canvas fractions.
  */
 static std::optional<Candidate> pickCandidate(const QVector<Candidate>& candidates)
 {
@@ -310,7 +319,8 @@ static void appendIfViableResize(const Candidate& candidate,
 }
 
 /**
- * @brief Collects alignment and size-match candidates for the moving edge of a
+ * @brief Collects alignment, size-match and canvas eighth-fraction size
+ *        candidates (aero-snap 1/2, 1/4, 1/8 spans) for the moving edge of a
  *        resize gesture on one axis.
  */
 static void appendResizeCandidates(const UI::Snap::SnapInput& input,
@@ -339,6 +349,13 @@ static void appendResizeCandidates(const UI::Snap::SnapInput& input,
   const int canvasEdge = movingLo ? 0 : extent;
   appendIfViableResize(
     {canvasEdge - edge, canvasEdge, kRankEdge, 0, true}, input, horiz, movingLo, out);
+
+  for (int eighth = 1; eighth < 8; ++eighth) {
+    const int fracSize = extent * eighth / 8;
+    const int target   = movingLo ? hi - fracSize : lo + fracSize;
+    appendIfViableResize(
+      {target - edge, target, kRankFraction, 0, true}, input, horiz, movingLo, out);
+  }
 }
 
 /**
@@ -403,8 +420,8 @@ UI::Snap::SnapResult UI::Snap::resolveMoveSnap(const SnapInput& input)
 
   QVector<Candidate> horizontal;
   QVector<Candidate> vertical;
-  horizontal.reserve(input.siblings.size() * 5 + 3);
-  vertical.reserve(input.siblings.size() * 5 + 3);
+  horizontal.reserve(input.siblings.size() * 5 + 24);
+  vertical.reserve(input.siblings.size() * 5 + 24);
 
   appendAlignCandidates(input, true, horizontal);
   appendAlignCandidates(input, false, vertical);
@@ -462,7 +479,7 @@ UI::Snap::SnapResult UI::Snap::resolveResizeSnap(const SnapInput& input, const M
   const bool vertMoving  = edges.top || edges.bottom;
 
   QVector<Candidate> candidates;
-  candidates.reserve(input.siblings.size() * 3 + 1);
+  candidates.reserve(input.siblings.size() * 3 + 8);
 
   if (horizMoving) {
     appendResizeCandidates(input, true, edges.left, candidates);

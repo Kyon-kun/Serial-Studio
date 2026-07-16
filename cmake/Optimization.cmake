@@ -82,6 +82,13 @@ if(PRODUCTION_OPTIMIZATION)
    add_compile_definitions(NDEBUG)
    add_compile_definitions(SS_OPT_PRODUCTION)
 
+   # Gate the optimization/LTO flags below to optimized configs. On a multi-config generator
+   # (Visual Studio) CMAKE_BUILD_TYPE is ignored and a bare `cmake --build` builds Debug; without
+   # this gate PRODUCTION_OPTIMIZATION would inject /O2 into the Debug config, which already carries
+   # MSVC's /RTC1, and that combination is rejected by the compiler and aborts the build. Only the
+   # MSVC branches consume it; other toolchains tolerate -O3 alongside -g without a hard error.
+   set(SS_OPT_CONFIGS "$<CONFIG:Release,RelWithDebInfo,MinSizeRel>")
+
    if(NOT MSVC)
       add_compile_options(
          -fexceptions
@@ -150,14 +157,16 @@ if(PRODUCTION_OPTIMIZATION)
       endforeach()
 
       # /clang:-O3 follows /O2 (last -O wins in clang) so this branch matches the -O3 used by
-      # every other production toolchain instead of clang-cl's /O2 -> -O2 mapping.
+      # every other production toolchain instead of clang-cl's /O2 -> -O2 mapping. The /O and LTO
+      # flags are gated to optimized configs (SS_OPT_CONFIGS) so they never collide with Debug's
+      # /RTC1 on a multi-config generator.
       add_compile_options(
-         /O2
-         /Oi
-         /Ot
+         $<${SS_OPT_CONFIGS}:/O2>
+         $<${SS_OPT_CONFIGS}:/Oi>
+         $<${SS_OPT_CONFIGS}:/Ot>
+         $<${SS_OPT_CONFIGS}:/clang:-O3>
          /Gy
          /Gw
-         /clang:-O3
          /clang:-march=x86-64-v2
          /fp:precise
          /DNDEBUG
@@ -171,10 +180,10 @@ if(PRODUCTION_OPTIMIZATION)
          # -fwhole-program-vtables devirtualizes app-internal interfaces (hidden LTO visibility
          # on COFF); dllimported Qt classes keep public visibility, so plugins are unaffected.
          add_compile_options(
-            /clang:-flto=thin
-            /clang:-fwhole-program-vtables
+            $<${SS_OPT_CONFIGS}:/clang:-flto=thin>
+            $<${SS_OPT_CONFIGS}:/clang:-fwhole-program-vtables>
          )
-         add_link_options(/lldltocache:${CMAKE_BINARY_DIR}/lto.cache)
+         add_link_options($<${SS_OPT_CONFIGS}:/lldltocache:${CMAKE_BINARY_DIR}/lto.cache>)
       endif()
 
    elseif(WIN32 AND MSVC)
@@ -191,29 +200,32 @@ if(PRODUCTION_OPTIMIZATION)
          endforeach()
       endforeach()
 
+      # The /O and whole-program (/GL, /LTCG) flags are gated to optimized configs (SS_OPT_CONFIGS)
+      # so they never collide with Debug's /RTC1 on a multi-config generator; the conformance,
+      # /MP, /fp:precise and section flags stay unconditional.
       add_compile_options(
          /permissive-
          /Zc:__cplusplus
          /Zc:preprocessor
          /MP
-         /O2
-         /Ot
-         /Oi
-         /Ob3
+         $<${SS_OPT_CONFIGS}:/O2>
+         $<${SS_OPT_CONFIGS}:/Ot>
+         $<${SS_OPT_CONFIGS}:/Oi>
+         $<${SS_OPT_CONFIGS}:/Ob3>
          /fp:precise
          /Gw
          /Gy
          /DNDEBUG
       )
       if(NOT DISABLE_LTO)
-         add_compile_options(/GL)
+         add_compile_options($<${SS_OPT_CONFIGS}:/GL>)
       endif()
       add_link_options(
          /OPT:REF
          /OPT:ICF
       )
       if(NOT DISABLE_LTO)
-         add_link_options(/LTCG)
+         add_link_options($<${SS_OPT_CONFIGS}:/LTCG>)
       endif()
 
    elseif(APPLE)

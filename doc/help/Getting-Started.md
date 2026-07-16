@@ -96,10 +96,12 @@ If you'd rather compile from source, you need Qt 6.9+ and CMake:
 git clone https://github.com/Serial-Studio/Serial-Studio.git
 cd Serial-Studio
 cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j$(nproc)
+cmake --build build --config Release -j$(nproc)
 ```
 
 The binary ends up in `build/`.
+
+On Windows the default generator (Visual Studio) is multi-config: it ignores `CMAKE_BUILD_TYPE`, so pass `--config Release` to the build step or you'll build the Debug config (which fails with `'/O2' and '/RTC1' command-line options are incompatible` when production optimization is enabled). Configuring with `-G Ninja` avoids this entirely.
 
 ## Interface overview
 
