@@ -585,18 +585,24 @@ Popup {
       checked: Cpp_UI_Dashboard.frozen
       opacity: freezeAllowed ? 1 : 0.5
       icon.source: "qrc:/icons/start/freeze.svg"
-      onClicked: {
+      onCheckedChanged: {
+        if (checked === Cpp_UI_Dashboard.frozen)
+          return
+
         if (_freezeBt.freezeAllowed)
-          Cpp_UI_Dashboard.setFrozen(!Cpp_UI_Dashboard.frozen)
+          Cpp_UI_Dashboard.setFrozen(checked)
 
         else {
+          _freezeBt.checked = Cpp_UI_Dashboard.frozen
           root.close()
           app.showLicenseDialog()
         }
-
-        _freezeBt.checked = Cpp_UI_Dashboard.frozen
       }
 
+      //
+      // The internal toggle overwrites `checked` on click, destroying the binding
+      // above, so re-sync explicitly when the freeze state changes elsewhere.
+      //
       Connections {
         target: Cpp_UI_Dashboard
         function onFrozenChanged() {
