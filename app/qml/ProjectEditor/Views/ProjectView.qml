@@ -141,13 +141,16 @@ Widgets.Pane {
           Widgets.IconButton {
             id: settingsButton
 
-            iconSize: 18
+            flat: true
             leftPadding: 8
             rightPadding: 8
+            implicitHeight: 32
             text: qsTr("Settings")
             icon.color: "transparent"
             Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Project settings")
             icon.source: "qrc:/icons/console/settings.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
             onClicked: settingsPopup.visible ? settingsPopup.close() : settingsPopup.open()
 
             Popup {

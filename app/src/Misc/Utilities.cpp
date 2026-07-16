@@ -29,11 +29,14 @@
 #include <QFileInfo>
 #include <QGridLayout>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QMessageBox>
+#include <QPainter>
 #include <QPalette>
 #include <QProcess>
 #include <QSettings>
 #include <QSpacerItem>
+#include <QSvgRenderer>
 #include <QUrl>
 
 #include "AppInfo.h"
@@ -94,6 +97,34 @@ void Misc::Utilities::rebootApplication()
 QPixmap Misc::Utilities::getHiDpiPixmap(const QString& path)
 {
   return QPixmap(hdpiImagePath(path));
+}
+
+/**
+ * @brief Renders a monochrome SVG tinted to @a color so QWidget button icons follow the theme.
+ */
+QIcon Misc::Utilities::coloredSvgIcon(const QString& svgPath, const QColor& color)
+{
+  QSvgRenderer renderer(svgPath);
+  if (!renderer.isValid())
+    return QIcon(svgPath);
+
+  const qreal dpr         = qApp->devicePixelRatio();
+  const QRectF logical    = QRectF(0, 0, 32, 32);
+  const QSize pixelSize   = (logical.size() * dpr).toSize();
+
+  QPixmap pixmap(pixelSize);
+  pixmap.setDevicePixelRatio(dpr);
+  pixmap.fill(Qt::transparent);
+
+  QPainter painter(&pixmap);
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::SmoothPixmapTransform);
+  renderer.render(&painter, logical);
+  painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+  painter.fillRect(logical, color);
+  painter.end();
+
+  return QIcon(pixmap);
 }
 
 //--------------------------------------------------------------------------------------------------

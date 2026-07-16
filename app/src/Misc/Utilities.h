@@ -42,6 +42,7 @@ public:
   static void rebootApplication();
   static QPixmap getHiDpiPixmap(const QString& path);
 
+  [[nodiscard]] static QIcon coloredSvgIcon(const QString& svgPath, const QColor& color);
   [[nodiscard]] Q_INVOKABLE static QString hdpiImagePath(const QString& path);
 
   // clang-format off

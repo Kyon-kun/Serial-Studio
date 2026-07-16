@@ -31,6 +31,7 @@ RowLayout {
   property bool collapsible: false
   property string collapsedIcon: ""
   property string collapsedText: ""
+  property bool compactCollapse: false
 
   //
   // Priority for collapse ordering (lower = collapses first)
@@ -107,8 +108,8 @@ RowLayout {
 
     Layout.alignment: Qt.AlignVCenter
     visible: root.collapsed && root.collapsible
-    implicitWidth: collapsedCol.implicitWidth + 16
-    implicitHeight: collapsedCol.implicitHeight + 8
+    implicitWidth: collapsedContent.implicitWidth + 16
+    implicitHeight: collapsedContent.implicitHeight + 8
     onClicked: sectionPopup.open()
 
     opacity: 1
@@ -122,19 +123,70 @@ RowLayout {
              : "transparent"
     }
 
-    contentItem: ColumnLayout {
-      id: collapsedCol
+    //
+    // Stacked icon-over-label by default; a compact single-row icon+label
+    // (for short toolbars, e.g. the 48px console bar) when compactCollapse is set.
+    //
+    contentItem: Loader {
+      id: collapsedContent
 
-      spacing: 4
+      sourceComponent: root.compactCollapse
+                       ? compactCollapsedComponent
+                       : stackedCollapsedComponent
+    }
+
+    Component {
+      id: stackedCollapsedComponent
+
+      ColumnLayout {
+        spacing: 4
+
+        RowLayout {
+          spacing: 4
+          Layout.alignment: Qt.AlignHCenter
+
+          Image {
+            opacity: 1
+            source: root.collapsedIcon
+            sourceSize: Qt.size(32, 32)
+            Layout.alignment: Qt.AlignVCenter
+          }
+
+          IconButton {
+            enabled: false
+            iconSize: 12
+            background: Item {}
+            icon.source: "qrc:/icons/buttons/dropdown.svg"
+            icon.color: root.collapsedTextColor
+          }
+        }
+
+        Label {
+          text: root.collapsedText
+          color: root.collapsedTextColor
+          Layout.alignment: Qt.AlignHCenter
+          font: Cpp_Misc_CommonFonts.uiFont
+        }
+      }
+    }
+
+    Component {
+      id: compactCollapsedComponent
 
       RowLayout {
-        spacing: 4
-        Layout.alignment: Qt.AlignHCenter
+        spacing: 6
 
         Image {
           opacity: 1
           source: root.collapsedIcon
-          sourceSize: Qt.size(32, 32)
+          sourceSize: Qt.size(18, 18)
+          Layout.alignment: Qt.AlignVCenter
+        }
+
+        Label {
+          text: root.collapsedText
+          color: root.collapsedTextColor
+          font: Cpp_Misc_CommonFonts.uiFont
           Layout.alignment: Qt.AlignVCenter
         }
 
@@ -144,16 +196,8 @@ RowLayout {
           background: Item {}
           icon.source: "qrc:/icons/buttons/dropdown.svg"
           icon.color: root.collapsedTextColor
+          Layout.alignment: Qt.AlignVCenter
         }
-      }
-
-      Label {
-        id: collapsedLabel
-
-        text: root.collapsedText
-        color: root.collapsedTextColor
-        Layout.alignment: Qt.AlignHCenter
-        font: Cpp_Misc_CommonFonts.uiFont
       }
     }
   }

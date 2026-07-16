@@ -902,5 +902,6 @@
         <file>icons/console/settings.svg</file>
         <file>icons/console/hexadecimal.svg</file>
         <file>icons/console/plain-text.svg</file>
+        <file>icons/console/send-file.svg</file>
     </qresource>
 </RCC>

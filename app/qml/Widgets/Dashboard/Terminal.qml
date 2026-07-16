@@ -199,7 +199,6 @@ Item {
 
       implicitHeight: 48
       Layout.fillWidth: true
-      visible: root.width > toolbarRow.implicitWidth + 16
       color: Cpp_ThemeManager.colors["window_toolbar_background"]
 
       Rectangle {
@@ -209,252 +208,297 @@ Item {
         color: Cpp_ThemeManager.colors["window_border"]
       }
 
-      RowLayout {
-        id: toolbarRow
+      //
+      // Ribbon toolbar: never hides when the console is too narrow. Collapsible
+      // sections fold to a compact icon+label dropdown first, then it scrolls.
+      //
+      Widgets.RibbonToolbar {
+        id: consoleRibbon
 
-        spacing: 4
+        anchors.fill: parent
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
+        secondaryToolbar: true
+        fadeColor: Cpp_ThemeManager.colors["window_toolbar_background"]
 
-        anchors {
-          leftMargin: 8
-          rightMargin: 8
-          left: parent.left
-          right: parent.right
-          verticalCenter: parent.verticalCenter
-        }
+        //
+        // Console actions (collapsible): clear, find, collapse duplicates
+        //
+        Widgets.RibbonSection {
+          collapsible: true
+          collapsePriority: 10
+          compactCollapse: true
+          collapsedText: qsTr("View")
+          collapsedIcon: "qrc:/icons/console/search.svg"
+          separatorColor: Cpp_ThemeManager.colors["widget_border"]
 
-        Widgets.IconButton {
-          id: clearButton
+          Widgets.IconButton {
+            id: clearButton
 
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          implicitHeight: 32
-          text: qsTr("Clear")
-          onClicked: root.clear()
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          ToolTip.text: qsTr("Clear console output")
-          icon.source: "qrc:/icons/console/clear.svg"
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
-        }
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            implicitHeight: 32
+            text: qsTr("Clear")
+            onClicked: root.clear()
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Clear console output")
+            icon.source: "qrc:/icons/console/clear.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+          }
 
-        Widgets.IconButton {
-          id: searchButton
+          Widgets.IconButton {
+            id: searchButton
 
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          text: qsTr("Find")
-          implicitHeight: 32
-          checked: root.searchOpen
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          ToolTip.text: qsTr("Search console output")
-          icon.source: "qrc:/icons/console/search.svg"
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            text: qsTr("Find")
+            implicitHeight: 32
+            checked: root.searchOpen
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Search console output")
+            icon.source: "qrc:/icons/console/search.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
 
-          onClicked: {
-            if (root.searchOpen)
-              root.closeSearch()
+            onClicked: {
+              if (root.searchOpen)
+                root.closeSearch()
 
-            else {
-              root.searchOpen = true
-              searchField.forceActiveFocus()
-              searchField.selectAll()
+              else {
+                root.searchOpen = true
+                searchField.forceActiveFocus()
+                searchField.selectAll()
+              }
             }
+          }
+
+          Widgets.IconButton  {
+            id: collapseButton
+
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            implicitHeight: 32
+            text: qsTr("Collapse")
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            checked: Cpp_Console_Handler.collapseDuplicates
+            icon.source: "qrc:/icons/console/collapse-duplicates.svg"
+            ToolTip.text: qsTr("Collapse repeated lines into a single entry")
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+            onClicked: Cpp_Console_Handler.collapseDuplicates = !Cpp_Console_Handler.collapseDuplicates
           }
         }
 
-        Widgets.IconButton  {
-          id: collapseButton
+        //
+        // Device write actions (always visible): send file, pause
+        //
+        Widgets.RibbonSection {
+          showSeparator: false
+          separatorColor: Cpp_ThemeManager.colors["widget_border"]
 
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          implicitHeight: 32
-          text: qsTr("Collapse")
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          checked: Cpp_Console_Handler.collapseDuplicates
-          icon.source: "qrc:/icons/console/collapse-duplicates.svg"
-          ToolTip.text: qsTr("Collapse repeated lines into a single entry")
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
-          onClicked: Cpp_Console_Handler.collapseDuplicates = !Cpp_Console_Handler.collapseDuplicates
-        }
+          Widgets.IconButton {
+            id: ftButton
 
-        Rectangle {
-          implicitWidth: 1
-          implicitHeight: 24
-          color: Cpp_ThemeManager.colors["widget_border"]
-        }
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            implicitHeight: 32
+            text: qsTr("Send File")
+            icon.color: "transparent"
+            enabled: Cpp_IO_Manager.readWrite
+            Layout.alignment: Qt.AlignVCenter
+            onClicked: app.showFileTransmission()
+            icon.source: "qrc:/icons/console/send-file.svg"
+            visible: Cpp_CommercialBuild && !app.runtimeMode
+            ToolTip.text: qsTr("Send a file to the connected device")
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+          }
 
-        Widgets.IconButton {
-          id: pauseButton
+          Widgets.IconButton {
+            id: pauseButton
 
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          implicitHeight: 32
-          checked: terminal.paused
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          enabled: Cpp_IO_Manager.isConnected
-          onClicked: terminal.paused = !terminal.paused
-          text: terminal.paused ? qsTr("Resume") : qsTr("Pause")
-          icon.source: terminal.paused
-                       ? "qrc:/icons/dashboard-buttons/resume.svg"
-                       : "qrc:/icons/dashboard-buttons/pause.svg"
-          ToolTip.text: terminal.paused
-                        ? qsTr("Resume console updates")
-                        : qsTr("Freeze the console display (data keeps logging)")
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            implicitHeight: 32
+            checked: terminal.paused
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            enabled: Cpp_IO_Manager.isConnected
+            onClicked: terminal.paused = !terminal.paused
+            text: terminal.paused ? qsTr("Resume") : qsTr("Pause")
+            icon.source: terminal.paused
+                         ? "qrc:/icons/dashboard-buttons/resume.svg"
+                         : "qrc:/icons/dashboard-buttons/pause.svg"
+            ToolTip.text: terminal.paused
+                          ? qsTr("Resume console updates")
+                          : qsTr("Freeze the console display (data keeps logging)")
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+          }
         }
 
         Item {
           Layout.fillWidth: true
         }
 
-        Widgets.IconButton {
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          text: qsTr("Text")
-          implicitHeight: 32
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          ToolTip.text: qsTr("Plain text display mode")
-          checked: Cpp_Console_Handler.displayMode === 0
-          onClicked: Cpp_Console_Handler.displayMode = 0
-          icon.source: "qrc:/icons/console/plain-text.svg"
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+        //
+        // Display mode (collapsible): plain text, hex
+        //
+        Widgets.RibbonSection {
+          collapsible: true
+          collapsePriority: 20
+          compactCollapse: true
+          collapsedText: qsTr("Format")
+          collapsedIcon: "qrc:/icons/console/plain-text.svg"
+          separatorColor: Cpp_ThemeManager.colors["widget_border"]
+
+          Widgets.IconButton {
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            text: qsTr("Text")
+            implicitHeight: 32
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Plain text display mode")
+            checked: Cpp_Console_Handler.displayMode === 0
+            onClicked: Cpp_Console_Handler.displayMode = 0
+            icon.source: "qrc:/icons/console/plain-text.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+          }
+
+          Widgets.IconButton {
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            text: qsTr("Hex")
+            implicitHeight: 32
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Hex display mode")
+            checked: Cpp_Console_Handler.displayMode === 1
+            onClicked: Cpp_Console_Handler.displayMode = 1
+            icon.source: "qrc:/icons/console/hexadecimal.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+          }
         }
 
-        Widgets.IconButton {
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          text: qsTr("Hex")
-          implicitHeight: 32
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          ToolTip.text: qsTr("Hex display mode")
-          checked: Cpp_Console_Handler.displayMode === 1
-          onClicked: Cpp_Console_Handler.displayMode = 1
-          icon.source: "qrc:/icons/console/hexadecimal.svg"
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
-        }
+        //
+        // Settings (always visible)
+        //
+        Widgets.RibbonSection {
+          showSeparator: false
 
-        Rectangle {
-          implicitWidth: 1
-          implicitHeight: 24
-          color: Cpp_ThemeManager.colors["widget_border"]
-        }
+          Widgets.IconButton {
+            id: settingsButton
 
-        Widgets.IconButton {
-          id: settingsButton
+            flat: true
+            leftPadding: 8
+            rightPadding: 8
+            implicitHeight: 32
+            text: qsTr("Settings")
+            icon.color: "transparent"
+            Layout.alignment: Qt.AlignVCenter
+            ToolTip.text: qsTr("Console settings")
+            icon.source: "qrc:/icons/console/settings.svg"
+            Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
+            onClicked: settingsPopup.visible ? settingsPopup.close() : settingsPopup.open()
 
-          flat: true
-          leftPadding: 8
-          rightPadding: 8
-          implicitHeight: 32
-          text: qsTr("Settings")
-          icon.color: "transparent"
-          Layout.alignment: Qt.AlignVCenter
-          ToolTip.text: qsTr("Console settings")
-          icon.source: "qrc:/icons/console/settings.svg"
-          Layout.preferredWidth: implicitContentWidth + leftPadding + rightPadding
-          onClicked: settingsPopup.visible ? settingsPopup.close() : settingsPopup.open()
+            Popup {
+              id: settingsPopup
 
-          Popup {
-            id: settingsPopup
+              margins: 8
+              padding: 12
+              y: settingsButton.height + 4
+              x: settingsButton.width - width
+              closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
-            margins: 8
-            padding: 12
-            y: settingsButton.height + 4
-            x: settingsButton.width - width
-            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-
-            background: Rectangle {
-              radius: 4
-              opacity: 0.95
-              color: Cpp_ThemeManager.colors["window"]
-              border.color: Cpp_ThemeManager.colors["groupbox_border"]
-            }
-
-            contentItem: ColumnLayout {
-              spacing: 4
-
-              CheckBox {
-                id: timestampCheck
-
-                onCheckedChanged: {
-                  if (Cpp_Console_Handler.showTimestamp !== checked)
-                    Cpp_Console_Handler.showTimestamp = checked
-                }
-                text: qsTr("Show Timestamp")
-                checked: Cpp_Console_Handler.showTimestamp
+              background: Rectangle {
+                radius: 4
+                opacity: 0.95
+                color: Cpp_ThemeManager.colors["window"]
+                border.color: Cpp_ThemeManager.colors["groupbox_border"]
               }
 
-              CheckBox {
-                id: echoCheck
-
-                text: qsTr("Echo")
-                onCheckedChanged: {
-                  if (Cpp_Console_Handler.echo !== checked)
-                    Cpp_Console_Handler.echo = checked
-                }
-                checked: Cpp_Console_Handler.echo
-              }
-
-              CheckBox {
-                id: vt100Check
-
-                onCheckedChanged: {
-                  if (Cpp_Console_Handler.vt100Emulation !== checked)
-                    Cpp_Console_Handler.vt100Emulation = checked
-                }
-                opacity: enabled ? 1 : 0.8
-                text: qsTr("Emulate VT-100")
-                checked: Cpp_Console_Handler.vt100Emulation
-                enabled: !Cpp_Console_Handler.imageWidgetActive
-              }
-
-              CheckBox {
-                id: ansiColorsCheck
-
-                onCheckedChanged: {
-                  if (enabled && Cpp_Console_Handler.ansiColors !== checked)
-                    Cpp_Console_Handler.ansiColors = checked
-                }
-                text: qsTr("ANSI Colors")
-                opacity: enabled ? 1 : 0.8
-                checked: Cpp_Console_Handler.vt100Emulation && Cpp_Console_Handler.ansiColors
-                enabled: Cpp_Console_Handler.vt100Emulation && !Cpp_Console_Handler.imageWidgetActive
-              }
-
-              RowLayout {
+              contentItem: ColumnLayout {
                 spacing: 4
 
-                Label {
-                  text: qsTr("Scrollback Lines")
-                  Layout.alignment: Qt.AlignVCenter
+                CheckBox {
+                  id: timestampCheck
+
+                  onCheckedChanged: {
+                    if (Cpp_Console_Handler.showTimestamp !== checked)
+                      Cpp_Console_Handler.showTimestamp = checked
+                  }
+                  text: qsTr("Show Timestamp")
+                  checked: Cpp_Console_Handler.showTimestamp
                 }
 
-                SpinBox {
-                  id: scrollbackSpin
+                CheckBox {
+                  id: echoCheck
 
-                  from: 100
-                  to: 100000
-                  stepSize: 100
-                  editable: true
-                  Layout.fillWidth: true
-                  value: Cpp_Console_Handler.scrollbackLines
-                  onValueModified: Cpp_Console_Handler.scrollbackLines = value
+                  text: qsTr("Echo")
+                  onCheckedChanged: {
+                    if (Cpp_Console_Handler.echo !== checked)
+                      Cpp_Console_Handler.echo = checked
+                  }
+                  checked: Cpp_Console_Handler.echo
+                }
 
-                  Connections {
-                    target: Cpp_Console_Handler
-                    function onScrollbackLinesChanged() {
-                      scrollbackSpin.value = Cpp_Console_Handler.scrollbackLines
+                CheckBox {
+                  id: vt100Check
+
+                  onCheckedChanged: {
+                    if (Cpp_Console_Handler.vt100Emulation !== checked)
+                      Cpp_Console_Handler.vt100Emulation = checked
+                  }
+                  opacity: enabled ? 1 : 0.8
+                  text: qsTr("Emulate VT-100")
+                  checked: Cpp_Console_Handler.vt100Emulation
+                  enabled: !Cpp_Console_Handler.imageWidgetActive
+                }
+
+                CheckBox {
+                  id: ansiColorsCheck
+
+                  onCheckedChanged: {
+                    if (enabled && Cpp_Console_Handler.ansiColors !== checked)
+                      Cpp_Console_Handler.ansiColors = checked
+                  }
+                  text: qsTr("ANSI Colors")
+                  opacity: enabled ? 1 : 0.8
+                  checked: Cpp_Console_Handler.vt100Emulation && Cpp_Console_Handler.ansiColors
+                  enabled: Cpp_Console_Handler.vt100Emulation && !Cpp_Console_Handler.imageWidgetActive
+                }
+
+                RowLayout {
+                  spacing: 4
+
+                  Label {
+                    text: qsTr("Scrollback Lines")
+                    Layout.alignment: Qt.AlignVCenter
+                  }
+
+                  SpinBox {
+                    id: scrollbackSpin
+
+                    from: 100
+                    to: 100000
+                    stepSize: 100
+                    editable: true
+                    Layout.fillWidth: true
+                    value: Cpp_Console_Handler.scrollbackLines
+                    onValueModified: Cpp_Console_Handler.scrollbackLines = value
+
+                    Connections {
+                      target: Cpp_Console_Handler
+                      function onScrollbackLinesChanged() {
+                        scrollbackSpin.value = Cpp_Console_Handler.scrollbackLines
+                      }
                     }
                   }
                 }
@@ -637,21 +681,6 @@ Item {
       Layout.bottomMargin: 8
       Layout.fillWidth: true
       visible: root.width > implicitWidth
-
-      Widgets.IconButton {
-        iconSize: 16
-        id: ftButton
-
-        implicitHeight: 24
-        Layout.maximumWidth: 24
-        visible: !app.runtimeMode
-        opacity: enabled ? 1 : 0.5
-        enabled: Cpp_IO_Manager.readWrite
-        Layout.alignment: Qt.AlignVCenter
-        onClicked: app.showFileTransmission()
-        icon.source: "qrc:/icons/buttons/attach.svg"
-        ToolTip.text: qsTr("Send a file to the connected device")
-      }
 
       Widgets.Combo {
         id: deviceCombo

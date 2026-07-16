@@ -1969,7 +1969,8 @@ void UI::WindowManager::handleDragMove(QMouseEvent* event, const QPoint& delta)
                                Snap::kSnapThreshold,
                                0,
                                m_gridEnabled,
-                               m_gridSize};
+                               m_gridSize,
+                               qMax(-1, m_dashboard.autoLayoutSpacing())};
       const Snap::SnapResult res = Snap::resolveMoveSnap(in);
       rect                       = res.rect;
       publishSnapGuides(res);
@@ -2093,7 +2094,8 @@ void UI::WindowManager::handleResizeMove(QMouseEvent* event, const QPoint& delta
                              Snap::kSnapThreshold,
                              minSize,
                              m_gridEnabled,
-                             m_gridSize};
+                             m_gridSize,
+                             qMax(-1, m_dashboard.autoLayoutSpacing())};
     const Snap::SnapResult res = Snap::resolveResizeSnap(in, movingEdgesFor(m_resizeEdge));
     geometry                   = res.rect;
     publishSnapGuides(res);

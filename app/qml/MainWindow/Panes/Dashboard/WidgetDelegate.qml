@@ -345,7 +345,8 @@ Widgets.MiniWindow {
     clip: true
     anchors.margins: 1
     anchors.fill: parent
-    anchors.topMargin: Math.max(1, root.captionHeight + root.frozenHeaderHeight)
+    anchors.topMargin: Math.max(1, root.captionHeight + root.frozenHeaderHeight
+                                + (root.frozenHeaderVisible ? 1 : 0))
     LayoutMirroring.enabled: false
     LayoutMirroring.childrenInherit: true
     Component.onCompleted: widgetLoader.createObject(container, {windowRoot: root})

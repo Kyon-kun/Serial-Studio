@@ -31,6 +31,9 @@ constexpr int kRankSize     = 1;
 constexpr int kRankSpacing  = 2;
 constexpr int kRankFraction = 3;
 
+// Canvas fraction denominators the snap grid recognizes: n/2 through n/8.
+constexpr int kFractionDenominators[] = {2, 3, 4, 5, 6, 7, 8};
+
 namespace detail {
 
 /**
@@ -44,8 +47,8 @@ struct Candidate {
   int gap           = 0;
   bool canvasTarget = false;
   bool afterPair    = false;
-  QRect pairA;
-  QRect pairB;
+  QRect pairA       = {};
+  QRect pairB       = {};
 };
 
 }  // namespace detail
@@ -122,17 +125,19 @@ static void appendIfViable(const Candidate& candidate,
 
 /**
  * @brief Collects edge/center alignment candidates against every sibling, the
- *        canvas edges/centerline, and the canvas eighth fractions (1/8..7/8, the
- *        aero-snap 1/2, 1/4 and 1/8 lines) for one axis.
+ *        canvas edges/centerline and the n/2..n/8 canvas fractions for one axis.
+ *        The two abutting sibling edges carry siblingSpacing so a flush snap
+ *        shares a border instead of doubling it.
  */
 static void appendAlignCandidates(const UI::Snap::SnapInput& input,
                                   const bool horiz,
                                   QVector<Candidate>& out)
 {
-  const int lo     = rectLo(input.rect, horiz);
-  const int hi     = rectHi(input.rect, horiz);
-  const int mid    = rectMid(input.rect, horiz);
-  const int extent = horiz ? input.canvas.width() : input.canvas.height();
+  const int lo      = rectLo(input.rect, horiz);
+  const int hi      = rectHi(input.rect, horiz);
+  const int mid     = rectMid(input.rect, horiz);
+  const int extent  = horiz ? input.canvas.width() : input.canvas.height();
+  const int spacing = input.siblingSpacing;
 
   for (const auto& sibling : input.siblings) {
     const int sLo  = rectLo(sibling, horiz);
@@ -140,8 +145,8 @@ static void appendAlignCandidates(const UI::Snap::SnapInput& input,
     const int sMid = rectMid(sibling, horiz);
 
     appendIfViable({sLo - lo, sLo, kRankEdge}, input, horiz, out);
-    appendIfViable({sHi - lo, sHi, kRankEdge}, input, horiz, out);
-    appendIfViable({sLo - hi, sLo, kRankEdge}, input, horiz, out);
+    appendIfViable({sHi + spacing - lo, sHi, kRankEdge}, input, horiz, out);
+    appendIfViable({sLo - spacing - hi, sLo, kRankEdge}, input, horiz, out);
     appendIfViable({sHi - hi, sHi, kRankEdge}, input, horiz, out);
     appendIfViable({sMid - mid, sMid, kRankCenter}, input, horiz, out);
   }
@@ -150,11 +155,13 @@ static void appendAlignCandidates(const UI::Snap::SnapInput& input,
   appendIfViable({extent - hi, extent, kRankEdge, 0, true}, input, horiz, out);
   appendIfViable({extent / 2 - mid, extent / 2, kRankCenter, 0, true}, input, horiz, out);
 
-  for (int eighth = 1; eighth < 8; ++eighth) {
-    const int frac = extent * eighth / 8;
-    appendIfViable({frac - lo, frac, kRankFraction, 0, true}, input, horiz, out);
-    appendIfViable({frac - hi, frac, kRankFraction, 0, true}, input, horiz, out);
-    appendIfViable({frac - mid, frac, kRankFraction, 0, true}, input, horiz, out);
+  for (const int den : kFractionDenominators) {
+    for (int num = 1; num < den; ++num) {
+      const int frac = extent * num / den;
+      appendIfViable({frac - lo, frac, kRankFraction, 0, true}, input, horiz, out);
+      appendIfViable({frac - hi, frac, kRankFraction, 0, true}, input, horiz, out);
+      appendIfViable({frac - mid, frac, kRankFraction, 0, true}, input, horiz, out);
+    }
   }
 }
 
@@ -319,26 +326,30 @@ static void appendIfViableResize(const Candidate& candidate,
 }
 
 /**
- * @brief Collects alignment, size-match and canvas eighth-fraction size
- *        candidates (aero-snap 1/2, 1/4, 1/8 spans) for the moving edge of a
- *        resize gesture on one axis.
+ * @brief Collects alignment, size-match and canvas n/2..n/8 fraction size
+ *        candidates for the moving edge of a resize gesture on one axis. The
+ *        sibling edge the moving edge abuts carries siblingSpacing so a flush
+ *        resize shares a border; the aligned sibling edge stays exact.
  */
 static void appendResizeCandidates(const UI::Snap::SnapInput& input,
                                    const bool horiz,
                                    const bool movingLo,
                                    QVector<Candidate>& out)
 {
-  const int lo     = rectLo(input.rect, horiz);
-  const int hi     = rectHi(input.rect, horiz);
-  const int edge   = movingLo ? lo : hi;
-  const int extent = horiz ? input.canvas.width() : input.canvas.height();
+  const int lo      = rectLo(input.rect, horiz);
+  const int hi      = rectHi(input.rect, horiz);
+  const int edge    = movingLo ? lo : hi;
+  const int extent  = horiz ? input.canvas.width() : input.canvas.height();
+  const int spacing = input.siblingSpacing;
 
   for (const auto& sibling : input.siblings) {
-    const int sLo = rectLo(sibling, horiz);
-    const int sHi = rectHi(sibling, horiz);
+    const int sLo     = rectLo(sibling, horiz);
+    const int sHi     = rectHi(sibling, horiz);
+    const int loEdge  = movingLo ? sLo : sLo - spacing;
+    const int hiEdge  = movingLo ? sHi + spacing : sHi;
 
-    appendIfViableResize({sLo - edge, sLo, kRankEdge}, input, horiz, movingLo, out);
-    appendIfViableResize({sHi - edge, sHi, kRankEdge}, input, horiz, movingLo, out);
+    appendIfViableResize({loEdge - edge, sLo, kRankEdge}, input, horiz, movingLo, out);
+    appendIfViableResize({hiEdge - edge, sHi, kRankEdge}, input, horiz, movingLo, out);
 
     const int sSize  = rectSize(sibling, horiz);
     const int target = movingLo ? hi - sSize : lo + sSize;
@@ -350,11 +361,13 @@ static void appendResizeCandidates(const UI::Snap::SnapInput& input,
   appendIfViableResize(
     {canvasEdge - edge, canvasEdge, kRankEdge, 0, true}, input, horiz, movingLo, out);
 
-  for (int eighth = 1; eighth < 8; ++eighth) {
-    const int fracSize = extent * eighth / 8;
-    const int target   = movingLo ? hi - fracSize : lo + fracSize;
-    appendIfViableResize(
-      {target - edge, target, kRankFraction, 0, true}, input, horiz, movingLo, out);
+  for (const int den : kFractionDenominators) {
+    for (int num = 1; num < den; ++num) {
+      const int fracSize = extent * num / den;
+      const int target   = movingLo ? hi - fracSize : lo + fracSize;
+      appendIfViableResize(
+        {target - edge, target, kRankFraction, 0, true}, input, horiz, movingLo, out);
+    }
   }
 }
 
@@ -420,8 +433,8 @@ UI::Snap::SnapResult UI::Snap::resolveMoveSnap(const SnapInput& input)
 
   QVector<Candidate> horizontal;
   QVector<Candidate> vertical;
-  horizontal.reserve(input.siblings.size() * 5 + 24);
-  vertical.reserve(input.siblings.size() * 5 + 24);
+  horizontal.reserve(input.siblings.size() * 5 + 88);
+  vertical.reserve(input.siblings.size() * 5 + 88);
 
   appendAlignCandidates(input, true, horizontal);
   appendAlignCandidates(input, false, vertical);
@@ -479,7 +492,7 @@ UI::Snap::SnapResult UI::Snap::resolveResizeSnap(const SnapInput& input, const M
   const bool vertMoving  = edges.top || edges.bottom;
 
   QVector<Candidate> candidates;
-  candidates.reserve(input.siblings.size() * 3 + 8);
+  candidates.reserve(input.siblings.size() * 3 + 32);
 
   if (horizMoving) {
     appendResizeCandidates(input, true, edges.left, candidates);

@@ -559,10 +559,6 @@ Popup {
           taskBar.windowManager.autoLayoutEnabled = checked
       }
 
-      //
-      // The Settings alias overwrites `checked` on restore, destroying the binding
-      // above, so re-sync explicitly when the live auto-layout state changes.
-      //
       Connections {
         target: taskBar.windowManager
         function onAutoLayoutEnabledChanged() {
@@ -600,16 +596,19 @@ Popup {
         }
       }
 
-      //
-      // The internal toggle overwrites `checked` on click, destroying the binding
-      // above, so re-sync explicitly when the freeze state changes elsewhere.
-      //
       Connections {
         target: Cpp_UI_Dashboard
         function onFrozenChanged() {
           _freezeBt.checked = Cpp_UI_Dashboard.frozen
         }
       }
+    }
+
+    Rectangle {
+      opacity: 0.5
+      implicitHeight: 1
+      Layout.fillWidth: true
+      color: Cpp_ThemeManager.colors["start_menu_text"]
     }
 
     Widgets.MenuButton {

@@ -120,11 +120,6 @@ void DataModel::DatasetTransformEditor::buildEditorWidgets()
 
   m_applyButton  = new QPushButton(tr("Apply"), this);
   m_cancelButton = new QPushButton(tr("Cancel"), this);
-
-  m_testButton->setIcon(QIcon(QStringLiteral(":/icons/buttons/test.svg")));
-  m_clearButton->setIcon(QIcon(QStringLiteral(":/icons/buttons/clear.svg")));
-  m_applyButton->setIcon(QIcon(QStringLiteral(":/icons/buttons/apply.svg")));
-  m_cancelButton->setIcon(QIcon(QStringLiteral(":/icons/buttons/close.svg")));
 }
 
 /**
@@ -163,8 +158,8 @@ QHBoxLayout* DataModel::DatasetTransformEditor::buildButtonLayout()
 {
   auto* buttonLayout = new QHBoxLayout();
   buttonLayout->addStretch();
-  buttonLayout->addWidget(m_applyButton);
   buttonLayout->addWidget(m_cancelButton);
+  buttonLayout->addWidget(m_applyButton);
   return buttonLayout;
 }
 
@@ -469,7 +464,7 @@ void DataModel::DatasetTransformEditor::onLanguageChanged(int index)
 }
 
 /**
- * @brief Updates the editor colour scheme to match the active theme.
+ * @brief Reapplies the editor colour scheme and re-tints the button icons for the active theme.
  */
 void DataModel::DatasetTransformEditor::onThemeChanged()
 {
@@ -484,6 +479,12 @@ void DataModel::DatasetTransformEditor::onThemeChanged()
     m_editor->setSyntaxStyle(&m_style);
     file.close();
   }
+
+  const QColor c = m_themeManager.getColor(QStringLiteral("button_text"));
+  m_testButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/test.svg", c));
+  m_clearButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/clear.svg", c));
+  m_applyButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/apply.svg", c));
+  m_cancelButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/close.svg", c));
 }
 
 //--------------------------------------------------------------------------------------------------

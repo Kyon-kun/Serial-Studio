@@ -20,6 +20,7 @@
 #include "Misc/CommonFonts.h"
 #include "Misc/ThemeManager.h"
 #include "Misc/Translator.h"
+#include "Misc/Utilities.h"
 #include "SerialStudio.h"
 #ifdef BUILD_COMMERCIAL
 #  include "UI/Widgets/Output/Base.h"
@@ -59,8 +60,6 @@ DataModel::TransmitTestDialog::TransmitTestDialog(QWidget* parent)
   auto* outputLayout = new QVBoxLayout(m_outputGroup);
 
   m_evaluateButton->setDefault(true);
-  m_clearButton->setIcon(QIcon(":/icons/buttons/clear.svg"));
-  m_evaluateButton->setIcon(QIcon(":/icons/buttons/media-play.svg"));
 
   m_rawOutput->setReadOnly(true);
   m_hexOutput->setReadOnly(true);
@@ -213,7 +212,7 @@ void DataModel::TransmitTestDialog::evaluate()
 //--------------------------------------------------------------------------------------------------
 
 /**
- * @brief Updates the dialog palette when the application theme changes.
+ * @brief Updates the dialog palette and re-tints the button icons when the theme changes.
  */
 void DataModel::TransmitTestDialog::onThemeChanged()
 {
@@ -228,6 +227,10 @@ void DataModel::TransmitTestDialog::onThemeChanged()
 
   m_inputGroup->setStyleSheet(groupBoxStyle);
   m_outputGroup->setStyleSheet(groupBoxStyle);
+
+  const QColor c = m_themeManager.getColor(QStringLiteral("button_text"));
+  m_clearButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/clear.svg", c));
+  m_evaluateButton->setIcon(Misc::Utilities::coloredSvgIcon(":/icons/buttons/media-play.svg", c));
 }
 
 /**

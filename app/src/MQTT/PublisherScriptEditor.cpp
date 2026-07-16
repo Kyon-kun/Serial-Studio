@@ -141,8 +141,8 @@ QHBoxLayout* MQTT::PublisherScriptEditor::buildButtonLayout()
 {
   auto* buttonLayout = new QHBoxLayout();
   buttonLayout->addStretch();
-  buttonLayout->addWidget(m_applyButton);
   buttonLayout->addWidget(m_cancelButton);
+  buttonLayout->addWidget(m_applyButton);
   return buttonLayout;
 }
 
