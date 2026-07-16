@@ -318,7 +318,7 @@ bool UI::Dashboard::frozen() const
   static auto& appState     = AppState::instance();
   static auto& projectModel = DataModel::ProjectModel::instance();
   return projectModel.frozen() && SerialStudio::proWidgetsEnabled()
-         && appState.operationMode() == SerialStudio::ProjectFile;
+      && appState.operationMode() == SerialStudio::ProjectFile;
 }
 
 /**
