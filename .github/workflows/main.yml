@@ -70,8 +70,7 @@ jobs:
           version: ${{ env.QT_VERSION }}
           arch: ${{ matrix.os == 'windows-2022' && 'win64_msvc2022_64' || '' }}
           modules: >
-            qtcore5compat
-            qtsvg
+            qt5compat
             qtserialport
             qtconnectivity
             qtquick3d
