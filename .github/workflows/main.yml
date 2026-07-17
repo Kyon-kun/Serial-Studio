@@ -59,10 +59,16 @@ jobs:
       # ---- Qt installation (all platforms) ----
       # This action exports Qt6_DIR / QT_ROOT_DIR and adds Qt to
       # CMAKE_PREFIX_PATH automatically, so no manual path wiring is needed.
+      # NOTE: on Windows, Qt6 6.8.0+ ships built against MSVC 2022, but the
+      # action's arch auto-detection doesn't always pick that up. If it's
+      # left blank, aqtinstall can fail to resolve a package set and exits
+      # with the bare "python.exe failed with exit code 1" error. Setting
+      # arch explicitly on Windows avoids that.
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
+          arch: ${{ matrix.os == 'windows-2022' && 'win64_msvc2022_64' || '' }}
           modules: >
             qtcore5compat
             qtsvg
