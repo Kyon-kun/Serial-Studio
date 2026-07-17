@@ -77,6 +77,7 @@ jobs:
             qtimageformats
             qtshadertools
             qtpositioning
+            qtgraphs
           cache: true
 
       - name: Configure (CMake, Ninja single-config generator)
@@ -95,6 +96,11 @@ jobs:
           path: |
             build/**/*.exe
             build/**/*.AppImage
+            build/**/*.app
+            build/**/serial-studio*
+            !build/**/*.o
+          if-no-files-found: ignore
+          build/**/*.AppImage
             build/**/*.app
             build/**/serial-studio*
             !build/**/*.o
