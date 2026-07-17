@@ -1,0 +1,28 @@
+name: Build C++ Windows App
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure CMake
+      # This sets up the build directory and checks for prerequisites
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build Project
+      # This compiles the source files using MSVC on the cloud runner
+      run: cmake --build build --config Release
+
+    - name: Upload Executable Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Compiled-Windows-Cpp-App
+        # Finds any built .exe inside the build output folder
+        path: |
+          build/**/*.exe
+          build/**/*.dll
+          
