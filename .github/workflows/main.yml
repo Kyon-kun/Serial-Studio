@@ -100,9 +100,3 @@ jobs:
             build/**/serial-studio*
             !build/**/*.o
           if-no-files-found: ignore
-          build/**/*.AppImage
-            build/**/*.app
-            build/**/serial-studio*
-            !build/**/*.o
-          if-no-files-found: ignore
-          
