@@ -66,16 +66,7 @@ jobs:
         with:
           version: ${{ env.QT_VERSION }}
           arch: ${{ matrix.os == 'windows-2022' && 'win64_msvc2022_64' || '' }}
-          modules: >
-            qt5compat
-            qtserialport
-            qtconnectivity
-            qtquick3d
-            qtimageformats
-            qtshadertools
-            qtpositioning
-            qtgraphs
-            qtwebengine
+          modules: all
           cache: true
 
       - name: Configure (CMake, Ninja single-config generator)
