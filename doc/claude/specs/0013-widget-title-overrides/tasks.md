@@ -188,10 +188,10 @@ updated: 2026-07-16
   external-window button is removed and `externControlWidth` → `menuControlWidth`, updated
   at the three WindowManager.cpp drag-region reads). WidgetDelegate opens a caption menu:
   "Rename Widget…" (`rename.svg` → `promptRenameWidget`), "Freeze Title" submenu
-  (`freeze.svg`) with Title Bar / Painted Title (instruments only) / Hidden
-  (`visible.svg`/`color.svg`/`invisible.svg`), and "Open in External Window"
-  (`expand.svg`, emits the delegate-level `externalWindowClicked` DashboardCanvas already
-  handles). All icons are mono icons from `app/rcc/icons/buttons`.
+  (`freeze.svg`) with icon-free checkable options Title Bar / Painted Title (instruments
+  only) / Hidden, and "Open in External Window" (`expand.svg`, emits the delegate-level
+  `externalWindowClicked` DashboardCanvas already handles). Menu icons are 16px mono
+  icons from `app/rcc/icons/buttons`.
 - **Verify:** `code-verify.py --check`; maintainer confirms the menu opens (AC6 setup).
 - **Deps:** T7
 - [x] done

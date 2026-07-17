@@ -170,10 +170,9 @@ says no new tier gate; the freeze *header* only renders inside Pro-gated freeze 
   mode drives `frozenHeaderVisible`; exposed on `windowRoot` for instruments. The caption's
   left-edge button becomes a menu button (`menu.svg`, replacing the external-window button;
   MiniWindow emits `menuClicked`): "Rename Widget…" (`rename.svg`), a "Freeze Title"
-  submenu (`freeze.svg`) with Title Bar (`visible.svg`) / Painted Title (`color.svg`,
-  instruments only) / Hidden (`invisible.svg`), and "Open in External Window"
-  (`expand.svg`, absorbing the removed button). *(Revised 2026-07-16 from the original
-  hidden right-click menu.)*
+  submenu (`freeze.svg`) with icon-free checkable options Title Bar / Painted Title
+  (instruments only) / Hidden, and "Open in External Window" (`expand.svg`, absorbing
+  the removed button). *(Revised 2026-07-16 from the original hidden right-click menu.)*
 - **Instruments (Bar/Gauge/Meter QML):** painted `WidgetTitleBar` strips and in-face title
   labels add a freeze gate (`!windowRoot.frozen || effectiveMode === "painted"`); text
   prefers `windowRoot.title`. Normal-mode appearance is untouched.

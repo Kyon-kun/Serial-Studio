@@ -114,39 +114,30 @@ Widgets.MiniWindow {
       icon.source: "qrc:/icons/buttons/freeze.svg"
 
       MenuItem {
-        icon.width: 16
         checkable: true
-        icon.height: 16
         text: qsTr("Title Bar")
         enabled: root.displayEditable
         checked: root.effectiveFreezeTitle === "bar"
-        icon.source: "qrc:/icons/buttons/visible.svg"
         onTriggered: Cpp_JSON_ProjectModel.setFreezeTitleMode(root.entityWidgetType,
                                                               root.entityUniqueId, "bar")
       }
 
       MenuItem {
-        icon.width: 16
         checkable: true
-        icon.height: 16
         text: qsTr("Painted Title")
         visible: root.paintsOwnTitle
         enabled: root.displayEditable
         height: visible ? implicitHeight : 0
-        icon.source: "qrc:/icons/buttons/color.svg"
         checked: root.effectiveFreezeTitle === "painted"
         onTriggered: Cpp_JSON_ProjectModel.setFreezeTitleMode(root.entityWidgetType,
                                                               root.entityUniqueId, "painted")
       }
 
       MenuItem {
-        icon.width: 16
         checkable: true
-        icon.height: 16
         text: qsTr("Hidden")
         enabled: root.displayEditable
         checked: root.effectiveFreezeTitle === "hidden"
-        icon.source: "qrc:/icons/buttons/invisible.svg"
         onTriggered: Cpp_JSON_ProjectModel.setFreezeTitleMode(root.entityWidgetType,
                                                               root.entityUniqueId, "hidden")
       }

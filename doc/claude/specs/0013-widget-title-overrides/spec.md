@@ -101,8 +101,9 @@ between a readable operator screen and a cluttered one.
 7. **R7 — On-widget editing.** Every dashboard widget window carries a visible menu
    button at the left edge of its caption (replacing the external-window button and the
    earlier hidden right-click menu). Its menu hosts rename, the freeze-title mode
-   options, and "Open in External Window" (absorbing the removed button), each entry
-   with a mono icon from `app/rcc/icons/buttons`. Edits persist to the project
+   options, and "Open in External Window" (absorbing the removed button); top-level
+   entries carry mono icons from `app/rcc/icons/buttons`, the checkable mode options
+   stay icon-free. Edits persist to the project
    identically to R6. *(Amended during implementation, 2026-07-16: discoverable button
    instead of right-click; pop-out moved into the menu.)*
 8. **R8 — Live update.** Changing an override or visibility flag updates every affected
