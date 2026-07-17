@@ -74,6 +74,8 @@ jobs:
             qtimageformats
             qtshadertools
             qtpositioning
+            qtgraphs
+            qtwebengine
           cache: true
 
       - name: Configure (CMake, Ninja single-config generator)
