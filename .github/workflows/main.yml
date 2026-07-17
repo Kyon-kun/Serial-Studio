@@ -1,0 +1,97 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  QT_VERSION: "6.9.0"
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: Linux
+          - os: macos-14
+            name: macOS
+          - os: windows-2022
+            name: Windows
+
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.name }})
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # ---- Linux system dependencies ----
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-24.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev build-essential ninja-build
+
+      # ---- macOS toolchain ----
+      - name: Install macOS dependencies
+        if: matrix.os == 'macos-14'
+        run: |
+          xcode-select --install 2>/dev/null || true
+          brew install ninja
+
+      # ---- Windows toolchain (MSVC dev shell so Ninja finds cl.exe) ----
+      - name: Set up MSVC (Windows)
+        if: matrix.os == 'windows-2022'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Ninja (Windows)
+        if: matrix.os == 'windows-2022'
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      # ---- Qt installation (all platforms) ----
+      # This action exports Qt6_DIR / QT_ROOT_DIR and adds Qt to
+      # CMAKE_PREFIX_PATH automatically, so no manual path wiring is needed.
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          modules: >
+            qtcore5compat
+            qtsvg
+            qtserialport
+            qtconnectivity
+            qtquick3d
+            qtimageformats
+            qtshadertools
+            qtpositioning
+          cache: true
+
+      - name: Configure (CMake, Ninja single-config generator)
+        run: >
+          cmake -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+          -DPRODUCTION_OPTIMIZATION=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SerialStudio-${{ matrix.name }}
+          path: |
+            build/**/*.exe
+            build/**/*.AppImage
+            build/**/*.app
+            build/**/serial-studio*
+            !build/**/*.o
+          if-no-files-found: ignore
+          
