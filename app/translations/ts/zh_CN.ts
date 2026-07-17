@@ -107,42 +107,42 @@ Every device action still requires your explicit per-call approval in the chat, 
         <translation>已达到本轮工具调用预算;不会再运行更多工具。</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1283"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>等待 %1 响应。在本地硬件上加载模型和处理提示可能需要一段时间...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2130"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 个操作失败</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2184"/>
         <source>Source list read-back failed</source>
         <translation>源列表读取失败</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2205"/>
         <source>Source %1 not found after update</source>
         <translation>更新后未找到源 %1</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2223"/>
         <source>Fields did not round-trip: %1</source>
         <translation>字段未能往返验证:%1</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2344"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>您已达到本轮工具调用预算。请勿请求更多工具。总结目前发现的内容,如果任务未完成,请说明剩余步骤以便用户告知您继续。</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3104"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>模型停止复现其上下文完整性行。长对话会静默降级;最近的回复可能不太可靠。</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3107"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>模型更改了其上下文完整性行(漂移片段:%1)。长对话会静默降级;最近的回复可能不太可靠。</translation>
     </message>
@@ -151,17 +151,17 @@ Every device action still requires your explicit per-call approval in the chat, 
         <translation type="vanished">工具调用预算已超限</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1124"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(模型返回了空响应。请尝试重新表述、切换到其他模型，或检查请求是否被提供商的安全过滤器拦截。)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1287"/>
         <source>Sending request to %1...</source>
         <translation>正在向 %1 发送请求…</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1305"/>
         <source>Provider returned no reply</source>
         <translation>提供商未返回回复</translation>
     </message>
@@ -2986,17 +2986,17 @@ Only enable this on trusted networks. Untrusted clients may read live data or se
         <translation>后备控件已激活。购买许可证以获得完整功能。</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="704"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="696"/>
         <source>Empty Workspace</source>
         <translation>空工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="718"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="710"/>
         <source>Use the search bar to find and add widgets, or right-click a widget in another workspace to add it here.</source>
         <translation>使用搜索栏查找并添加控件,或右键单击其他工作区中的控件以将其添加到此处。</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="733"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="725"/>
         <source>Search Widgets</source>
         <translation>搜索控件</translation>
     </message>
@@ -5014,22 +5014,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>此项目中定义的共享表</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="771"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="796"/>
         <source>Remove 1 widget reference whose target group or dataset no longer exists?</source>
         <translation>移除 1 个目标组或数据集已不存在的控件引用?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="772"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="797"/>
         <source>Remove %1 widget references whose target groups or datasets no longer exist?</source>
         <translation>移除 %1 个目标组或数据集已不存在的控件引用?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="777"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="802"/>
         <source>This will only affect workspace tile placement; no groups, datasets, or data are deleted.</source>
         <translation>此操作仅影响工作区磁贴布局;不会删除任何组、数据集或数据。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="780"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="805"/>
         <source>Clean Up Workspaces</source>
         <translation>清理工作区</translation>
     </message>
@@ -5686,60 +5686,70 @@ Add %4 dataset(s) using the template's defaults?</source>
 <context>
     <name>DataModel::ProjectModel</name>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="366"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="375"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="367"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="376"/>
         <source>Lock Project</source>
         <translation>锁定项目</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="367"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="368"/>
         <source>Choose a password to lock the project:</source>
         <translation>选择密码以锁定项目：</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="375"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="376"/>
         <source>Confirm the password:</source>
         <translation>确认密码：</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="380"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="381"/>
         <source>Passwords do not match</source>
         <translation>密码不匹配</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="381"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="382"/>
         <source>The two passwords you entered do not match. The project was not locked.</source>
         <translation>两次输入的密码不匹配。项目未锁定。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="415"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="416"/>
         <source>Unlock Project</source>
         <translation>解锁项目</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="416"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="417"/>
         <source>Enter the project password:</source>
         <translation>输入项目密码：</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="426"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="427"/>
         <source>Incorrect password</source>
         <translation>密码错误</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="427"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="428"/>
         <source>The password you entered does not match the one stored in the project file.</source>
         <translation>输入的密码与项目文件中存储的密码不匹配。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="458"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="459"/>
         <source>New Project</source>
         <translation>新建项目</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="511"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="512"/>
         <source>Samples</source>
         <translation>采样</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1107"/>
+        <source>Rename Widget</source>
+        <translation>重命名控件</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1108"/>
+        <source>Display title (empty restores the original):</source>
+        <translation>显示标题(留空则恢复原始标题):</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectModelSources.cpp" line="73"/>
@@ -5771,60 +5781,60 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>此项目中有未保存的修改!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="238"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="247"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="260"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="239"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="248"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="261"/>
         <source>Project error</source>
         <translation>项目错误</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="238"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="239"/>
         <source>Project title cannot be empty!</source>
         <translation>项目标题不能为空!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="247"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="248"/>
         <source>You need to add at least one group!</source>
         <translation>至少需要添加一个组!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="260"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="261"/>
         <source>You need to add at least one dataset!</source>
         <translation>至少需要添加一个数据集!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="307"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="308"/>
         <source>Your project needs a title</source>
         <translation>项目需要标题</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="309"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="310"/>
         <source>Add a group to get started</source>
         <translation>添加组以开始</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="311"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="312"/>
         <source>Add a dataset to a group</source>
         <translation>向组添加数据集</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="325"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="326"/>
         <source>Open the Project view at the top of the tree and enter a name. You can rename the project at any time.</source>
         <translation>打开树顶部的项目视图并输入名称。可随时重命名项目。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="328"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="329"/>
         <source>Groups organize datasets into dashboard widgets. Use the Group button in the toolbar above to create one, then add datasets to it.</source>
         <translation>组将数据集组织到仪表板小部件中。使用上方工具栏中的"组"按钮创建一个,然后向其添加数据集。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="332"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="333"/>
         <source>Datasets are the values that appear on the dashboard. Select a group in the tree and use the Dataset button in the toolbar to add one.</source>
         <translation>数据集是显示在仪表板上的值。在树中选择一个组，然后使用工具栏中的"数据集"按钮添加数据集。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="510"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="559"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="511"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="560"/>
         <source>Time</source>
         <translation>时间</translation>
     </message>
@@ -5844,20 +5854,20 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>保存 Serial Studio 项目</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Serial Studio 项目文件 (*.ssproj)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1364"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>未命名项目</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1214"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1382"/>
         <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="549"/>
         <source>Device A</source>
         <translation>设备 A</translation>
@@ -5903,22 +5913,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>此项目包含多个数据源。仅加载了第一个源。使用多源项目需要 Serial Studio Pro 许可证。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="846"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="847"/>
         <source>Workspace IDs remapped on load</source>
         <translation>工作区 ID 已在加载时重新映射</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="847"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="848"/>
         <source>%1 custom workspace ID(s) overlapped the new reserved auto range and were moved into the user range. Save the project to make the remap permanent.</source>
         <translation>%1 个自定义工作区 ID 与新的保留自动范围重叠，已移动到用户范围。保存项目以使重新映射生效。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1048"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1049"/>
         <source>Legacy frame parser function updated</source>
         <translation>旧版帧解析器函数已更新</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1049"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1050"/>
         <source>Your project used a legacy frame parser function with a 'separator' argument. It has been automatically migrated to the new format.</source>
         <translation>您的项目使用了带有"separator"参数的旧版帧解析器函数。已自动迁移到新格式。</translation>
     </message>
@@ -6107,9 +6117,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -6132,10 +6142,12 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>新建共享表</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1586"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1754"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1778"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1805"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1824"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -6148,8 +6160,6 @@ Add %4 dataset(s) using the template's defaults?</source>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>名称:</translation>
     </message>
@@ -6159,22 +6169,22 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>重命名表</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1586"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1754"/>
         <source>Rename Group</source>
         <translation>重命名组</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1778"/>
         <source>Rename Dataset</source>
         <translation>重命名数据集</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1805"/>
         <source>Rename Data Source</source>
         <translation>重命名数据源</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1824"/>
         <source>Rename Action</source>
         <translation>重命名操作</translation>
     </message>
@@ -6189,10 +6199,10 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>重命名寄存器</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2284"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2284"/>
         <source>This action cannot be undone.</source>
         <translation>此操作无法撤销。</translation>
     </message>
@@ -6202,9 +6212,9 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>这将删除 %1 个寄存器以及表格。此操作无法撤销。</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>删除"%1"？</translation>
     </message>
@@ -6235,8 +6245,8 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>导入表格</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>新建工作区</translation>
     </message>
@@ -6329,28 +6339,28 @@ Add %4 dataset(s) using the template's defaults?</source>
         <translation>删除工作区</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="491"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="494"/>
         <source>Project file removed from disk</source>
         <translation>项目文件已从磁盘中移除</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="492"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="495"/>
         <source>%1 was deleted or renamed by another program. Save the project to recreate it.</source>
         <translation>%1 已被其他程序删除或重命名。保存项目以重新创建。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="514"/>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="535"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="517"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="538"/>
         <source>Project file changed on disk</source>
         <translation>磁盘上的项目文件已更改</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="515"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="518"/>
         <source>%1 was modified by another program. The in-memory project was kept; reopen the file to load the external changes.</source>
         <translation>%1 已被其他程序修改。内存中的项目已保留;重新打开文件以加载外部更改。</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="531"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="534"/>
         <source>The project file was modified by another program.
 
 Reload it and discard your unsaved changes?</source>
@@ -6359,7 +6369,7 @@ Reload it and discard your unsaved changes?</source>
 重新加载并放弃未保存的更改?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="533"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="536"/>
         <source>The project file was modified by another program.
 
 Reload it?</source>
@@ -6368,7 +6378,7 @@ Reload it?</source>
 重新加载?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="564"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="567"/>
         <source>File save error</source>
         <translation>文件保存错误</translation>
     </message>
@@ -12818,8 +12828,8 @@ Would you like to open the download page?</source>
         <translation>无法写入 Info.plist：%1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>此平台不支持 Windows 快捷方式写入器。</translation>
     </message>
@@ -12850,8 +12860,8 @@ Would you like to open the download page?</source>
         <translation>保存 .lnk 文件失败（HRESULT 0x%1）。</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>此平台不支持 macOS 快捷方式写入器。</translation>
     </message>
@@ -15543,8 +15553,8 @@ Click Refresh to update the list.</source>
         <translation>常规 I/O 错误</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>帧解析器已禁用</translation>
     </message>
@@ -15586,8 +15596,8 @@ Most likely cause: an infinite loop or extremely slow operation in the script bo
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>缺少解析函数</translation>
     </message>
@@ -15603,8 +15613,8 @@ function parse(frame) ... end</source>
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>解析函数运行时错误</translation>
     </message>
@@ -16616,57 +16626,57 @@ function parse(%1) { ... }
         <translation>绘图组件</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1069"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1070"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1071"/>
+        <location filename="../../src/SerialStudio.cpp" line="1080"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1072"/>
+        <location filename="../../src/SerialStudio.cpp" line="1081"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1073"/>
+        <location filename="../../src/SerialStudio.cpp" line="1082"/>
         <source>System</source>
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1074"/>
+        <location filename="../../src/SerialStudio.cpp" line="1083"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1075"/>
+        <location filename="../../src/SerialStudio.cpp" line="1084"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1076"/>
+        <location filename="../../src/SerialStudio.cpp" line="1085"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1077"/>
+        <location filename="../../src/SerialStudio.cpp" line="1086"/>
         <source>Shift-JIS</source>
         <translation>Shift-JIS</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1078"/>
+        <location filename="../../src/SerialStudio.cpp" line="1087"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1079"/>
+        <location filename="../../src/SerialStudio.cpp" line="1088"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -17461,12 +17471,12 @@ function parse(%1) { ... }
         <translation>界面刷新率 (Hz)</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1160"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1183"/>
         <source>Always Show Taskbar Buttons</source>
         <translation>始终显示任务栏按钮</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="974"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1024"/>
         <source>Show Actions Panel</source>
         <translation>显示操作面板</translation>
     </message>
@@ -17477,7 +17487,7 @@ function parse(%1) { ... }
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="85"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1308"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1331"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
@@ -17500,7 +17510,7 @@ function parse(%1) { ... }
         <translation>允许外部 API 连接</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="990"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1040"/>
         <source>Auto-Hide Toolbar</source>
         <translation>自动隐藏工具栏</translation>
     </message>
@@ -17633,109 +17643,114 @@ function parse(%1) { ... }
         <translation>布局</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1013"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="974"/>
         <source>Auto-Layout Margin</source>
         <translation>自动布局边距</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1038"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="999"/>
         <source>Auto-Layout Spacing</source>
         <translation>自动布局间距</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1070"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1063"/>
+        <source>Show Alignment Guides</source>
+        <translation>显示对齐参考线</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1093"/>
         <source>Video Export</source>
         <translation>视频导出</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1088"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1111"/>
         <source>Save Videos by Default</source>
         <translation>默认保存视频</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1139"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1162"/>
         <source>Behavior</source>
         <translation>行为</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1184"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1207"/>
         <source>Show Search Field</source>
         <translation>显示搜索字段</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1208"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1231"/>
         <source>Auto-hide Taskbar</source>
         <translation>自动隐藏任务栏</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1235"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1258"/>
         <source>Hide Delay (ms)</source>
         <translation>隐藏延迟 (ms)</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1268"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1291"/>
         <source>Pinned Buttons</source>
         <translation>固定按钮</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1286"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1309"/>
         <source>Drag a pinned button on the taskbar to reorder it.</source>
         <translation>在任务栏上拖动固定按钮以重新排序。</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1307"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1330"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1310"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1333"/>
         <source>Clock</source>
         <translation>时钟</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1311"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1334"/>
         <source>Stopwatch</source>
         <translation>秒表</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1312"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1335"/>
         <source>Pause / Resume</source>
         <translation>暂停 / 恢复</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1313"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1336"/>
         <source>File Transmission</source>
         <translation>文件传输</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1314"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1337"/>
         <source>AI Assistant</source>
         <translation>AI 助手</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1443"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1466"/>
         <source>Display</source>
         <translation>显示</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1458"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1481"/>
         <source>Display Mode</source>
         <translation>显示模式</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1526"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1549"/>
         <source>Scrollback Lines</source>
         <translation>回滚行数</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="866"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1480"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1503"/>
         <source>Font Family</source>
         <translation>字体系列</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="92"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1309"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1332"/>
         <source>Notifications</source>
         <translation>通知</translation>
     </message>
@@ -17751,7 +17766,7 @@ function parse(%1) { ... }
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="888"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1502"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1525"/>
         <source>Font Size</source>
         <translation>字体大小</translation>
     </message>
@@ -17764,97 +17779,97 @@ function parse(%1) { ... }
         <translation type="vanished">默认保存图像</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1551"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1574"/>
         <source>Show Timestamps</source>
         <translation>显示时间戳</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1579"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1602"/>
         <source>Data Transmission</source>
         <translation>数据传输</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1594"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1617"/>
         <source>Line Ending</source>
         <translation>行结束符</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1616"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1639"/>
         <source>Input Mode</source>
         <translation>输入模式</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1638"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1661"/>
         <source>Text Encoding</source>
         <translation>文本编码</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1660"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1683"/>
         <source>Checksum</source>
         <translation>校验和</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1682"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1705"/>
         <source>Echo Sent Data</source>
         <translation>回显发送数据</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1710"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1733"/>
         <source>Escape Codes</source>
         <translation>转义码</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1725"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1748"/>
         <source>VT100 Emulation</source>
         <translation>VT100 仿真</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1751"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1774"/>
         <source>ANSI Colors</source>
         <translation>ANSI 颜色</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1818"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1841"/>
         <source>Delivery</source>
         <translation>传递</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1833"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1856"/>
         <source>System Notifications</source>
         <translation>系统通知</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1854"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1877"/>
         <source>Show Warning/Critical events as OS desktop notifications when Serial Studio is not the foreground window.</source>
         <translation>当 Serial Studio 不在前台窗口时,将警告/严重事件显示为操作系统桌面通知。</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1864"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1887"/>
         <source>Application Logs</source>
         <translation>应用程序日志</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1879"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1902"/>
         <source>Route Warnings to Notifications</source>
         <translation>将警告路由至通知</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1900"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1923"/>
         <source>Off by default — Qt and QML emit warnings frequently and enabling this can drown out real alarms. Critical messages are always routed regardless of this setting.</source>
         <translation>默认关闭 — QT 和 QML 频繁发出警告，启用此选项可能会淹没真正的警报。无论此设置如何，关键消息始终会被路由。</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1919"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1942"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1960"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1999"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1968"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="2007"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
@@ -18696,7 +18711,7 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
 <context>
     <name>SubMenuCombo</name>
     <message>
-        <location filename="../../qml/Widgets/SubMenuCombo.qml" line="160"/>
+        <location filename="../../qml/Widgets/SubMenuCombo.qml" line="168"/>
         <source>No Data Available</source>
         <translation>无可用数据</translation>
     </message>
@@ -18792,18 +18807,18 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
         <translation>自动</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="781"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="787"/>
         <source>Auto</source>
         <translation>自动</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="955"/>
         <source>No</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="955"/>
         <source>Yes</source>
         <translation>是</translation>
     </message>
@@ -18929,62 +18944,72 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
         <translation>暂停</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="771"/>
+        <source>New Workspace…</source>
+        <translation>新建工作区…</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="797"/>
+        <source>No Workspaces Available</source>
+        <translation>无可用工作区</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="929"/>
         <source>Unfreeze Dashboard</source>
         <translation>解冻仪表板</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="978"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="930"/>
         <source>Freeze Dashboard</source>
         <translation>冻结仪表板</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="987"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT：已连接到 %1</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="988"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT：未连接</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1075"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1012"/>
         <source>MQTT Publisher</source>
         <translation>MQTT 发布者</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1085"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1022"/>
         <source>Status:</source>
         <translation>状态:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1030"/>
         <source>Connected</source>
         <translation>已连接</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1094"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1031"/>
         <source>Disconnected</source>
         <translation>已断开</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1101"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1038"/>
         <source>Broker:</source>
         <translation>代理:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1114"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
         <source>Mode:</source>
         <translation>模式:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1127"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1064"/>
         <source>Messages sent:</source>
         <translation>已发送消息:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1141"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1078"/>
         <source>Open MQTT Settings</source>
         <translation>打开 MQTT 设置</translation>
     </message>
@@ -18998,7 +19023,7 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
         <translation type="vanished">搜索控件…</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1187"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1124"/>
         <source>Remove from Workspace</source>
         <translation>从工作区移除</translation>
     </message>
@@ -19914,33 +19939,34 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
 <context>
     <name>UI::Dashboard</name>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1777"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1812"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1785"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1820"/>
         <source>Notifications</source>
         <translation>通知</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1793"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1828"/>
         <source>Clock</source>
         <translation>时钟</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1800"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1835"/>
         <source>Stopwatch</source>
         <translation>秒表</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1846"/>
-        <location filename="../../src/UI/Dashboard.cpp" line="1861"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1882"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1897"/>
         <source>%1 (Fallback)</source>
         <translation>%1(备用)</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1883"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1919"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1991"/>
         <source>LED Panel (%1)</source>
         <translation>LED 面板 (%1)</translation>
     </message>
@@ -19948,7 +19974,7 @@ Turn on Embed Project to bake the project into the shortcut, so it keeps working
 <context>
     <name>UI::DashboardWidget</name>
     <message>
-        <location filename="../../src/UI/DashboardWidget.cpp" line="164"/>
+        <location filename="../../src/UI/DashboardWidget.cpp" line="170"/>
         <source>Invalid</source>
         <translation>无效</translation>
     </message>
@@ -20599,7 +20625,37 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
         <translation type="vanished">从工作区移除</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="418"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="103"/>
+        <source>Rename Widget…</source>
+        <translation>重命名控件…</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="113"/>
+        <source>Freeze Title</source>
+        <translation>冻结标题</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="118"/>
+        <source>Title Bar</source>
+        <translation>标题栏</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="127"/>
+        <source>Painted Title</source>
+        <translation>绘制标题</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="138"/>
+        <source>Hidden</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="153"/>
+        <source>Open in External Window</source>
+        <translation>在外部窗口中打开</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="523"/>
         <source>Device Disconnected</source>
         <translation>设备已断开连接</translation>
     </message>
@@ -20958,96 +21014,123 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="144"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="145"/>
         <source>Add Widget</source>
         <translation>添加控件</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="146"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="147"/>
         <source>Add widget to workspace</source>
         <translation>添加控件到工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="157"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="158"/>
         <source>Move Up</source>
         <translation>上移</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="159"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="160"/>
         <source>Move workspace up</source>
         <translation>上移工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="169"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="170"/>
         <source>Move Down</source>
         <translation>下移</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="171"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="172"/>
         <source>Move workspace down</source>
         <translation>将工作区下移</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="181"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="182"/>
         <source>Change Icon</source>
         <translation>更改图标</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="183"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="184"/>
         <source>Change workspace icon</source>
         <translation>更改工作区图标</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="198"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="199"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="200"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="201"/>
         <source>Rename workspace</source>
         <translation>重命名工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="209"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="210"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="211"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="212"/>
         <source>Delete workspace</source>
         <translation>删除工作区</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="233"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="239"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="234"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="242"/>
         <source>Group</source>
         <translation>组</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="234"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="240"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="235"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="243"/>
         <source>Widget</source>
         <translation>控件</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="235"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="241"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="236"/>
+        <source>Display Title</source>
+        <translation>显示标题</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="237"/>
+        <source>Freeze Title</source>
+        <translation>冻结标题</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="238"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="244"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="285"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="323"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="288"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="386"/>
         <source>(unknown)</source>
         <translation>(未知)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="303"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="306"/>
         <source>(group widget)</source>
         <translation>(组控件)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="353"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="362"/>
+        <source>Title Bar</source>
+        <translation>标题栏</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <source>Painted Title</source>
+        <translation>绘制标题</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="362"/>
+        <source>Hidden</source>
+        <translation>隐藏</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="416"/>
         <source>Remove widget from workspace</source>
         <translation>从工作区移除组件</translation>
     </message>
@@ -21056,7 +21139,7 @@ I understand that when it ends, I'll need to buy a license or build the GPLv3 ve
         <translation type="vanished">从工作区移除</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="373"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="436"/>
         <source>No widgets in this workspace.</source>
         <translation>此工作区中无组件。</translation>
     </message>

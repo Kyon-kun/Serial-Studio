@@ -107,42 +107,42 @@ Elke apparaatactie vereist nog steeds je expliciete goedkeuring per aanroep in d
         <translation>Budgetlimiet voor tool-aanroepen bereikt voor deze beurt; er worden geen verdere tools uitgevoerd.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1262"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1283"/>
         <source>Waiting for %1 to respond. Loading the model and processing the prompt can take a while on local hardware...</source>
         <translation>Wachten op reactie van %1. Het laden van het model en verwerken van de prompt kan even duren op lokale hardware...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2101"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2130"/>
         <source>%1 operation(s) failed</source>
         <translation>%1 operatie(s) mislukt</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2155"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2184"/>
         <source>Source list read-back failed</source>
         <translation>Lezen van bronlijst mislukt</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2176"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2205"/>
         <source>Source %1 not found after update</source>
         <translation>Bron %1 niet gevonden na update</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2194"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2223"/>
         <source>Fields did not round-trip: %1</source>
         <translation>Velden kwamen niet terug: %1</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="2312"/>
+        <location filename="../../src/AI/Conversation.cpp" line="2344"/>
         <source>You have reached the tool-call budget for this turn. Do not request more tools. Summarize what you found so far, and if the task is incomplete, say which steps remain so the user can tell you to continue.</source>
         <translation>U heeft de budgetlimiet voor tool-aanroepen voor deze beurt bereikt. Vraag geen verdere tools aan. Vat samen wat u tot nu toe heeft gevonden, en als de taak onvolledig is, geef dan aan welke stappen resteren zodat de gebruiker u kan vragen door te gaan.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="3045"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3104"/>
         <source>The model stopped reproducing its context-integrity line. Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Het model is gestopt met reproduceren van zijn context-integriteitslijn. Lange gesprekken degraderen ongemerkt; recente antwoorden kunnen minder betrouwbaar zijn.</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="3048"/>
+        <location filename="../../src/AI/Conversation.cpp" line="3107"/>
         <source>The model altered its context-integrity line (drifted segment: %1). Long conversations degrade silently; recent replies may be less reliable.</source>
         <translation>Het model heeft zijn context-integriteitslijn gewijzigd (gedrift segment: %1). Lange gesprekken degraderen ongemerkt; recente antwoorden kunnen minder betrouwbaar zijn.</translation>
     </message>
@@ -151,17 +151,17 @@ Elke apparaatactie vereist nog steeds je expliciete goedkeuring per aanroep in d
         <translation type="vanished">Budget voor tool-aanroepen overschreden</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1103"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1124"/>
         <source>(The model returned an empty response. Try rephrasing, switching to a different model, or checking that the request is allowed by the provider's safety filters.)</source>
         <translation>(Het model heeft een lege respons geretourneerd. Probeer de vraag anders te formuleren, schakel over naar een ander model of controleer of het verzoek is toegestaan door de veiligheidsfilters van de provider.)</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1266"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1287"/>
         <source>Sending request to %1...</source>
         <translation>Verzoek wordt verzonden naar %1...</translation>
     </message>
     <message>
-        <location filename="../../src/AI/Conversation.cpp" line="1284"/>
+        <location filename="../../src/AI/Conversation.cpp" line="1305"/>
         <source>Provider returned no reply</source>
         <translation>Provider heeft geen antwoord geretourneerd</translation>
     </message>
@@ -2986,17 +2986,17 @@ Schakel dit alleen in op vertrouwde netwerken. Niet-vertrouwde clients kunnen li
         <translation>Fallback-widgets zijn actief. Koop een licentie voor volledige functionaliteit.</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="704"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="696"/>
         <source>Empty Workspace</source>
         <translation>Lege Werkruimte</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="718"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="710"/>
         <source>Use the search bar to find and add widgets, or right-click a widget in another workspace to add it here.</source>
         <translation>Gebruik de zoekbalk om widgets te vinden en toe te voegen, of klik met de rechtermuisknop op een widget in een andere werkruimte om deze hier toe te voegen.</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="733"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/DashboardCanvas.qml" line="725"/>
         <source>Search Widgets</source>
         <translation>Widgets Zoeken</translation>
     </message>
@@ -5014,22 +5014,22 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Gedeelde tabel gedefinieerd in dit project</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="771"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="796"/>
         <source>Remove 1 widget reference whose target group or dataset no longer exists?</source>
         <translation>1 widgetreferentie verwijderen waarvan de doelgroep of dataset niet meer bestaat?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="772"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="797"/>
         <source>Remove %1 widget references whose target groups or datasets no longer exist?</source>
         <translation>%1 widgetreferenties verwijderen waarvan de doelgroepen of datasets niet meer bestaan?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="777"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="802"/>
         <source>This will only affect workspace tile placement; no groups, datasets, or data are deleted.</source>
         <translation>Dit heeft alleen invloed op de plaatsing van werkruimtetegels; geen groepen, datasets of gegevens worden verwijderd.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="780"/>
+        <location filename="../../src/DataModel/Project/ProjectEditorSummaries.cpp" line="805"/>
         <source>Clean Up Workspaces</source>
         <translation>Werkruimten Opschonen</translation>
     </message>
@@ -5686,60 +5686,70 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
 <context>
     <name>DataModel::ProjectModel</name>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="366"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="375"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="367"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="376"/>
         <source>Lock Project</source>
         <translation>Project Vergrendelen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="367"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="368"/>
         <source>Choose a password to lock the project:</source>
         <translation>Kies een wachtwoord om het project te vergrendelen:</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="375"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="376"/>
         <source>Confirm the password:</source>
         <translation>Bevestig het wachtwoord:</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="380"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="381"/>
         <source>Passwords do not match</source>
         <translation>Wachtwoorden komen niet overeen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="381"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="382"/>
         <source>The two passwords you entered do not match. The project was not locked.</source>
         <translation>De twee ingevoerde wachtwoorden komen niet overeen. Het project is niet vergrendeld.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="415"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="416"/>
         <source>Unlock Project</source>
         <translation>Project Ontgrendelen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="416"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="417"/>
         <source>Enter the project password:</source>
         <translation>Voer het projectwachtwoord in:</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="426"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="427"/>
         <source>Incorrect password</source>
         <translation>Onjuist wachtwoord</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="427"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="428"/>
         <source>The password you entered does not match the one stored in the project file.</source>
         <translation>Het ingevoerde wachtwoord komt niet overeen met het wachtwoord in het projectbestand.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="458"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="459"/>
         <source>New Project</source>
         <translation>Nieuw Project</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="511"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="512"/>
         <source>Samples</source>
         <translation>Samples</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1107"/>
+        <source>Rename Widget</source>
+        <translation>Widget Hernoemen</translation>
+    </message>
+    <message>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1108"/>
+        <source>Display title (empty restores the original):</source>
+        <translation>Weergavetitel (leeg herstelt het origineel):</translation>
     </message>
     <message>
         <location filename="../../src/DataModel/Project/ProjectModelSources.cpp" line="73"/>
@@ -5771,60 +5781,60 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Dit project bevat niet-opgeslagen wijzigingen!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="238"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="247"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="260"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="239"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="248"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="261"/>
         <source>Project error</source>
         <translation>Projectfout</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="238"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="239"/>
         <source>Project title cannot be empty!</source>
         <translation>Projecttitel mag niet leeg zijn!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="247"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="248"/>
         <source>You need to add at least one group!</source>
         <translation>Voeg minimaal één groep toe!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="260"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="261"/>
         <source>You need to add at least one dataset!</source>
         <translation>Voeg minimaal één dataset toe!</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="307"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="308"/>
         <source>Your project needs a title</source>
         <translation>Je project heeft een titel nodig</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="309"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="310"/>
         <source>Add a group to get started</source>
         <translation>Voeg een groep toe om te beginnen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="311"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="312"/>
         <source>Add a dataset to a group</source>
         <translation>Voeg een dataset toe aan een groep</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="325"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="326"/>
         <source>Open the Project view at the top of the tree and enter a name. You can rename the project at any time.</source>
         <translation>Open de Projectweergave bovenaan de boom en voer een naam in. Je kunt het project op elk moment hernoemen.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="328"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="329"/>
         <source>Groups organize datasets into dashboard widgets. Use the Group button in the toolbar above to create one, then add datasets to it.</source>
         <translation>Groepen organiseren datasets in dashboardwidgets. Gebruik de Groep-knop in de werkbalk hierboven om er een te maken en voeg er vervolgens datasets aan toe.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="332"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="333"/>
         <source>Datasets are the values that appear on the dashboard. Select a group in the tree and use the Dataset button in the toolbar to add one.</source>
         <translation>Datasets zijn de waarden die op het dashboard verschijnen. Selecteer een groep in de boom en gebruik de Dataset-knop in de werkbalk om er een toe te voegen.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="510"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="559"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="511"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="560"/>
         <source>Time</source>
         <translation>Tijd</translation>
     </message>
@@ -5844,20 +5854,20 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Serial Studio-project Opslaan</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="159"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="402"/>
         <source>Serial Studio Project Files (*.ssproj)</source>
         <translation>Serial Studio-projectbestanden (*.ssproj)</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1197"/>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1364"/>
         <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="180"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="393"/>
         <source>Untitled Project</source>
         <translation>Naamloos Project</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1214"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1382"/>
         <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="549"/>
         <source>Device A</source>
         <translation>Apparaat A</translation>
@@ -5903,22 +5913,22 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Dit project bevat meerdere gegevensbronnen. Alleen de eerste bron is geladen. Een Serial Studio Pro-licentie is vereist om multi-source-projecten te gebruiken.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="846"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="847"/>
         <source>Workspace IDs remapped on load</source>
         <translation>Workspace-ID's opnieuw toegewezen bij het laden</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="847"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="848"/>
         <source>%1 custom workspace ID(s) overlapped the new reserved auto range and were moved into the user range. Save the project to make the remap permanent.</source>
         <translation>%1 aangepaste werkruimte-ID's overlapten met het nieuwe gereserveerde automatische bereik en zijn verplaatst naar het gebruikersbereik. Sla het project op om de herindeling permanent te maken.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1048"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1049"/>
         <source>Legacy frame parser function updated</source>
         <translation>Verouderde frame-parserfunctie bijgewerkt</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1049"/>
+        <location filename="../../src/DataModel/Project/ProjectModelLoading.cpp" line="1050"/>
         <source>Your project used a legacy frame parser function with a 'separator' argument. It has been automatically migrated to the new format.</source>
         <translation>Je project gebruikte een verouderde frame-parserfunctie met een 'separator'-argument. Deze is automatisch gemigreerd naar het nieuwe formaat.</translation>
     </message>
@@ -6107,9 +6117,9 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="231"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>Workspace</source>
         <translation>Werkruimte</translation>
     </message>
@@ -6132,10 +6142,12 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Nieuwe Gedeelde Tabel</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1586"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1754"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1778"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1805"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1824"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="421"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="464"/>
@@ -6148,8 +6160,6 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="373"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="393"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="415"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="592"/>
         <source>Name:</source>
         <translation>Naam:</translation>
     </message>
@@ -6159,22 +6169,22 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Tabel Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1586"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1754"/>
         <source>Rename Group</source>
         <translation>Groep Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1610"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1778"/>
         <source>Rename Dataset</source>
         <translation>Dataset Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1637"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1805"/>
         <source>Rename Data Source</source>
         <translation>Gegevensbron Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/ProjectModel.cpp" line="1656"/>
+        <location filename="../../src/DataModel/ProjectModel.cpp" line="1824"/>
         <source>Rename Action</source>
         <translation>Actie Hernoemen</translation>
     </message>
@@ -6189,10 +6199,10 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Register Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2284"/>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="449"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="474"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1191"/>
+        <location filename="../../src/DataModel/Project/ProjectModelCrud.cpp" line="2284"/>
         <source>This action cannot be undone.</source>
         <translation>Deze actie kan niet ongedaan worden gemaakt.</translation>
     </message>
@@ -6202,9 +6212,9 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Dit verwijdert %1 register(s) samen met de tabel. Deze actie kan niet ongedaan worden gemaakt.</translation>
     </message>
     <message>
+        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="453"/>
         <location filename="../../src/DataModel/Project/ProjectModelTables.cpp" line="473"/>
-        <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="1190"/>
         <source>Delete "%1"?</source>
         <translation>"%1" Verwijderen?</translation>
     </message>
@@ -6235,8 +6245,8 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Tabel Importeren</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <location filename="../../src/DataModel/Project/ProjectModelWorkspaces.cpp" line="569"/>
+        <location filename="../../src/DataModel/Project/ProjectModelFolders.cpp" line="440"/>
         <source>New Workspace</source>
         <translation>Nieuwe Werkruimte</translation>
     </message>
@@ -6329,28 +6339,28 @@ Voeg %4 dataset(s) toe met de standaardwaarden van de sjabloon?</translation>
         <translation>Werkruimte Verwijderen</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="491"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="494"/>
         <source>Project file removed from disk</source>
         <translation>Projectbestand verwijderd van schijf</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="492"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="495"/>
         <source>%1 was deleted or renamed by another program. Save the project to recreate it.</source>
         <translation>%1 is verwijderd of hernoemd door een ander programma. Sla het project op om het opnieuw aan te maken.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="514"/>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="535"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="517"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="538"/>
         <source>Project file changed on disk</source>
         <translation>Projectbestand gewijzigd op schijf</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="515"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="518"/>
         <source>%1 was modified by another program. The in-memory project was kept; reopen the file to load the external changes.</source>
         <translation>%1 is gewijzigd door een ander programma. Het project in het geheugen is behouden; heropen het bestand om de externe wijzigingen te laden.</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="531"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="534"/>
         <source>The project file was modified by another program.
 
 Reload it and discard your unsaved changes?</source>
@@ -6359,7 +6369,7 @@ Reload it and discard your unsaved changes?</source>
 Opnieuw laden en niet-opgeslagen wijzigingen verwerpen?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="533"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="536"/>
         <source>The project file was modified by another program.
 
 Reload it?</source>
@@ -6368,7 +6378,7 @@ Reload it?</source>
 Opnieuw laden?</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="564"/>
+        <location filename="../../src/DataModel/Project/ProjectModelPersistence.cpp" line="567"/>
         <source>File save error</source>
         <translation>Fout bij opslaan bestand</translation>
     </message>
@@ -12818,8 +12828,8 @@ Wilt u de downloadpagina openen?</translation>
         <translation>Kon Info.plist niet schrijven: %1</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <location filename="../../src/Misc/ShortcutGenerator_macOS.cpp" line="271"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="140"/>
         <source>Windows shortcut writer is not available on this platform.</source>
         <translation>Windows-snelkoppelingsschrijver is niet beschikbaar op dit platform.</translation>
     </message>
@@ -12850,8 +12860,8 @@ Wilt u de downloadpagina openen?</translation>
         <translation>Opslaan van .lnk-bestand mislukt (HRESULT 0x%1).</translation>
     </message>
     <message>
-        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <location filename="../../src/Misc/ShortcutGenerator_Windows.cpp" line="185"/>
+        <location filename="../../src/Misc/ShortcutGenerator_Linux.cpp" line="154"/>
         <source>macOS shortcut writer is not available on this platform.</source>
         <translation>MacOS-snelkoppelingsschrijver is niet beschikbaar op dit platform.</translation>
     </message>
@@ -15543,8 +15553,8 @@ Klik op Vernieuwen om de lijst bij te werken.</translation>
         <translation>Algemene I/O-fout</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="283"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="253"/>
         <source>Frame Parser Disabled</source>
         <translation>Frame-parser Uitgeschakeld</translation>
     </message>
@@ -15586,8 +15596,8 @@ Meest waarschijnlijke oorzaak: een oneindige lus of extreem trage bewerking in h
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="428"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="479"/>
         <source>Missing Parse Function</source>
         <translation>Ontbrekende Parse-functie</translation>
     </message>
@@ -15603,8 +15613,8 @@ Zorg ervoor dat uw code het volgende bevat:
 function parse(frame) ... end</translation>
     </message>
     <message>
-        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <location filename="../../src/DataModel/Scripting/LuaScriptEngine.cpp" line="491"/>
+        <location filename="../../src/DataModel/Scripting/JsScriptEngine.cpp" line="531"/>
         <source>Parse Function Runtime Error</source>
         <translation>Runtime-fout in Parse-functie</translation>
     </message>
@@ -16616,57 +16626,57 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
         <translation>Painter-widgets</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1069"/>
+        <location filename="../../src/SerialStudio.cpp" line="1078"/>
         <source>UTF-8</source>
         <translation>UTF-8</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1070"/>
+        <location filename="../../src/SerialStudio.cpp" line="1079"/>
         <source>UTF-16 LE</source>
         <translation>UTF-16 LE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1071"/>
+        <location filename="../../src/SerialStudio.cpp" line="1080"/>
         <source>UTF-16 BE</source>
         <translation>UTF-16 BE</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1072"/>
+        <location filename="../../src/SerialStudio.cpp" line="1081"/>
         <source>Latin-1</source>
         <translation>Latin-1</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1073"/>
+        <location filename="../../src/SerialStudio.cpp" line="1082"/>
         <source>System</source>
         <translation>Systeem</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1074"/>
+        <location filename="../../src/SerialStudio.cpp" line="1083"/>
         <source>GBK</source>
         <translation>GBK</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1075"/>
+        <location filename="../../src/SerialStudio.cpp" line="1084"/>
         <source>GB18030</source>
         <translation>GB18030</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1076"/>
+        <location filename="../../src/SerialStudio.cpp" line="1085"/>
         <source>Big5</source>
         <translation>Big5</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1077"/>
+        <location filename="../../src/SerialStudio.cpp" line="1086"/>
         <source>Shift-JIS</source>
         <translation>Shift-jis</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1078"/>
+        <location filename="../../src/SerialStudio.cpp" line="1087"/>
         <source>EUC-JP</source>
         <translation>EUC-JP</translation>
     </message>
     <message>
-        <location filename="../../src/SerialStudio.cpp" line="1079"/>
+        <location filename="../../src/SerialStudio.cpp" line="1088"/>
         <source>EUC-KR</source>
         <translation>EUC-KR</translation>
     </message>
@@ -17466,18 +17476,18 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
         <translation>Ui-verversingsfrequentie (Hz)</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="974"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1024"/>
         <source>Show Actions Panel</source>
         <translation>Actiepaneel Tonen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1160"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1183"/>
         <source>Always Show Taskbar Buttons</source>
         <translation>Taakbalkknoppen Altijd Tonen</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="85"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1308"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1331"/>
         <source>Console</source>
         <translation>Console</translation>
     </message>
@@ -17500,7 +17510,7 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
         <translation>Externe API-verbindingen Toestaan</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="990"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1040"/>
         <source>Auto-Hide Toolbar</source>
         <translation>Werkbalk Automatisch Verbergen</translation>
     </message>
@@ -17633,109 +17643,114 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
         <translation>Indeling</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1013"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="974"/>
         <source>Auto-Layout Margin</source>
         <translation>Marge Automatische Indeling</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1038"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="999"/>
         <source>Auto-Layout Spacing</source>
         <translation>Afstand Automatische Indeling</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1070"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1063"/>
+        <source>Show Alignment Guides</source>
+        <translation>Uitlijningshulplijnen Tonen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1093"/>
         <source>Video Export</source>
         <translation>Video-export</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1088"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1111"/>
         <source>Save Videos by Default</source>
         <translation>Video's Standaard Opslaan</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1139"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1162"/>
         <source>Behavior</source>
         <translation>Gedrag</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1184"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1207"/>
         <source>Show Search Field</source>
         <translation>Zoekveld Tonen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1208"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1231"/>
         <source>Auto-hide Taskbar</source>
         <translation>Taakbalk Automatisch Verbergen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1235"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1258"/>
         <source>Hide Delay (ms)</source>
         <translation>Verbergvertraging (ms)</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1268"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1291"/>
         <source>Pinned Buttons</source>
         <translation>Vastgezette Knoppen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1286"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1309"/>
         <source>Drag a pinned button on the taskbar to reorder it.</source>
         <translation>Sleep een vastgezette knop op de taakbalk om de volgorde te wijzigen.</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1307"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1330"/>
         <source>Settings</source>
         <translation>Instellingen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1310"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1333"/>
         <source>Clock</source>
         <translation>Klok</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1311"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1334"/>
         <source>Stopwatch</source>
         <translation>Stopwatch</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1312"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1335"/>
         <source>Pause / Resume</source>
         <translation>Pauzeren / Hervatten</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1313"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1336"/>
         <source>File Transmission</source>
         <translation>Bestandsoverdracht</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1314"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1337"/>
         <source>AI Assistant</source>
         <translation>Ai-assistent</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1443"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1466"/>
         <source>Display</source>
         <translation>Weergave</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1458"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1481"/>
         <source>Display Mode</source>
         <translation>Weergavemodus</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1526"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1549"/>
         <source>Scrollback Lines</source>
         <translation>Scrollback-regels</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="866"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1480"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1503"/>
         <source>Font Family</source>
         <translation>Lettertypefamilie</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="92"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1309"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1332"/>
         <source>Notifications</source>
         <translation>Meldingen</translation>
     </message>
@@ -17751,7 +17766,7 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
     </message>
     <message>
         <location filename="../../qml/Dialogs/Settings.qml" line="888"/>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1502"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1525"/>
         <source>Font Size</source>
         <translation>Lettergrootte</translation>
     </message>
@@ -17764,97 +17779,97 @@ De scheidingsteken-parameter is niet langer nodig.</translation>
         <translation type="vanished">Afbeeldingen Standaard Opslaan</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1551"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1574"/>
         <source>Show Timestamps</source>
         <translation>Tijdstempels Tonen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1579"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1602"/>
         <source>Data Transmission</source>
         <translation>Gegevensoverdracht</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1594"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1617"/>
         <source>Line Ending</source>
         <translation>Regeleindiging</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1616"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1639"/>
         <source>Input Mode</source>
         <translation>Invoermodus</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1638"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1661"/>
         <source>Text Encoding</source>
         <translation>Tekstcodering</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1660"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1683"/>
         <source>Checksum</source>
         <translation>Checksum</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1682"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1705"/>
         <source>Echo Sent Data</source>
         <translation>Echo Verzonden Gegevens</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1710"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1733"/>
         <source>Escape Codes</source>
         <translation>Escape-codes</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1725"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1748"/>
         <source>VT100 Emulation</source>
         <translation>Vt100-emulatie</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1751"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1774"/>
         <source>ANSI Colors</source>
         <translation>Ansi-kleuren</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1818"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1841"/>
         <source>Delivery</source>
         <translation>Aflevering</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1833"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1856"/>
         <source>System Notifications</source>
         <translation>Systeemmeldingen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1854"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1877"/>
         <source>Show Warning/Critical events as OS desktop notifications when Serial Studio is not the foreground window.</source>
         <translation>Toon waarschuwingen/kritieke gebeurtenissen als OS-desktopmeldingen wanneer Serial Studio niet het actieve venster is.</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1864"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1887"/>
         <source>Application Logs</source>
         <translation>Applicatielogboeken</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1879"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1902"/>
         <source>Route Warnings to Notifications</source>
         <translation>Stuur Waarschuwingen naar Meldingen</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1900"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1923"/>
         <source>Off by default — Qt and QML emit warnings frequently and enabling this can drown out real alarms. Critical messages are always routed regardless of this setting.</source>
         <translation>Standaard uit — QT en QML geven vaak waarschuwingen en het inschakelen hiervan kan echte alarmen overstemmen. Kritieke berichten worden altijd doorgestuurd, ongeacht deze instelling.</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1919"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1942"/>
         <source>Reset</source>
         <translation>Resetten</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1960"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="1999"/>
         <source>Close</source>
         <translation>Sluiten</translation>
     </message>
     <message>
-        <location filename="../../qml/Dialogs/Settings.qml" line="1968"/>
+        <location filename="../../qml/Dialogs/Settings.qml" line="2007"/>
         <source>Apply</source>
         <translation>Toepassen</translation>
     </message>
@@ -18696,7 +18711,7 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
 <context>
     <name>SubMenuCombo</name>
     <message>
-        <location filename="../../qml/Widgets/SubMenuCombo.qml" line="160"/>
+        <location filename="../../qml/Widgets/SubMenuCombo.qml" line="168"/>
         <source>No Data Available</source>
         <translation>Geen Gegevens Beschikbaar</translation>
     </message>
@@ -18792,18 +18807,18 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
         <translation>Automatisch</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="780"/>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="786"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="781"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="787"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="955"/>
         <source>No</source>
         <translation>Nee</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="954"/>
+        <location filename="../../qml/ProjectEditor/Views/TableDelegate.qml" line="955"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -18929,62 +18944,72 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
         <translation>Pauzeren</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="977"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="771"/>
+        <source>New Workspace…</source>
+        <translation>Nieuwe Werkruimte…</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="797"/>
+        <source>No Workspaces Available</source>
+        <translation>Geen Werkruimten Beschikbaar</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="929"/>
         <source>Unfreeze Dashboard</source>
         <translation>Dashboard Ontgrendelen</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="978"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="930"/>
         <source>Freeze Dashboard</source>
         <translation>Dashboard Vergrendelen</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1050"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="987"/>
         <source>MQTT: Connected to %1</source>
         <translation>MQTT: Verbonden met %1</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="988"/>
         <source>MQTT: Not connected</source>
         <translation>MQTT: Niet verbonden</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1075"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1012"/>
         <source>MQTT Publisher</source>
         <translation>MQTT Publisher</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1085"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1022"/>
         <source>Status:</source>
         <translation>Status:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1093"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1030"/>
         <source>Connected</source>
         <translation>Verbonden</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1094"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1031"/>
         <source>Disconnected</source>
         <translation>Niet Verbonden</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1101"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1038"/>
         <source>Broker:</source>
         <translation>Broker:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1114"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1051"/>
         <source>Mode:</source>
         <translation>Modus:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1127"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1064"/>
         <source>Messages sent:</source>
         <translation>Verzonden berichten:</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1141"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1078"/>
         <source>Open MQTT Settings</source>
         <translation>MQTT-instellingen Openen</translation>
     </message>
@@ -18998,7 +19023,7 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
         <translation type="vanished">Widgets zoeken…</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1187"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/Taskbar.qml" line="1124"/>
         <source>Remove from Workspace</source>
         <translation>Verwijderen uit Werkruimte</translation>
     </message>
@@ -19914,33 +19939,34 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
 <context>
     <name>UI::Dashboard</name>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1777"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1812"/>
         <source>Console</source>
         <translation>Console</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1785"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1820"/>
         <source>Notifications</source>
         <translation>Meldingen</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1793"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1828"/>
         <source>Clock</source>
         <translation>Klok</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1800"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1835"/>
         <source>Stopwatch</source>
         <translation>Stopwatch</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1846"/>
-        <location filename="../../src/UI/Dashboard.cpp" line="1861"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1882"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1897"/>
         <source>%1 (Fallback)</source>
         <translation>%1 (Terugval)</translation>
     </message>
     <message>
-        <location filename="../../src/UI/Dashboard.cpp" line="1883"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1919"/>
+        <location filename="../../src/UI/Dashboard.cpp" line="1991"/>
         <source>LED Panel (%1)</source>
         <translation>LED-paneel (%1)</translation>
     </message>
@@ -19948,7 +19974,7 @@ Schakel Project Insluiten in om het project in de snelkoppeling in te bakken, zo
 <context>
     <name>UI::DashboardWidget</name>
     <message>
-        <location filename="../../src/UI/DashboardWidget.cpp" line="164"/>
+        <location filename="../../src/UI/DashboardWidget.cpp" line="170"/>
         <source>Invalid</source>
         <translation>Ongeldig</translation>
     </message>
@@ -20599,7 +20625,37 @@ Ik begrijp dat ik bij het einde een licentie moet kopen of de GPLv3-versie moet 
         <translation type="vanished">Verwijderen uit Werkruimte</translation>
     </message>
     <message>
-        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="418"/>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="103"/>
+        <source>Rename Widget…</source>
+        <translation>Widget Hernoemen…</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="113"/>
+        <source>Freeze Title</source>
+        <translation>Titel Bevriezen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="118"/>
+        <source>Title Bar</source>
+        <translation>Titelbalk</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="127"/>
+        <source>Painted Title</source>
+        <translation>Geschilderde Titel</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="138"/>
+        <source>Hidden</source>
+        <translation>Verborgen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="153"/>
+        <source>Open in External Window</source>
+        <translation>Open in Extern Venster</translation>
+    </message>
+    <message>
+        <location filename="../../qml/MainWindow/Panes/Dashboard/WidgetDelegate.qml" line="523"/>
         <source>Device Disconnected</source>
         <translation>Apparaat Losgekoppeld</translation>
     </message>
@@ -20958,96 +21014,123 @@ Ik begrijp dat ik bij het einde een licentie moet kopen of de GPLv3-versie moet 
         <translation>Werkruimte</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="144"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="145"/>
         <source>Add Widget</source>
         <translation>Widget Toevoegen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="146"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="147"/>
         <source>Add widget to workspace</source>
         <translation>Widget toevoegen aan werkruimte</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="157"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="158"/>
         <source>Move Up</source>
         <translation>Omhoog Verplaatsen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="159"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="160"/>
         <source>Move workspace up</source>
         <translation>Werkruimte omhoog verplaatsen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="169"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="170"/>
         <source>Move Down</source>
         <translation>Omlaag Verplaatsen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="171"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="172"/>
         <source>Move workspace down</source>
         <translation>Werkruimte omlaag verplaatsen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="181"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="182"/>
         <source>Change Icon</source>
         <translation>Pictogram Wijzigen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="183"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="184"/>
         <source>Change workspace icon</source>
         <translation>Werkruimtepictogram wijzigen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="198"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="199"/>
         <source>Rename</source>
         <translation>Hernoemen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="200"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="201"/>
         <source>Rename workspace</source>
         <translation>Werkruimte hernoemen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="209"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="210"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="211"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="212"/>
         <source>Delete workspace</source>
         <translation>Werkruimte verwijderen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="233"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="239"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="234"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="242"/>
         <source>Group</source>
         <translation>Groep</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="234"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="240"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="235"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="243"/>
         <source>Widget</source>
         <translation>Widget</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="235"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="241"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="236"/>
+        <source>Display Title</source>
+        <translation>Titel Weergeven</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="237"/>
+        <source>Freeze Title</source>
+        <translation>Titel Bevriezen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="238"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="244"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="285"/>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="323"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="288"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="386"/>
         <source>(unknown)</source>
         <translation>(onbekend)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="303"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="306"/>
         <source>(group widget)</source>
         <translation>(groepswidget)</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="353"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="362"/>
+        <source>Title Bar</source>
+        <translation>Titelbalk</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <source>Painted Title</source>
+        <translation>Geschilderde Titel</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="361"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="362"/>
+        <source>Hidden</source>
+        <translation>Verborgen</translation>
+    </message>
+    <message>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="416"/>
         <source>Remove widget from workspace</source>
         <translation>Widget uit werkruimte verwijderen</translation>
     </message>
@@ -21056,7 +21139,7 @@ Ik begrijp dat ik bij het einde een licentie moet kopen of de GPLv3-versie moet 
         <translation type="vanished">Uit werkruimte verwijderen</translation>
     </message>
     <message>
-        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="373"/>
+        <location filename="../../qml/ProjectEditor/Views/WorkspaceView.qml" line="436"/>
         <source>No widgets in this workspace.</source>
         <translation>Geen widgets in deze werkruimte.</translation>
     </message>
